@@ -106,6 +106,7 @@
 .giftIcon {
   margin-right:5px;
   margin-left:5px;
+  cursor: pointer;
 }
 
 .titleInput {
@@ -194,16 +195,77 @@
   max-width: 80%; /* Largeur maximale de la boîte de dialogue */
 }
 
+.modalDialog button {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin: 10px 10px 10px 0;
+}
+
 /* Styles pour le bouton de fermeture de la modale */
-.modalCloseButton {
+/* .modalCloseButton {
   position: absolute;
   top: 10px;
   right: 10px;
   cursor: pointer;
-}
+} */
 
 .giftTitleAndLink {
   display:flex;
   flex-direction:row;
   justify-content:space-between;
 }
+
+.caddyIconContainer {
+  display:flex;
+  justify-content:center;
+  flex-direction:row;
+  width:100%;
+  padding-top:35px;
+}
+
+.caddyIconUser {
+  color:darkred;
+  font-size:25px;
+  cursor: pointer;
+
+}
+
+.caddyIcon {
+  color:darkred;
+  cursor:pointer;
+}
+
+
+.giftSavedModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999; /* Assurez-vous que la modale est au-dessus du reste du contenu */
+  text-align: center;
+}
+
+.giftSavedModal p {
+  font-size: 18px;
+}
+
+.giftSavedModal button {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.linkIcon {
+  color:darkred
+}
+

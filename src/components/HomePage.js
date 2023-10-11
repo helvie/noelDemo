@@ -21,10 +21,6 @@ function HomePage() {
     //....Etat stockant le cadeau en cours de modification
     const [editingGift, setEditingGift] = useState(-1);
 
-    //....Etat stockant le cadeau d'avant qui était en cours de modification. Utile
-    //....quand un autre cadeau est en cours de modification mais que celui-ci n'est
-    //....pas encore enregistré (quand la modale est affichée)
-    const [lastEditingGift, setLastEditingGift] = useState(-1);
 
     //....Etat stockant le cadeau sur lequel faire un reset en cas d'annulation
     //....dans la modale (permet, au changement, de déclencher la modification du
@@ -41,12 +37,17 @@ function HomePage() {
     //....Etat gérant l'ouverture de la modale
     const [modalOpen, setModalOpen] = useState(false);
 
+    //....Etat stockant la section en attente de la réponse de la modale pour ouverture ou fermeture
+    const [sectionToOpenOrClose, setSectionToOpenOrClose] = useState(-1);
+
+    //....Etat indiquant d'où la modale a été ouverte (d'un input à l'autre ou en
+    //....ouvrant une nouvelle section)
     const [modalOpenFromHome, setModalOpenFromHome] = useState(false);
 
+    //....Etat gérant l'ouverture de la modale de cadeau volé
+    const [giftSavedModalVisible, setGiftSavedModalVisible] = useState(false);
 
     // const [isLoading, setIsLoading] = useState(false);
-    // const [isEditing, setIsEditing] = useState(false);
-    // const [modalDisplay, setModalDisplay] = useState(false);
 
     //########################################################################
 
@@ -56,15 +57,10 @@ function HomePage() {
     const colors = ["#FFD700", "#7fa348", "#f3e4df"]
 
 
-
     //############################ FONCTIONS #################################
 
-    //.....Dépliage déclenché au click sur la section d'une personne 
-    const handleSectionClick = (index) => {
-
-        //------------------------------------------------------------------------
-        // if (isEditing) { setModalDisplay(true) }
-        //------------------------------------------------------------------------
+    //....Dépliage de la section personne si plié, pliage si déplié
+    const openCloseSectionIndex = (index) => {
 
         //.....Si la section actuelle est celle qui est ouverte et stockée
         if (openedSectionIndex === index) {
@@ -79,26 +75,13 @@ function HomePage() {
             //....Fermeture de la section de l'user en mettant l'état à false
             setOpenedSectionUser(false)
         }
-    };
+    }
 
-    //.....Dépliage et ouverture modale déclenchée au click sur la section de l'user 
-    const handleUserSectionClick = () => {
-        
-        console.log("déclenché !!!"+openedSectionUser)
+    //______________________________________________________________________________
 
-        //....Récupération de l'index du composant modifié
-        const idx = modifiedData ? modifiedData.index : null;
 
-        {
-            openedSectionUser?setModalOpenFromHome(true):null
-            //....si un cadeau est en édition
-            editingGift!==-1 ?
-
-                //....Sinon ouverture de la modale d'enregistrement
-                openModal(idx) : null
-
-        }
-
+    //....Dépliage de l'user si plié, pliage si déplié
+    const openCloseSectionUser = () => {
 
         //.....Si la section de l'user est celle qui est ouverte et stockée
         if (openedSectionUser) {
@@ -115,6 +98,57 @@ function HomePage() {
         }
     }
 
+    //______________________________________________________________________________
+
+    //.....Dépliage/pliage déclenché au click sur la section d'une personne 
+    const handleSectionClick = (index) => {
+
+        //....si la section de l'user est ouverte, indication que la modale est ouverte
+        //....au clic sur une section (et non sur un input)
+        openedSectionUser ? setModalOpenFromHome(true) : null
+
+        //....si un cadeau est en édition
+        if (editingGift !== -1) {
+
+            //....ouverture de la modale d'enregistrement
+            openModal(index)
+
+            //...et stockage de la section à ouvrir après réponse à la modale
+            setSectionToOpenOrClose(index)
+        }
+        else {
+            //....Sinon, gestion directe de l'ouverture/fermeture de la section
+            openCloseSectionIndex(index);
+        }
+
+    };
+    //______________________________________________________________________________
+
+    //.....Dépliage/pliage et ouverture modale déclenchée au click sur la section de l'user 
+    const handleUserSectionClick = () => {
+
+        //....si la section de l'user est ouverte, indication que la modale est ouverte
+        //....au clic sur une section (et non sur un input)
+        openedSectionUser ? setModalOpenFromHome(true) : null
+
+        //....si un cadeau est en édition
+        if (editingGift !== -1) {
+
+            //....ouverture de la modale d'enregistrement
+            openModal("user")
+
+            //...et stockage de la section à ouvrir après réponse à la modale
+            setSectionToOpenOrClose("user")
+        }
+        else {
+            //....Sinon, gestion directe de l'ouverture/fermeture de la section
+            openCloseSectionUser();
+        }
+
+    }
+
+    //______________________________________________________________________________
+
     //....Ouverture de la modale
     const openModal = (index) => {
 
@@ -124,87 +158,178 @@ function HomePage() {
         //....Changement de l'état de modification, non autorisée, des inputs
         setInputDisabled(true);
 
-        //------------------------------------------------------------------------
-        // setEditingData({
-        //     isEditing: false,
-        //     titleInput: '',
-        //     textInput: '',
-        //     urlInput: '',
-        //     index,
-        // });
-        //------------------------------------------------------------------------
-
     };
+    //______________________________________________________________________________
 
     //....Fermeture de la modale
     const closeModal = () => {
 
-        
+        //....Si la section user était en attente d'affichage ou masquage des cadeaux
+        sectionToOpenOrClose === "user" ?
+            //....Lancement de la fonction pour l'user
+            openCloseSectionUser() :
+            //....Sinon, si elle n'est pas égale à -1, donc une section personne en attente d'affichage ou masquage
+            sectionToOpenOrClose !== -1 ?
+                //....Lancement de la fonction pour une personne
+                openCloseSectionIndex(sectionToOpenOrClose) :
+                null
+
         //....Fermeture de la modale grâce à l'état mis à false. 
         setModalOpen(false);
         //....Changement de l'état de modification, à nouveau autorisée, des inputs
         setInputDisabled(false);
+        //....Mise à zéro de l'état stockant le cadeau en cours d'édition
+        setEditingGift(-1)
+        //....Mise à zéro de la section en attente d'affichage ou masquage
+        setSectionToOpenOrClose(-1)
+        //....Remise à zéro de l'état modale ouverte depuis section
+        setModalOpenFromHome(false)
+
+
     };
+
+    //______________________________________________________________________________
 
     //....Gestion de l'enregistrement des modifications depuis la modale
     const handleSaveChanges = () => {
+        //....Création, à partir du tableau de données, d'une copie des datas
+        const updatedDatas = datas.map((data, index) => {
+            //....Si l'index du cadeau, dans le tableau, correspond à l'index du
+            //....cadeau en couors de modification
+            if (index === editingGift) {
+                //....Initialisation de la variable du cadeau modifié
+                const modifiedGiftIndex = modifiedData.index;
+                //....S'il s'agit de cadeaux supplémentaires par rapport aux datas initiales
+                if (modifiedGiftIndex >= 0 && modifiedGiftIndex < data.gifts.length) {
+                    //....Mise à jour
+                    return {
+                        ...data, gifts: data.gifts.map((gift, giftIndex) => {
+                            if (giftIndex === modifiedGiftIndex) {
+                                return {
+                                    title: modifiedData.titleInput,
+                                    detail: modifiedData.textInput,
+                                    url: modifiedData.urlInput,
+                                    offered: false, // Mettez ici le statut du cadeau (offert ou non)
+                                    date: "2023-10-09" // Mettez ici la date souhaitée
+                                };
+                            }
+                            return gift;
+                        })
+                    };
+                } else {
+                    // Si l'index est en dehors des limites, cela signifie qu'il s'agit d'un nouveau cadeau
+                    // Ajoutez le nouveau cadeau aux données existantes
+                    data.gifts.push({
+                        title: modifiedData.titleInput,
+                        detail: modifiedData.textInput,
+                        url: modifiedData.urlInput,
+                        offered: false, // Mettez ici le statut du cadeau (offert ou non)
+                        date: "2023-10-09" // Mettez ici la date souhaitée
+                    });
 
+                    return data;
+                }
+            }
+            return data;
+        });
 
-
-        modalOpenFromHome ? setEditingGift(-1) : null
-        setModalOpenFromHome(false)
+        //....Mise à jour de l'état "datas" avec les datas temporaires
+        setDatas(updatedDatas);
 
         // newEditing ? changeIsEditing(true) : changeIsEditing(false)
         // setModalDisplay(false)
         closeModal();
     };
 
+    //______________________________________________________________________________
+
     //....Réinitialisation des données au clic sur annuler dans modale
     const resetData = () => {
 
-        console.log("modalOpenFromHome "+modalOpenFromHome)
-        // console.log("modalopen "+modalOpen)
-        console.log(editingGift)
+        //....Indication dans l'état qu'aucun cadeau n'est en cours de modification
+        setEditingGift(-1)
 
-        modalOpenFromHome ? setEditingGift(-1) : null
+        //....Indication dans l'état qu'aucun cadeau n'est en cours de modification
         setModalOpenFromHome(false)
 
         //...Stockage des données de l'avant dernier cadeau mis en modification
         //...afin de déclencher la réinitialisation des champs
-        setResetGift(lastEditingGift);
+        setResetGift(editingGift);
 
         //....Fermeture de la modale
         closeModal();
     };
+    //______________________________________________________________________________
 
     //....Fonction implémentée dans le composant UserConnectedGiftDetail, qui, se
     //....déclenche à chaque modification dans un input
     const handleInputChange = (modifiedDataFromChildren) => {
+        setModifiedData(modifiedDataFromChildren)
 
-        console.log(modifiedDataFromChildren)
-
-        //....Récupération de l'index du composant modifié
+        //....Initialisation de l'index du cadeau modifié
         const idx = modifiedDataFromChildren.index;
 
-        {
-            //....si aucun cadeau n'a encore été mis en statut modification ou le
-            //....cadeau en mode modification est déjà stocké
-            editingGift === -1 || idx === editingGift ?
+        //....Mise à jour de l'état indiquant quel cadeau est en cours de modification
+        setEditingGift(idx)
+    };
 
-                //....Stockage des données récupérées de l'enfant
-                (setModifiedData(modifiedDataFromChildren)
-                    // changeIsEditing(true)
-                )
-                :
-                //....Sinon ouverture de la modale d'enregistrement
-                openModal(idx);
+//______________________________________________________________________________
 
-            //....Mise à jour du stockage : cadeau en cours stocké dans dernier cadeau
-            setLastEditingGift(editingGift);
-
-            //....et nouveau cadeau stocké dans cadeau en cours
-            setEditingGift(idx);
+    //....Au clic dans un input de cadeau
+    const handleInputClick = (clickedIndex) => {
+        //....s'il y a bien un cadeau modifié (pas de cadeau = -1) ou qu'on clique
+        //....ailleurs que dans un cadeau qui est déjà en cours de modification
+        if (editingGift !== -1 && editingGift !== clickedIndex) {
+            //....on ouvre la modale de validation d'enregistrement
+            openModal()
         }
+    }
+
+//______________________________________________________________________________
+
+    //....Création d'un nouveau cadeau à partir des données envoyé par le petit enfant
+    //....A revoir avec celui du dessous... doit pouvoir être fusionné
+    const addNewGift = (newGiftData) => {
+        // Créez un nouvel objet pour le nouveau cadeau
+        const newGift = {
+            title: newGiftData.title,
+            detail: newGiftData.textInput,
+            url: newGiftData.urlInput,
+            offered: false,
+            date: "2023-10-09",
+        };
+
+        //....Copie de l'état actuel des données
+        const updatedDatas = [...datas];
+
+        //....Identification des datas de l'utilisateur connecté
+        const userIndex = updatedDatas.findIndex((data) => data.pseudo === "Armel");
+
+        //....Vérification de l'existance de l'utilisateur (à vérifier... chatgpt)
+        if (userIndex !== -1) {
+            //....Ajout du nouveau cadeau aux données de cet utilisateur
+            updatedDatas[userIndex].gifts.push(newGift);
+
+            //....Mise jour l'état des données avec les nouvelles données
+            setDatas(updatedDatas);
+        }
+    };
+
+//______________________________________________________________________________
+
+
+    //....Enregistrement du cadeau volé
+    const stolenGiftRegistered = (data) => {
+        //....Récupération de l'utilisateur connecté
+        const connectedUser = datas.find(user => user.pseudo === "Armel");
+        //....Ajout du cadeau à l'utilisateur
+        connectedUser.gifts.push(data);
+        //....Affichage de la modale d'information
+        setGiftSavedModalVisible(true);
+    }
+
+    const closeGiftSavedModal = () => {
+        setGiftSavedModalVisible(false);
     };
 
     //######################### JSX STOCKE DANS VARIABLES #######################
@@ -221,17 +346,19 @@ function HomePage() {
                 //....composant user
                 <UserConnectedGiftsContainer
                     //....clé unique obligatoire
-                    key={i}
+                    key={-2}
                     //....background color
                     color={color}
                     //....statut depliage de la section
                     isExpanded={openedSectionUser}
                     //....fonction de dépliage de la section
                     onClick={() => handleUserSectionClick(i)}
+                    //....fonction de dépliage de la section
+                    onClickInput={(index) => handleInputClick(index)}
                     //....données
                     data={data}
                     //....
-                    parentChangeInParent={handleInputChange}
+                    inputChangeInParent={handleInputChange}
                     //....fonction de gestion de changement des inputs
                     onInputChange={handleInputChange}
                     //....booléen cadeau en cours de modification
@@ -240,9 +367,17 @@ function HomePage() {
                     inputDisabled={inputDisabled}
                     //....booléen réinitialisation des input si pas d'enregistrement dans modale
                     resetGift={resetGift}
+                    //....fonction d'enregistrement
+                    saveChanges={openModal}
+                    //....fonction d'ajout de nouveau cadeau
+                    addNewGift={addNewGift}
+
                 />
             )
         })
+
+//______________________________________________________________________________
+
 
     //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
     //....création d'un composant personne par donnée.
@@ -264,6 +399,9 @@ function HomePage() {
                     onClick={() => handleSectionClick(i)}
                     //....données
                     data={data}
+                    //....fonction de vol de cadau
+                    onClickCartPlus={stolenGiftRegistered}
+
                 />
             )
         })
@@ -280,13 +418,18 @@ function HomePage() {
                 <>
                     <div className={styles.firstSection}>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
                         um voluptates a cumque velit
                     </div>
                     {/*...Affichage du jsx stocké dans la variable connectedUserSection */}
                     {connectedUserSection}
 
                     {/* Afficher la modale si elle est en statut ouverte */}
-                    {modalOpen && (
+                    {modalOpen && modifiedData && (
                         <div className={styles.modal}>
                             <div className={styles.modalDialog}>
                                 {/* <button className={styles.modalCloseButton} onClick={closeModal}></button> */}
@@ -294,6 +437,13 @@ function HomePage() {
                                 <button onClick={handleSaveChanges}>Oui, j'enregistre !</button>
                                 <button onClick={resetData}>Non, remets comme avant !</button>
                             </div>
+                        </div>
+                    )}
+
+                    {giftSavedModalVisible && (
+                        <div className={styles.giftSavedModal}>
+                            <p>Votre cadeau a été volé avec succès !</p>
+                            <button onClick={closeGiftSavedModal}>Fermer</button>
                         </div>
                     )}
 
