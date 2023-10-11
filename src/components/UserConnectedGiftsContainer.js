@@ -61,6 +61,8 @@ function UserConnectedGiftsContainer(props) {
             //....un composant par cadeau
             <UserConnectedGiftDetail
                 //....clé unique obligatoire
+                key={index}
+                //....c'est pareil mais je pensais qu'on pouvais l'appeler index pis non
                 index={index}
                 //....fonction de détection de changement de cadeau à éditer
                 onClickInput={() => onClickInput(index)}
@@ -122,7 +124,7 @@ function UserConnectedGiftsContainer(props) {
 
                         {/*...Affichage du composant */}
                         <EndSeparationSection />
-                        
+
                     </div>
                 </div>
             </div>

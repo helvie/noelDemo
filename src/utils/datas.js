@@ -10,14 +10,14 @@ const usersArray =
             gifts: [
                 {
                     title: "Une plante verte",
-                    detail: "Ca sert à rien mais c'est joli, m'enfin, si, ça sert mais ça ne se voit pas",
+                    detail: "Ca sert à rien mais cest joli, menfin, si, ça sert mais ça ne se voit pas",
                     url: "https://www.willemsefrance.fr/products/cafeier",
                     offered: false,
                     date: "2021-10-22"
                 },
                 {
                     title: "Un poulpe",
-                    detail: "Parce que ça fait trop longtemps que je n'en ai pas eu",
+                    detail: "Parce que ça fait trop longtemps que je nen ai pas eu",
                     url: "https://www.mer-ocean.com/le-saviez-vous-focus-sur-les-pieuvres/",
                     offered: false,
                     date: "2021-10-22"
@@ -43,7 +43,7 @@ const usersArray =
                 },
                 {
                     title: "Un cable qui relie mon ordi portable à mon gros écran",
-                    detail: "C'est pratique",
+                    detail: "Cest pratique",
                     url: "",
                     offered: false,
                     date: "2021-10-22"
@@ -56,11 +56,11 @@ const usersArray =
             email: "utilisateur3@example.com",
             token: "token789",
             isAdult: true,
-            intro: "Vive les vacances ! Pis c'est super Noël parce que des fois il y a de la neige et des cadeaux. Et puis on peut décorer le sapin.",
+            intro: "Vive les vacances ! Pis cest super Noël parce que des fois il y a de la neige et des cadeaux. Et puis on peut décorer le sapin.",
             gifts: [
                 {
                     title: "Un disque de jazz",
-                    detail: "Pour écouter dans la voiture quand je m'ennuie",
+                    detail: "Pour écouter dans la voiture quand je mennuie",
                     url: "https://www.fnac.com/a16575512/EMOTIONAL-GANGSTER",
                     offered: false
                 },
@@ -71,8 +71,8 @@ const usersArray =
                     offered: false
                 },
                 {
-                    title: "Des m&m's",
-                    detail: "J'en voudrais de toutes les couleurs",
+                    title: "Des m&ms",
+                    detail: "Jen voudrais de toutes les couleurs",
                     url: "https://www.etsy.com/fr/listing/926605765/cartoon-character-mms-sweet-5d-diy?gpla=1&gao=1&&utm_source=google&utm_medium=cpc&utm_campaign=shopping_fr_fr_fr_e-home_and_living-home_decor-other&utm_custom1=_k_CjwKCAjwg4SpBhAKEiwAdyLwvOg94K2EEJQFgUx3SJC7bXop-IEUy9BZ4XmxQ-YoD86hk6VfD3ugFhoC96EQAvD_BwE_k_&utm_content=go_304982059_20954724979_76789459219_pla-106551393635_c__926605765frfr_102857959&utm_custom2=304982059&gclid=CjwKCAjwg4SpBhAKEiwAdyLwvOg94K2EEJQFgUx3SJC7bXop-IEUy9BZ4XmxQ-YoD86hk6VfD3ugFhoC96EQAvD_BwE",
                     offered: true
                 }
@@ -88,14 +88,14 @@ const usersArray =
             gifts: [
                 {
                     title: "Une plante verte",
-                    detail: "Ca sert à rien mais c'est joli, m'enfin, si, ça sert mais ça ne se voit pas",
+                    detail: "Ca sert à rien mais cest joli, menfin, si, ça sert mais ça ne se voit pas",
                     url: "https://www.willemsefrance.fr/products/cafeier",
                     offered: false,
                     date: "2021-10-22"
                 },
                 {
                     title: "Un poulpe",
-                    detail: "Parce que ça fait trop longtemps que je n'en ai pas eu",
+                    detail: "Parce que ça fait trop longtemps que je nen ai pas eu",
                     url: "https://www.mer-ocean.com/le-saviez-vous-focus-sur-les-pieuvres/",
                     offered: false,
                     date: "2021-10-22"
@@ -119,7 +119,7 @@ const usersArray =
                 },
                 {
                     title: "Un cable qui relie mon ordi portable à mon gros écran",
-                    detail: "C'est pratique",
+                    detail: "Cest pratique",
                     url: "",
                     offered: false,
                     date: "2021-10-22"
@@ -132,11 +132,11 @@ const usersArray =
             email: "utilisateur3@example.com",
             token: "token789",
             isAdult: true,
-            intro: "Vive les vacances ! Pis c'est super Noël parce que des fois il y a de la neige et des cadeaux. Et puis on peut décorer le sapin.",
+            intro: "Vive les vacances ! Pis cest super Noël parce que des fois il y a de la neige et des cadeaux. Et puis on peut décorer le sapin.",
             gifts: [
                 {
                     title: "Un disque de jazz",
-                    detail: "Pour écouter dans la voiture quand je m'ennuie",
+                    detail: "Pour écouter dans la voiture quand je mennuie",
                     url: "https://www.fnac.com/a16575512/EMOTIONAL-GANGSTER",
                     offered: false,
                     date: "2021-10-22"
@@ -149,8 +149,8 @@ const usersArray =
                     date: "2021-10-22"
                 },
                 {
-                    title: "Des m&m's",
-                    detail: "J'en voudrais de toutes les couleurs",
+                    title: "Des m&ms",
+                    detail: "Jen voudrais de toutes les couleurs",
                     url: "https://www.etsy.com/fr/listing/926605765/cartoon-character-mms-sweet-5d-diy?gpla=1&gao=1&&utm_source=google&utm_medium=cpc&utm_campaign=shopping_fr_fr_fr_e-home_and_living-home_decor-other&utm_custom1=_k_CjwKCAjwg4SpBhAKEiwAdyLwvOg94K2EEJQFgUx3SJC7bXop-IEUy9BZ4XmxQ-YoD86hk6VfD3ugFhoC96EQAvD_BwE_k_&utm_content=go_304982059_20954724979_76789459219_pla-106551393635_c__926605765frfr_102857959&utm_custom2=304982059&gclid=CjwKCAjwg4SpBhAKEiwAdyLwvOg94K2EEJQFgUx3SJC7bXop-IEUy9BZ4XmxQ-YoD86hk6VfD3ugFhoC96EQAvD_BwE",
                     offered: true,
                     date: "2021-10-22"
@@ -160,4 +160,5 @@ const usersArray =
     ];
 
 export { usersArray };
+
 
