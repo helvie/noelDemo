@@ -1,0 +1,50 @@
+
+@font-face {
+  font-family: 'XmasSweaterStitch-xXYq';
+  src: local('XmasSweaterStitch-xXYq'), url(../fonts/XmasSweaterStitch-xXYq.ttf) format('truetype');
+}
+
+@font-face {
+  font-family:'Quicksand-VariableFont_wght';
+  src: local('Quicksand-VariableFont_wght'), url(../fonts/Quicksand-VariableFont_wght.ttf) format('truetype');
+}
+
+body {
+  font-family: 'Josefin Sans Variable', sans-serif;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size:40px;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin:0;
+  padding:o;
+}
+
+input:focus {
+  outline:none;
+}
+
+textarea:focus {
+  outline:none;
+}
+
+
+
