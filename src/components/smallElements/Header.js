@@ -7,6 +7,8 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
 
+
+
   return (
     <div className={stylesHeader.headerContainer}>
     {/* <p className={stylesHeader.specialCharacters}> */}
