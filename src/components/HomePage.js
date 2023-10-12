@@ -433,8 +433,7 @@ function HomePage() {
                         <div className={styles.modal}>
                             <div className={styles.modalDialog}>
                                 {/* <button className={styles.modalCloseButton} onClick={closeModal}></button> */}
-                                <p>On enregistre "{modifiedData.titleInput}" ?</p>
-                                <button onClick={handleSaveChanges}>Oui, j'enregistre !</button>
+                                <p>On enregistre &quot;{modifiedData.titleInput}&quot; ?</p>                                <button onClick={handleSaveChanges}>Oui, j'enregistre !</button>
                                 <button onClick={resetData}>Non, remets comme avant !</button>
                             </div>
                         </div>
