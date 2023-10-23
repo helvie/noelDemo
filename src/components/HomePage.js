@@ -3,7 +3,8 @@ import styles from '../styles/Home.module.css';
 import GiftsContainer from './GiftsContainer'
 import UserConnectedGiftsContainer from './UserConnectedGiftsContainer'
 import { usersArray } from '../utils/datas';
-
+import axios from 'axios';
+import { useEffect } from 'react';
 
 function HomePage() {
 
@@ -55,6 +56,57 @@ function HomePage() {
 
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
     const colors = ["#FFD700", "#7fa348", "#f3e4df"]
+
+    console.log(process.env.API_USER_NAME)
+
+    // Remplacez 'URL_DE_L_API' par l'URL réelle de l'API
+
+//         API_APP_KEY = CP33NZxx+vIPC2pr1fuEuCqXycx13TZQK305ObI3h/iFC45vq5bSsWtjxPI5axn3/dxZOvqrOvLMX7S9bLCLdMv6pU5ci3O6atpmyhF8NuntU0ZftTADxrTpmNFj/XFPDqB0lkZpyfCKkfDcmJXn+pTWQ5iNGvSOJFOeYKHfDp46u7kwmQsZsIvKQBxm0Y6jFSK/ZCd4dPpOuQxdgBICffwo6uQj3vuEJ9y0TZRPmJCidYD4kQN1UfQzyLmCyYuBTCBPA4iMbgGzU1VpMu1n3/gxmb2HeFE40eUN+HNxI99MxJ4mx97B+eD7AyMCV9zotw8ZKRu4e4kUO9LAIDH0vw==
+// API_APP_NAME = NoelTan
+// API_USER_NAME = sylvie
+    // const apiUrl = 'http://noel.helvie.fr/api/gettoken.php';
+    // const headers = {
+
+    //     'App-Key': 'CP33NZxx+vIPC2pr1fuEuCqXycx13TZQK305ObI3h/iFC45vq5bSsWtjxPI5axn3/dxZOvqrOvLMX7S9bLCLdMv6pU5ci3O6atpmyhF8NuntU0ZftTADxrTpmNFj/XFPDqB0lkZpyfCKkfDcmJXn+pTWQ5iNGvSOJFOeYKHfDp46u7kwmQsZsIvKQBxm0Y6jFSK/ZCd4dPpOuQxdgBICffwo6uQj3vuEJ9y0TZRPmJCidYD4kQN1UfQzyLmCyYuBTCBPA4iMbgGzU1VpMu1n3/gxmb2HeFE40eUN+HNxI99MxJ4mx97B+eD7AyMCV9zotw8ZKRu4e4kUO9LAIDH0vw==',
+    //     'App-Name': 'NoelTan',
+    //     'User-Name': 'moarmel'  
+    // };
+
+    // useEffect(() => {
+
+    //     fetch(apiUrl, { method: 'GET', headers })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       const jwt = data; 
+    //       console.log(jwt)
+    //     })
+    //     .catch(error => {
+    //     });
+
+    // }, []);
+
+
+    const apiUrl = 'http://noel.helvie.fr/api/gettoken.php';
+    const headers = {
+
+        'App-Key': process.env.API_APP_NAME,
+        'App-Name': process.env.API_USER_NAME,
+        'User-Name': process.env.API_APP_KEY,
+        'Content-Type': 'application/json'  
+    };
+
+    useEffect(() => {
+
+        fetch(apiUrl, { method: 'GET', headers })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+        })
+        .catch(error => {
+        });
+
+    }, []);
+
 
 
     //############################ FONCTIONS #################################
@@ -273,7 +325,7 @@ function HomePage() {
         setEditingGift(idx)
     };
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     //....Au clic dans un input de cadeau
     const handleInputClick = (clickedIndex) => {
@@ -285,7 +337,7 @@ function HomePage() {
         }
     }
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     //....Création d'un nouveau cadeau à partir des données envoyé par le petit enfant
     //....A revoir avec celui du dessous... doit pouvoir être fusionné
@@ -315,7 +367,7 @@ function HomePage() {
         }
     };
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
 
     //....Enregistrement du cadeau volé
@@ -376,7 +428,7 @@ function HomePage() {
             )
         })
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
 
     //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
