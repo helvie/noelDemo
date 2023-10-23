@@ -86,7 +86,7 @@ function HomePage() {
     // }, []);
 
 
-    const apiUrl = 'http://noel.helvie.fr/api/check.php';
+    const apiUrl = 'https://noel.helvie.fr/api/check.php';
     const headers = {
 
         'App-Key': process.env.API_APP_NAME,
