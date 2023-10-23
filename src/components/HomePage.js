@@ -57,7 +57,7 @@ function HomePage() {
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
     const colors = ["#FFD700", "#7fa348", "#f3e4df"]
 
-    console.log(process.env.API_USER_NAME)
+    // console.log(process.env.API_USER_NAME)
 
     // Remplacez 'URL_DE_L_API' par l'URL réelle de l'API
 
@@ -86,7 +86,7 @@ function HomePage() {
     // }, []);
 
 
-    const apiUrl = 'http://noel.helvie.fr/api/gettoken.php';
+    const apiUrl = 'http://noel.helvie.fr/api/check.php';
     const headers = {
 
         'App-Key': process.env.API_APP_NAME,
