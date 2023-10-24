@@ -26,7 +26,7 @@ const usersArray =
             ]
         },
         {
-            pseudo: "Sylvie",
+            pseudo: "xxx",
             password: "motdepasse2",
             email: "utilisateur2@example.com",
             token: "token456",

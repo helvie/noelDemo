@@ -5,6 +5,7 @@ import UserConnectedGiftsContainer from './UserConnectedGiftsContainer'
 import { usersArray } from '../utils/datas';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { envVariables } from '../../env';
 
 function HomePage() {
 
@@ -57,13 +58,14 @@ function HomePage() {
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
     const colors = ["#FFD700", "#7fa348", "#f3e4df"]
 
-    // console.log(process.env.API_USER_NAME)
-
+    console.log(process.env.API_APP_KEY)
+    const gerard=(process.env.API_APP_NAME)
+    console.log(gerard)
     // Remplacez 'URL_DE_L_API' par l'URL réelle de l'API
 
-//         API_APP_KEY = CP33NZxx+vIPC2pr1fuEuCqXycx13TZQK305ObI3h/iFC45vq5bSsWtjxPI5axn3/dxZOvqrOvLMX7S9bLCLdMv6pU5ci3O6atpmyhF8NuntU0ZftTADxrTpmNFj/XFPDqB0lkZpyfCKkfDcmJXn+pTWQ5iNGvSOJFOeYKHfDp46u7kwmQsZsIvKQBxm0Y6jFSK/ZCd4dPpOuQxdgBICffwo6uQj3vuEJ9y0TZRPmJCidYD4kQN1UfQzyLmCyYuBTCBPA4iMbgGzU1VpMu1n3/gxmb2HeFE40eUN+HNxI99MxJ4mx97B+eD7AyMCV9zotw8ZKRu4e4kUO9LAIDH0vw==
-// API_APP_NAME = NoelTan
-// API_USER_NAME = sylvie
+    //         API_APP_KEY = CP33NZxx+vIPC2pr1fuEuCqXycx13TZQK305ObI3h/iFC45vq5bSsWtjxPI5axn3/dxZOvqrOvLMX7S9bLCLdMv6pU5ci3O6atpmyhF8NuntU0ZftTADxrTpmNFj/XFPDqB0lkZpyfCKkfDcmJXn+pTWQ5iNGvSOJFOeYKHfDp46u7kwmQsZsIvKQBxm0Y6jFSK/ZCd4dPpOuQxdgBICffwo6uQj3vuEJ9y0TZRPmJCidYD4kQN1UfQzyLmCyYuBTCBPA4iMbgGzU1VpMu1n3/gxmb2HeFE40eUN+HNxI99MxJ4mx97B+eD7AyMCV9zotw8ZKRu4e4kUO9LAIDH0vw==
+    // API_APP_NAME = NoelTan
+    // API_USER_NAME = sylvie
     // const apiUrl = 'http://noel.helvie.fr/api/gettoken.php';
     // const headers = {
 
@@ -86,24 +88,36 @@ function HomePage() {
     // }, []);
 
 
-    const apiUrl = 'https://noel.helvie.fr/api/check.php';
-    const headers = {
+    // const apiUrl = 'http://noel.helvie.fr/api/check.php';
+    // const headers
+    //     = {
 
-        'App-Key': process.env.API_APP_NAME,
-        'App-Name': process.env.API_USER_NAME,
-        'User-Name': process.env.API_APP_KEY,
-        'Content-Type': 'application/json'  
-    };
+    //     'APP-KEY': process.env.API_APP_NAME,
+    //     'APP-NAME': process.env.API_USER_NAME,
+    //     'USER-NAME': process.env.API_APP_KEY,
+    //     'ContentType': 'application/json'
+    // };
 
     useEffect(() => {
 
-        fetch(apiUrl, { method: 'GET', headers })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
+
+        fetch("http://noel.helvie.fr/api/check.php", {
+            method: 'GET',
+            headers: {
+                'APP-KEY': envVariables.API_APP_KEY,
+                'APP-NAME': envVariables.API_APP_NAME,
+                'USER-NAME': envVariables.API_USER_NAME,
+                'Content-Type': 'application/json'
+            },
         })
-        .catch(error => {
-        });
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                console.log("essai1")
+
+            });
 
     }, []);
 

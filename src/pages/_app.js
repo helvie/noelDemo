@@ -1,11 +1,11 @@
+require('dotenv').config();
+
 import '../styles/globals.css';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { combineReducers } from 'redux'; // N'importe pas configureStore de cette manière
 import { configureStore } from '@reduxjs/toolkit'; // Importez configureStore depuis Redux Toolkit
-import dotenv from 'dotenv';
 
-dotenv.config();
 // Importez ici vos reducers s'ils sont nécessaires
 // import screen from '../reducers/screen';
 // import organismData from '../reducers/organism';
