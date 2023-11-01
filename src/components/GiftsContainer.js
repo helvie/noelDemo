@@ -11,6 +11,10 @@ import EndSeparationSection from './smallElements/EndSeparationSection';
 
 function GiftsContainer(props) {
 
+    let giftsList = "";
+
+    console.log(props)
+
     //....Récupération des données contenues dans les propriétés de composants
     const {
         data,
@@ -50,7 +54,7 @@ function GiftsContainer(props) {
 //______________________________________________________________________________
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
-    const giftsList = data.gifts.map((data, index) => (
+    if(data.gifts){giftsList = data.gifts.map((data, index) => (
         //....récupérés du tableau de données tableau de données
         //....un composant par cadeau
         <div className={styles.gift} key={index}>
@@ -67,7 +71,8 @@ function GiftsContainer(props) {
                 onClickCartPlus={handleCartPlusClick}
             />
         </div>
-    ));
+    ))}
+    else{giftsList = null};
 
 //______________________________________________________________________________
 

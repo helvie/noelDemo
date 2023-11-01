@@ -51,6 +51,12 @@ function HomePage() {
 
     // const [isLoading, setIsLoading] = useState(false);
 
+    const [token, setToken] = useState("");
+    const [giftsList2, setGiftsList2] = useState(null)
+    const [connectedUserSection, setConnectedUserSection] = useState(null)
+    const [personsSections, setPersonsSections] = useState(null)
+
+
     //########################################################################
 
     let colorNumber = 1;
@@ -58,68 +64,183 @@ function HomePage() {
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
     const colors = ["#FFD700", "#7fa348", "#f3e4df"]
 
-    console.log(process.env.API_APP_KEY)
-    const gerard=(process.env.API_APP_NAME)
-    console.log(gerard)
-    // Remplacez 'URL_DE_L_API' par l'URL réelle de l'API
-
-    //         API_APP_KEY = CP33NZxx+vIPC2pr1fuEuCqXycx13TZQK305ObI3h/iFC45vq5bSsWtjxPI5axn3/dxZOvqrOvLMX7S9bLCLdMv6pU5ci3O6atpmyhF8NuntU0ZftTADxrTpmNFj/XFPDqB0lkZpyfCKkfDcmJXn+pTWQ5iNGvSOJFOeYKHfDp46u7kwmQsZsIvKQBxm0Y6jFSK/ZCd4dPpOuQxdgBICffwo6uQj3vuEJ9y0TZRPmJCidYD4kQN1UfQzyLmCyYuBTCBPA4iMbgGzU1VpMu1n3/gxmb2HeFE40eUN+HNxI99MxJ4mx97B+eD7AyMCV9zotw8ZKRu4e4kUO9LAIDH0vw==
-    // API_APP_NAME = NoelTan
-    // API_USER_NAME = sylvie
-    // const apiUrl = 'http://noel.helvie.fr/api/gettoken.php';
-    // const headers = {
-
-    //     'App-Key': 'CP33NZxx+vIPC2pr1fuEuCqXycx13TZQK305ObI3h/iFC45vq5bSsWtjxPI5axn3/dxZOvqrOvLMX7S9bLCLdMv6pU5ci3O6atpmyhF8NuntU0ZftTADxrTpmNFj/XFPDqB0lkZpyfCKkfDcmJXn+pTWQ5iNGvSOJFOeYKHfDp46u7kwmQsZsIvKQBxm0Y6jFSK/ZCd4dPpOuQxdgBICffwo6uQj3vuEJ9y0TZRPmJCidYD4kQN1UfQzyLmCyYuBTCBPA4iMbgGzU1VpMu1n3/gxmb2HeFE40eUN+HNxI99MxJ4mx97B+eD7AyMCV9zotw8ZKRu4e4kUO9LAIDH0vw==',
-    //     'App-Name': 'NoelTan',
-    //     'User-Name': 'moarmel'  
-    // };
-
     // useEffect(() => {
 
-    //     fetch(apiUrl, { method: 'GET', headers })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       const jwt = data; 
-    //       console.log(jwt)
+    //     fetch("http://noel.helvie.fr/api/gettoken.php", {
+    //         headers: envVariables,
     //     })
-    //     .catch(error => {
-    //     });
+    //         .then(response => response.text())
+    //         .then(data => {
+    //             setToken(data)
+
+    //             fetch("http://noel.helvie.fr/api/getlistes.php", {
+    //                 headers:
+    //                 {
+    //                     "user-name":"moarmel",
+    //                     "app-name":"NoelTan",
+    //                     "noel-token": token
+    //                 }
+
+    //             })
+    //                 .then(response => response.json())
+    //                 .then(data => {
+    //                     console.log(data);
+    //                     setGiftsList2(data)
+    //                     // console.log(giftsList2)
+    //                 })
+    //                 .catch(error => {
+    //                     console.log("zarbi")
+
+    //                 });
+
+    //         })
+    //         .catch(error => {
+    //             console.log("Token raté")
+
+    //         });
 
     // }, []);
-
-
-    // const apiUrl = 'http://noel.helvie.fr/api/check.php';
-    // const headers
-    //     = {
-
-    //     'APP-KEY': process.env.API_APP_NAME,
-    //     'APP-NAME': process.env.API_USER_NAME,
-    //     'USER-NAME': process.env.API_APP_KEY,
-    //     'ContentType': 'application/json'
-    // };
+    useEffect(() => {
+    
+        fetch("http://noel.helvie.fr/api/gettoken.php", {
+            headers: envVariables,
+        })
+        .then(response => response.text())
+        .then(tokenData => { // Renommez la variable ici
+            console.log(tokenData)
+                setToken(tokenData);
+    
+            fetch("http://noel.helvie.fr/api/getlistesetcadeaux.php", {
+                headers: {
+                    "user-name":"moarmel",
+                    "app-name":"NoelTan",
+                    "noel-token": tokenData // Utilisez la variable renommée ici
+                }
+            })
+            .then(response => response.json())
+            .then(giftsData => { // Renommez la variable ici
+                console.log(giftsData)
+                    setGiftsList2(giftsData);
+            })
+            .catch(error => {
+                console.log("Erreur lors de la récupération des listes");
+            });
+    
+        })
+        .catch(error => {
+            console.log("Erreur lors de la récupération du token");
+        });
+    
+    }, []);
 
     useEffect(() => {
 
 
-        fetch("http://noel.helvie.fr/api/check.php", {
-            method: 'GET',
-            headers: {
-                'APP-KEY': envVariables.API_APP_KEY,
-                'APP-NAME': envVariables.API_APP_NAME,
-                'USER-NAME': envVariables.API_USER_NAME,
-                'Content-Type': 'application/json'
-            },
+
+    //######################### JSX STOCKE DANS VARIABLES #######################
+
+    //....Création d'une variable, à partir des datas, filtrés juste sur l'utilisateur
+    //....création d'un composant user par donnée. Envoi dans le composant des
+    //....propriétés envoyées par celui-ci. (variables ou fonctions) A chaque
+    //....modification d'un état utilisé par le composant, celui ci se mettra à jour
+    let connectedUserSectionMapping;
+    
+    if(giftsList2){
+        connectedUserSectionMapping = giftsList2
+        .filter((data) => data.pseudo === "Armel")
+        .map((data, i) => {
+            const color = colors[0];
+            return (
+                //....composant user
+                <UserConnectedGiftsContainer
+                    //....clé unique obligatoire
+                    key={-2}
+                    //....background color
+                    color={color}
+                    //....statut depliage de la section
+                    isExpanded={openedSectionUser}
+                    //....fonction de dépliage de la section
+                    onClick={() => handleUserSectionClick(i)}
+                    //....fonction de dépliage de la section
+                    onClickInput={(index) => handleInputClick(index)}
+                    //....données
+                    data={data}
+                    //....
+                    inputChangeInParent={handleInputChange}
+                    //....fonction de gestion de changement des inputs
+                    onInputChange={handleInputChange}
+                    //....booléen cadeau en cours de modification
+                    editingGift={editingGift}
+                    //....statut de l'édition des inputs
+                    inputDisabled={inputDisabled}
+                    //....booléen réinitialisation des input si pas d'enregistrement dans modale
+                    resetGift={resetGift}
+                    //....fonction d'enregistrement
+                    saveChanges={openModal}
+                    //....fonction d'ajout de nouveau cadeau
+                    addNewGift={addNewGift}
+
+                />
+            )
+        })}
+
+        setConnectedUserSection(connectedUserSectionMapping)
+
+    //______________________________________________________________________________
+
+
+    //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
+    //....création d'un composant personne par donnée.
+    let personsSectionsMapping;
+    
+    if(giftsList2){personsSectionsMapping = giftsList2
+        .filter((data) => data.login !== "moarmel")
+        .map((data, i) => {
+            const color = colors[colorNumber];
+            colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
+            return (
+                //....composants personnes
+                <GiftsContainer
+                    //....clé unique obligatoire
+                    key={i}
+                    //....background color
+                    color={color}
+                    //....statut depliage de la section (true si index stocké dans l'état)
+                    isExpanded={openedSectionIndex === i}
+                    //....fonction de dépliage de la section
+                    onClick={() => handleSectionClick(i)}
+                    //....données
+                    data={data}
+                    //....fonction de vol de cadau
+                    onClickCartPlus={stolenGiftRegistered}
+
+                />
+            )
         })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data)
-            })
-            .catch(error => {
-                console.log("essai1")
+            setPersonsSections(personsSectionsMapping)
 
-            });
+        console.log(personsSections)
+        console.log(connectedUserSection)
+    
+    }
 
-    }, []);
+
+    }, [giftsList2, openedSectionUser, openedSectionIndex]);
+    // useEffect(() => {
+
+    //     fetch("http://noel.helvie.fr/api/check.php", {
+    //         headers: envVariables,
+    //     })
+    //         .then(response => response.text())
+    //         .then(data => {
+    //             console.log(data)
+    //         })
+    //         .catch(error => {
+    //             console.log("essai1")
+
+    //         });
+
+    // }, []);
 
 
 
@@ -168,6 +289,8 @@ function HomePage() {
 
     //.....Dépliage/pliage déclenché au click sur la section d'une personne 
     const handleSectionClick = (index) => {
+
+        // console.log("cliqué !")
 
         //....si la section de l'user est ouverte, indication que la modale est ouverte
         //....au clic sur une section (et non sur un input)
@@ -398,79 +521,79 @@ function HomePage() {
         setGiftSavedModalVisible(false);
     };
 
-    //######################### JSX STOCKE DANS VARIABLES #######################
+    // //######################### JSX STOCKE DANS VARIABLES #######################
 
-    //....Création d'une variable, à partir des datas, filtrés juste sur l'utilisateur
-    //....création d'un composant user par donnée. Envoi dans le composant des
-    //....propriétés envoyées par celui-ci. (variables ou fonctions) A chaque
-    //....modification d'un état utilisé par le composant, celui ci se mettra à jour
-    const connectedUserSection = datas
-        .filter((data) => data.pseudo === "Armel")
-        .map((data, i) => {
-            const color = colors[0];
-            return (
-                //....composant user
-                <UserConnectedGiftsContainer
-                    //....clé unique obligatoire
-                    key={-2}
-                    //....background color
-                    color={color}
-                    //....statut depliage de la section
-                    isExpanded={openedSectionUser}
-                    //....fonction de dépliage de la section
-                    onClick={() => handleUserSectionClick(i)}
-                    //....fonction de dépliage de la section
-                    onClickInput={(index) => handleInputClick(index)}
-                    //....données
-                    data={data}
-                    //....
-                    inputChangeInParent={handleInputChange}
-                    //....fonction de gestion de changement des inputs
-                    onInputChange={handleInputChange}
-                    //....booléen cadeau en cours de modification
-                    editingGift={editingGift}
-                    //....statut de l'édition des inputs
-                    inputDisabled={inputDisabled}
-                    //....booléen réinitialisation des input si pas d'enregistrement dans modale
-                    resetGift={resetGift}
-                    //....fonction d'enregistrement
-                    saveChanges={openModal}
-                    //....fonction d'ajout de nouveau cadeau
-                    addNewGift={addNewGift}
+    // //....Création d'une variable, à partir des datas, filtrés juste sur l'utilisateur
+    // //....création d'un composant user par donnée. Envoi dans le composant des
+    // //....propriétés envoyées par celui-ci. (variables ou fonctions) A chaque
+    // //....modification d'un état utilisé par le composant, celui ci se mettra à jour
+    // const connectedUserSection = datas
+    //     .filter((data) => data.pseudo === "Armel")
+    //     .map((data, i) => {
+    //         const color = colors[0];
+    //         return (
+    //             //....composant user
+    //             <UserConnectedGiftsContainer
+    //                 //....clé unique obligatoire
+    //                 key={-2}
+    //                 //....background color
+    //                 color={color}
+    //                 //....statut depliage de la section
+    //                 isExpanded={openedSectionUser}
+    //                 //....fonction de dépliage de la section
+    //                 onClick={() => handleUserSectionClick(i)}
+    //                 //....fonction de dépliage de la section
+    //                 onClickInput={(index) => handleInputClick(index)}
+    //                 //....données
+    //                 data={data}
+    //                 //....
+    //                 inputChangeInParent={handleInputChange}
+    //                 //....fonction de gestion de changement des inputs
+    //                 onInputChange={handleInputChange}
+    //                 //....booléen cadeau en cours de modification
+    //                 editingGift={editingGift}
+    //                 //....statut de l'édition des inputs
+    //                 inputDisabled={inputDisabled}
+    //                 //....booléen réinitialisation des input si pas d'enregistrement dans modale
+    //                 resetGift={resetGift}
+    //                 //....fonction d'enregistrement
+    //                 saveChanges={openModal}
+    //                 //....fonction d'ajout de nouveau cadeau
+    //                 addNewGift={addNewGift}
 
-                />
-            )
-        })
+    //             />
+    //         )
+    //     })
 
-    //______________________________________________________________________________
+    // //______________________________________________________________________________
 
 
-    //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
-    //....création d'un composant personne par donnée.
-    const personsSections = datas
-        .filter((data) => data.pseudo !== "Armel")
-        .map((data, i) => {
-            const color = colors[colorNumber];
-            colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
-            return (
-                //....composants personnes
-                <GiftsContainer
-                    //....clé unique obligatoire
-                    key={i}
-                    //....background color
-                    color={color}
-                    //....statut depliage de la section (true si index stocké dans l'état)
-                    isExpanded={openedSectionIndex === i}
-                    //....fonction de dépliage de la section
-                    onClick={() => handleSectionClick(i)}
-                    //....données
-                    data={data}
-                    //....fonction de vol de cadau
-                    onClickCartPlus={stolenGiftRegistered}
+    // //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
+    // //....création d'un composant personne par donnée.
+    // const personsSections = datas
+    //     .filter((data) => data.pseudo !== "Armel")
+    //     .map((data, i) => {
+    //         const color = colors[colorNumber];
+    //         colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
+    //         return (
+    //             //....composants personnes
+    //             <GiftsContainer
+    //                 //....clé unique obligatoire
+    //                 key={i}
+    //                 //....background color
+    //                 color={color}
+    //                 //....statut depliage de la section (true si index stocké dans l'état)
+    //                 isExpanded={openedSectionIndex === i}
+    //                 //....fonction de dépliage de la section
+    //                 onClick={() => handleSectionClick(i)}
+    //                 //....données
+    //                 data={data}
+    //                 //....fonction de vol de cadau
+    //                 onClickCartPlus={stolenGiftRegistered}
 
-                />
-            )
-        })
+    //             />
+    //         )
+    //     })
 
     //############################## AFFICHAGE #################################
 
@@ -482,6 +605,9 @@ function HomePage() {
                     <div>Chargement en cours...</div>
                 ) : ( */}
                 <>
+                {/* {giftsList2 && (<div>{giftsList2}</div>)} */}
+
+                {personsSections && (<div><h3>courgette {personsSections[0]["login"]}</h3></div>)}
                     <div className={styles.firstSection}>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
                         um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,

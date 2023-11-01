@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 
 import '../styles/globals.css';
 import Head from 'next/head';
