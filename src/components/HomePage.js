@@ -102,7 +102,7 @@ function HomePage() {
     // }, []);
     useEffect(() => {
     
-        fetch("https://noel.helvie.fr/api/gettoken.php", {
+        fetch("http://noel.helvie.fr/api/gettoken.php", {
             headers: envVariables,
         })
         .then(response => response.text())
@@ -110,7 +110,7 @@ function HomePage() {
             console.log(tokenData)
                 setToken(tokenData);
     
-            fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
+            fetch("http://noel.helvie.fr/api/getlistesetcadeaux.php", {
                 headers: {
                     "user-name":"moarmel",
                     "app-name":"NoelTan",
