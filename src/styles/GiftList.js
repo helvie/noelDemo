@@ -40,10 +40,11 @@ function GiftsList(props) {
     const giftsList = data.map((data, index) => (
         <div className={styles.gift} key={index}>
             <GiftDetail
+                key={index}
                 isExpanded={openedDetailIndex === index}
                 onClick={() => handleGiftClick(index)}
                 data={data}
-                index={index}
+                // index={index}
                 onInputChange={handleInputChange} // Passez la fonction de rappel
             />
         </div>

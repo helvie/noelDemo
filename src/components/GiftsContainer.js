@@ -80,6 +80,8 @@ function GiftsContainer(props) {
 
         <div className={styles.gift} key={index}>
             <GiftDetail
+                //....clé obligatoire
+                key={index}
                 //....statut de l'affichage des détail
                 isExpanded={openedDetailIndex === index}
                 //....fonction de clic sur le plus ou moins pour affichage détail
@@ -87,7 +89,7 @@ function GiftsContainer(props) {
                 //....données
                 data={data}
                 //....clé obligatoire
-                index={index}
+                // index={index}
                 //....fonction de vol de cadeau
                 onClickCartPlus={handleCartPlusClick}
             />

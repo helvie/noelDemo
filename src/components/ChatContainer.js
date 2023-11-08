@@ -12,7 +12,7 @@ require('moment/locale/fr');
 const ChatContainer = (props) => {
 
   const messages = props.messages.map((data, index) => (
-    <div>
+    <div key={index}>
     <p className={styles.chatContent}>De <span className={styles.chatName}>{data.sender}</span>  :
         <span className={styles.chatText}> {data.text} </span>
         {/* <span className={styles.firstChatDate}>({firstMessageDate.format("ddd DD/MM/YYYY à HH[h]mm")})</span> */}

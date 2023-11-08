@@ -16,7 +16,6 @@ function UserConnectedGiftsContainer(props) {
 
     //....Récupération des données contenues dans les propriétés de composants
     const {
-        key,
         color,
         isExpanded,
         onClick,

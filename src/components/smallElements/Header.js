@@ -11,7 +11,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const noelLogosJsx = noelLogos.map((data, i) => {
-    return data;
+    return <div key={i}> {data}</div>;
   });
 
   const [windowSize, setWindowSize] = useState({
