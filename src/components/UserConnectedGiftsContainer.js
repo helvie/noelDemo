@@ -15,7 +15,7 @@ function UserConnectedGiftsContainer(props) {
     let nbGifts = 0;
 
     //....Récupération des données contenues dans les propriétés de composants
-    const {
+    const { 
         color,
         isExpanded,
         onClick,
