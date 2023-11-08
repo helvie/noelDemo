@@ -59,31 +59,31 @@ function ConnectionUser(props) {
     setErrors({});
   };
 
-  //oooooooooooo Récupération des données de l'utilisateur en base de données oooooooooo
+  // //oooooooooooo Récupération des données de l'utilisateur en base de données oooooooooo
 
-  function connectionUser() {
+  // function ConnectionUser() {
 
-    fetch(`${BACKEND_URL}/users/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: signinName, password: signinPassword })
-    })
-      .then(response => response.json())
+  //   fetch(`${BACKEND_URL}/users/signin`, {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ name: signinName, password: signinPassword })
+  //   })
+  //     .then(response => response.json())
 
-      // Transfert vers page d'accueil
-      .then(data => {
-        if (data.result) {
+  //     // Transfert vers page d'accueil
+  //     .then(data => {
+  //       if (data.result) {
 
-          dispatch(login(data))
-          router.push('/');
-          return true
-        }
-        else {
+  //         dispatch(login(data))
+  //         router.push('/');
+  //         return true
+  //       }
+  //       else {
 
-          return false
-        }
-      })
-  }
+  //         return false
+  //       }
+  //     })
+  // }
 
   ////////////////////////////////////////////////////////////////////////////////
 

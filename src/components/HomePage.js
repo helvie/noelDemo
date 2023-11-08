@@ -19,7 +19,7 @@ require('moment/locale/fr');
 
 function HomePage() {
 
-    const user = useSelector((state) => state.user.token);
+    const user = useSelector((state) => state.user);
     const sizeOfWindow = useSelector((state) => state.windowSize);
 
     console.log(user)
@@ -110,13 +110,15 @@ function HomePage() {
                 login: logs.signinName,
                 mdp: logs.signinPassword
             })
-
-
         })
             .then(response => response.text())
             .then(tokenData => {
                 console.log(tokenData);
-                setToken(tokenData);
+                // setToken(tokenData);
+                dispatch(login({
+                    name: logs.signinName,
+                    token: tokenData
+                }))
 
                 fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
                     headers: {
@@ -127,10 +129,7 @@ function HomePage() {
                 })
                     .then(response => response.json())
                     .then(giftsData => { // Renommez la variable ici
-                        dispatch(login({
-                            name: logs.signinName,
-                            token: logs.signinPassword
-                        }))
+
 
                         setGiftsList2(giftsData);
                         console.log(user)
@@ -158,7 +157,7 @@ function HomePage() {
 
         if (giftsList2) {
             connectedUserSectionMapping = giftsList2
-                .filter((data) => data.pseudo === "MoArmel")
+                .filter((data) => data.pseudo.toLowerCase() === user.name.toLowerCase())
                 .map((data, i) => {
                     const color = colors[0];
                     return (
@@ -205,7 +204,7 @@ function HomePage() {
 
         if (giftsList2) {
             personsSectionsMapping = giftsList2
-                .filter((data) => data.pseudo !== "MoArmel")
+                .filter((data) => data.pseudo.toLowerCase() !== user.name.toLowerCase())
                 .map((data, i) => {
                     const color = colors[colorNumber];
                     colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
@@ -235,7 +234,7 @@ function HomePage() {
         }
 
 
-    }, [giftsList2, openedSectionUser, openedSectionIndex, editingGift]);
+    }, [giftsList2, openedSectionUser, openedSectionIndex, editingGift, user]);
 
 
 
@@ -523,7 +522,7 @@ function HomePage() {
 
     return (
         <main>
-            {user ? (<>
+            {user.name ? (<>
                 <div className={styles.orgContent}>
 
                     {/* {isLoading ? (
