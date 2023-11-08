@@ -16,7 +16,6 @@ const noelLogos = [
     <p>&amp;</p>,
     <p>&lt;</p>,
     <p>&brvbar;</p>,
-
   ];
 
   const noelLogosJsx = noelLogos.map((data, i) => (
