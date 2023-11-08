@@ -49,22 +49,28 @@
 
 .headerContainer {
   width: 100%; 
-  background-color: #fff; 
+  /* background-color: var(--color4) 20px; */
   /* text-align: center; */
   display:flex;
   flex-direction:row;
   justify-content:space-evenly;
   align-items:center;
-  border-top:solid darkred 20px;
+  border-top: var(--color1) 8px dotted;
+  border-bottom: var(--color1) 8px dotted;
 }
 
 .headerContainer p {
   font-family: 'XmasSweaterStitch-xXYq';
   font-size:5vw;
-  color:darkred;
+  color:#c21a24;
+  font-weight:bold;
 }
 
+.headerTop {
+  background-color: var(--color1);
+  height:25px;
 
+}
 
 
 .blueOverlay {
@@ -173,4 +179,16 @@
         background-size: 200% auto;
       }
 
+    }
+
+    @media (max-width: 768px) {
+      .headerContainer p {
+        font-size:6vw;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .headerContainer p {
+        font-size:10vw;
+      }
     }

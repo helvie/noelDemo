@@ -5,8 +5,32 @@
 }
 
 @font-face {
+  font-family: 'goodbye-crewel-world-nf.regular';
+  src: local('goodbye-crewel-world-nf.regular'), url(../fonts/goodbye-crewel-world-nf.regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'kingthings-xstitch.regular';
+  src: local('kingthings-xstitch.regular'), url(../fonts/kingthings-xstitch.regular.ttf) format('truetype');
+}
+
+@font-face {
   font-family:'Quicksand-VariableFont_wght';
   src: local('Quicksand-VariableFont_wght'), url(../fonts/Quicksand-VariableFont_wght.ttf) format('truetype');
+}
+
+@font-face {
+  font-family:'kingthings-xstitch.regular';
+  src: local('kingthings-xstitch.regular'), url(../fonts/kingthings-xstitch.regular.ttf) format('truetype');
+}
+
+:root {
+  --color1: #1b1f53;
+  --color2: #e6bc14;
+  --color3: white;
+  /* --color4: #c21a24; */
+  --color4: #e62530;
+  --color5: #16ad66;
 }
 
 body {
@@ -38,12 +62,15 @@ p {
   padding:o;
 }
 
-input:focus {
+/* input:focus {
   outline:none;
 }
 
 textarea:focus {
   outline:none;
+} */
+input:-webkit-autofill{
+  -webkit-box-shadow: 0 0 0 1000px var(--color5) inset;
 }
 
 

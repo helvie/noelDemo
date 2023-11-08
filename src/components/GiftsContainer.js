@@ -6,14 +6,28 @@ import { formatDate } from '../utils/formatDate';
 import GiftDetail from './GiftDetail';
 import StartSeparationSection from './smallElements/StartSeparationSection';
 import EndSeparationSection from './smallElements/EndSeparationSection';
+import SectionNameSeparation from './smallElements/SectionNameSeparation';
 
 //______________________________________________________________________________
 
 function GiftsContainer(props) {
 
-    let giftsList = "";
+    function decodeCaracteresSpeciaux(chaine) {
+        return chaine.replace(/&eacute;/g, "é")
+                     .replace(/&egrave;/g, "è")
+                     .replace(/&ecirc;/g, "ê")
+                     .replace(/&euml;/g, "ë")
+                     .replace(/&agrave;/g, "à")
+                     .replace(/&acirc;/g, "â")
+                     .replace(/&iuml;/g, "ï")
+                     .replace(/&ouml;/g, "ö")
+                     .replace(/&ucirc;/g, "û")
+                     .replace(/&apos;/g, "'")
+                     .replace(/&quot;/g, '"');
+    }
 
-    console.log(props)
+    let giftsList = "";
+    let nbGifts = 0;
 
     //....Récupération des données contenues dans les propriétés de composants
     const {
@@ -54,9 +68,16 @@ function GiftsContainer(props) {
 //______________________________________________________________________________
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
-    if(data.gifts){giftsList = data.gifts.map((data, index) => (
+    if(data.gifts){
+
+        nbGifts = data.gifts.length;
+        
+        giftsList = data.gifts.map((data, index) => (
         //....récupérés du tableau de données tableau de données
         //....un composant par cadeau
+        
+        
+
         <div className={styles.gift} key={index}>
             <GiftDetail
                 //....statut de l'affichage des détail
@@ -72,7 +93,9 @@ function GiftsContainer(props) {
             />
         </div>
     ))}
-    else{giftsList = null};
+    else{
+        nbGifts = 0;
+        giftsList = null};
 
 //______________________________________________________________________________
 
@@ -84,11 +107,20 @@ function GiftsContainer(props) {
                 onClick={onClick}
                 className={styles.nameSection}
                 style={{ color: color }}>
-                {data.pseudo}
+                <p className={styles.pseudo}>{data.pseudo}
+                <span className={styles.nbGifts}> {nbGifts}<span className={styles.logoGift}>&copy;</span></span>
+                
+                </p> 
+                <div className={isExpanded ? styles.separationHide : styles.separationDisplay}>
+                    <SectionNameSeparation />
+                </div>                {/* <p className={styles.chatSeparation}>###########################################"</p> */}
+                {/* <p style={{fontSize:"40px", color:"#16ad66",  letterSpacing: "12px"}}>&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;</p> */}
             </div>
 
 
             <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
+            <p style={{ color: color }} className={styles.intro}>{decodeCaracteresSpeciaux(data.intro)}</p>
+
                 <div className={styles.giftsSection} style={{ backgroundColor: props.color }}>
                     <div className={styles.absoluteContainer}>
                         {/*...Affichage du composant */}
@@ -102,7 +134,6 @@ function GiftsContainer(props) {
                     </div>
                 </div>
             </div>
-            
         </>
     );
 }

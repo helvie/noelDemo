@@ -1,88 +1,119 @@
 .firstSection {
-  width:100%;
+  width: 100%;
   /* height:500px; */
-  background-color:darkred;
-  padding:60px;
-  line-height:30px;
-  color:rgb(203, 138, 144);
-  font-size:18px;
+  background-color: var(--color1);
+  padding: 60px;
+  line-height: 30px;
+  /* color:rgb(203, 138, 144); */
+  font-size: 18px;
 }
 
 .nameSection {
-  display:flex;
-  flex-direction:row;
-  justify-content:center;
-  width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   /* height:500px; */
-  background-color:darkred;
-  padding:10px;
-  color:rgb(255, 255, 255);
-  font-size:80px;
+  background-color: var(--color1);
+  padding: 10px;
+  color: rgb(255, 255, 255);
+  font-size: 80px;
   font-family: 'XmasSweaterStitch-xXYq';
+  cursor: pointer;
+  text-align: center; 
+}
+
+.intro {
+  background-color: var(--color1);
+  padding: 10px;
+  text-align: center;
+  padding-right: 50px;
+  padding-left: 50px;
+  margin-bottom:30px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  font-family: 'goodbye-crewel-world-nf.regular';
 }
 
 .gift {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .giftsSection {
-  width:100%;
-  position:relative;
+  width: 100%;
+  position: relative;
 
 }
 
 .startSeparationSection {
-  color:darkred;
-  display:flex;
-  flex-direction:row;
-  justify-content:space-evenly;
-  font-size:80px;
-  width:100%;
+  color: var(--color1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  font-size: 80px;
+  width: 100%;
   font-family: 'XmasSweaterStitch-xXYq';
 }
+
 .startSeparationSection p {
-  margin-top: -40px; 
+  margin-top: -40px;
 
 }
 
 .endSeparationSection p {
-  margin-bottom: -45px; 
+  margin-bottom: -45px;
 
 }
 
 .endSeparationSection {
-  top: 0px; 
-  color:darkred;
-  display:flex;
-  flex-direction:row;
-  justify-content:space-evenly;
-  font-size:80px;
-  width:100%;
+  top: 0px;
+  color: var(--color1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  font-size: 80px;
+  width: 100%;
   font-family: 'XmasSweaterStitch-xXYq';
-  
+
 }
 
 
 .giftsList {
-  padding:0 30px 0 30px;
-  color:darkred;
-  font-family: 'Quicksand-VariableFont_wght';
+  padding: 30px 30px 0 30px;
+  color: var(--color1);
+  /* font-family: 'Quicksand-VariableFont_wght'; */
+  font-family: 'goodbye-crewel-world-nf.regular';
 
 }
 
 .absoluteContainer {
-  position: relative; 
+  position: relative;
 }
 
 .giftLink {
-  font-size:20px;
+  font-size: 20px;
+  color:var(--color5);
+
 }
 
+.giftLinkUserConnected {
+  font-size: 20px;
+  width:100%;
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  margin-bottom:20px;
+  /* color:var(--color5); */
+
+}
 
 .detailDisplay {
-  max-height: 10000px; /* Remplacez 500px par la hauteur maximale souhaitée */
+  max-height: 10000px;
+  /* Remplacez 500px par la hauteur maximale souhaitée */
   overflow: hidden;
   transition: max-height 0.5s ease-in-out;
 }
@@ -93,78 +124,87 @@
   transition: max-height 0.5s ease-in-out;
 }
 
-.nameSection {
-  cursor:pointer;
-}
 
 .updateDate {
-  font-size:10px;
-  font-style:italic;
-  margin-top:5px;
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 5px;
 }
 
 .giftIcon {
-  margin-right:5px;
-  margin-left:5px;
+  margin-right: 5px;
+  margin-left: 5px;
   cursor: pointer;
 }
 
-.titleInput {
-  background-color:transparent;
-  padding:10px;
-  margin-bottom:20px;
-  color:darkred;
-  border:1.5px dashed darkred;
-  font-size:16px;
-  font-weight:bold;
+.giftTitleInput {
+  background-color: #f1cb34;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: var(--color1);
+  border: 0;
+  outline: 7px dotted #f1cb34;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'goodbye-crewel-world-nf.regular';
+  width: 100%;
 }
 
 .editingGiftDetailToUpdate textarea {
-  background-color:darkred;
-  border-color:white;
-  color:white;
+  background-color: var(--color1);
+  border-color: white;
+  border: 0;
+  outline: 7px dotted var(--color1);
+  font-size: 16px;
+  color: white;
 }
 
 .editingGiftDetailToUpdate input {
-  background-color:darkred;
-  border-color:white;
-  color:white;
+  background-color: var(--color1);
+  border-color: white;
+  border: 0;
+  outline: 7px dotted var(--color1);
+  font-size: 16px;
+  color: white;
 }
 
 
 
-.textInput {
-  background-color:transparent;
-  padding:10px;
-  margin-bottom:20px;
-  color:darkred;
-  border:1.5px dashed darkred;
-  font-size:16px;
-  margin-left:20px;
-  width:100%;
+.giftTextInput {
+  background-color: #f1cb34;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: var(--color1);
+  border: 0;
+  outline: 7px dotted #f1cb34;
+  /* margin-left: 20px; */
+  width: 100%;
+  font-family: 'goodbye-crewel-world-nf.regular';
 }
 
-.urlInput {
-  background-color:transparent;
-  padding:10px;
-  margin-bottom:20px;
-  color:darkred;
-  border:1.5px dashed darkred;
-  font-size:15px;
-  margin-left:20px;
-  width:100%;
+.giftUrlInput {
+  background-color: #f1cb34;
+  padding: 10px;
+  margin-bottom: 20px;
+  color: var(--color1);
+  border: 0;
+  outline: 7px dotted #f1cb34;
+  font-size: 15px;
+  /* margin-left: 20px; */
+  width: 100%;
+  font-family: 'goodbye-crewel-world-nf.regular';
 }
 
 .giftDetailToUpdate {
-  display:flex;
-  flex-direction:column;
-  width:100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .editingGiftDetailToUpdate {
-  display:flex;
-  flex-direction:column;
-  width:100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 
@@ -174,25 +214,33 @@
 } */
 
 .modal {
-  position: fixed; /* Position fixe pour rester au-dessus du contenu */
+  position: fixed;
+  /* Position fixe pour rester au-dessus du contenu */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent pour l'effet d'obscurcissement */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fond semi-transparent pour l'effet d'obscurcissement */
   display: flex;
-  justify-content: center; /* Centre horizontalement */
-  align-items: center; /* Centre verticalement */
-  z-index: 1000; /* Valeur z-index élevée pour être au-dessus du reste du contenu */
+  justify-content: center;
+  /* Centre horizontalement */
+  align-items: center;
+  /* Centre verticalement */
+  z-index: 1000;
+  /* Valeur z-index élevée pour être au-dessus du reste du contenu */
 }
 
 /* Styles pour la boîte de dialogue à l'intérieur de la modale */
 .modalDialog {
-  background-color: #ffffff; /* Fond de la boîte de dialogue */
+  background-color: #ffffff;
+  /* Fond de la boîte de dialogue */
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre légère */
-  max-width: 80%; /* Largeur maximale de la boîte de dialogue */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  /* Ombre légère */
+  max-width: 80%;
+  /* Largeur maximale de la boîte de dialogue */
 }
 
 .modalDialog button {
@@ -213,29 +261,29 @@
 } */
 
 .giftTitleAndLink {
-  display:flex;
-  flex-direction:row;
-  justify-content:space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .caddyIconContainer {
-  display:flex;
-  justify-content:center;
-  flex-direction:row;
-  width:100%;
-  padding-top:35px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width: 100%;
+  padding-top: 35px;
 }
 
 .caddyIconUser {
-  color:darkred;
-  font-size:25px;
+  color: var(--color1);
+  font-size: 25px;
   cursor: pointer;
 
 }
 
 .caddyIcon {
-  color:darkred;
-  cursor:pointer;
+  color: var(--color1);
+  cursor: pointer;
 }
 
 
@@ -248,7 +296,8 @@
   padding: 20px;
   border: 1px solid #ccc;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  z-index: 999; /* Assurez-vous que la modale est au-dessus du reste du contenu */
+  z-index: 999;
+  /* Assurez-vous que la modale est au-dessus du reste du contenu */
   text-align: center;
 }
 
@@ -266,6 +315,280 @@
 }
 
 .linkIcon {
-  color:darkred
+  color:var(--color5);
+  font-size:24px;
 }
 
+.giftTitle,
+.giftTitleInput {
+  font-size: 24px;
+  margin-top:0;
+  /* margin-bottom:10px; */
+}
+
+.giftText,
+.giftTextInput {
+  font-size: 20px;
+}
+
+.nbGifts {
+  font-size: 60px;
+}
+
+.logoGift {
+  margin-left: 8px;
+}
+
+.chatSection {
+  font-family: 'goodbye-crewel-world-nf.regular';
+  background-color: var(--color1);
+  padding-top: 50px;
+  padding-bottom: 70px;
+  padding-right: 20vw;
+  padding-left: 20vw;
+  text-align: center;
+  color: var(--color4);
+  font-size: 24px;
+}
+
+.firstChatDate {
+  font-size: 16px;
+}
+
+.firstChatName {
+  color: var(--color2);
+}
+
+.firstChatText {
+  color: white;
+}
+
+.firstChatTitle {
+  font-size: 20px;
+}
+
+/* .chatSeparation {
+  color:var(--color4);
+  font-size:35px;
+  padding-top:25px;
+  font-family: 'XmasSweaterStitch-xXYq';
+  letter-spacing:20px;
+
+} */
+
+.giftChatIcon {
+  color: white;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.firstChatContent {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.orgContent {
+  background-color: var(--color1);
+  padding-bottom: 40px;
+  min-height: 100vh;
+  padding-top: 40px;
+  color: white;
+  font-family: 'goodbye-crewel-world-nf.regular';
+
+}
+
+.chatContainer {
+  border-top: var(--color1) 8px dotted;
+  font-family: 'goodbye-crewel-world-nf.regular';
+  color: var(--color1);
+  text-align: center;
+  background-color: var(--color5);
+  font-size: 20px;
+  padding-bottom: 50px;
+  padding-right: 20vw;
+  padding-left: 20vw;
+
+
+}
+
+.chatContent {
+  color: var(--color4);
+  margin-bottom: 30px;
+}
+
+.chatName {
+  color: var(--color1)
+}
+
+.giftChatIconBottom {
+  font-size: 30px;
+}
+
+.pseudo {
+  margin-bottom: 20px;
+}
+
+/* .startSeparationSection {
+  font-size: 35px;
+  color: #16ad66;
+  letter-spacing: 12px;
+} */
+
+.userConnectedPseudo {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.separationHide {
+  display: none;
+}
+
+.loginForm {
+  font-size: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginForm h1 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  color:var(--color4)
+
+}
+
+.loginForm input {
+  height: 50px;
+  width: 25vw;
+  color:var(--color1); 
+  outline: 7px dotted white;
+  border: 0;
+  margin-bottom: 30px;
+  margin-top: 15px;
+  font-size:1.3rem;
+}
+
+.loginForm button {
+  /* height: 50px; */
+  /* width: 25vw; */
+  border-radius: 10px;
+  font-family: 'goodbye-crewel-world-nf.regular';
+  font-size:30px;
+  margin-top:50px;
+  background-color: white;
+  border:0;
+  color:var(--color4);
+  padding: 10px;
+  padding-bottom:20px;
+  cursor: pointer;
+ }
+
+ .loginForm::placeholder {
+  font-size:50px;
+}
+
+@media (max-width: 1024px) {
+
+.chatSection {
+  padding-right: 10vw;
+  padding-left: 10vw;
+}
+
+.nameSection {
+  font-size: 55px;
+}
+
+.nbGifts {
+  font-size: 40px;
+}
+
+.intro {
+  font-size:26px;
+}
+
+.giftTitle,
+.giftTitleInput {
+  font-size: 22px;
+}
+
+.giftText,
+.giftTextInput {
+  font-size: 18px;
+}
+
+.chatContainer {
+  padding-right: 10vw;
+  padding-left: 10vw;
+}
+}
+
+@media (max-width: 768px) {
+
+  
+  .nbGifts {
+    font-size: 40px;
+  }
+
+  .intro {
+    font-size:24px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .giftTitle,
+.giftTitleInput {
+  font-size: 20px;
+}
+
+.giftText,
+.giftTextInput {
+  font-size: 16px;
+}
+
+  }
+  @media (max-width: 480px) {
+
+  
+    .intro {
+      font-size:24px;
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+
+    .updateDate {
+      font-size: 12px;
+    }
+
+    .giftsList {
+      padding: 20px 10px 0 10px;
+      color: var(--color1);    
+    }
+
+    .gift {
+      justify-content: left;
+
+      flex-direction: column;
+      align-items:left;
+    }
+
+    .giftLink {
+      width:100%;
+      display:flex;
+      flex-direction:row;
+      justify-content:center;
+      color:var(--color5);
+    }
+
+    .updateDate {
+      margin-bottom: 10px;
+    }
+
+    .chatContainer {
+      padding-right: 5vw;
+      padding-left: 5vw;
+      font-size: 18px;
+
+    }
+
+
+    }

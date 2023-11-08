@@ -23,7 +23,11 @@ function UserConnectedGiftDetail(props) {
     }
         = props;
 
-//______________________________________________________________________________
+    console.log("editingGif in detail : " + editingGift)
+    console.log("resetGift in detail : " + resetGift)
+    console.log("index in detail : " + index)
+
+    //______________________________________________________________________________
 
     const title = data ? data.title : "";
     const text = data ? data.detail : "";
@@ -47,7 +51,7 @@ function UserConnectedGiftDetail(props) {
         setUrlInput(data.url);
     };
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
 
     //....Vérification du statut de reset à chaque initialisation ou Màj du composant
@@ -59,7 +63,7 @@ function UserConnectedGiftDetail(props) {
     }, [resetGift]);
 
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
 
     //....Fonction gérant la modification des inputs
@@ -82,12 +86,12 @@ function UserConnectedGiftDetail(props) {
             titleInput: name === 'title' ? value : titleInput,
             textInput: name === 'text' ? value : textInput,
             urlInput: name === 'url' ? value : urlInput,
-            index,
+            giftKey: props.index
         });
 
     };
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     return (
         <>
@@ -95,9 +99,9 @@ function UserConnectedGiftDetail(props) {
 
                 <div className={editingGift ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
                     <div className={styles.giftTitleAndLink}>
-                        
+
                         <input
-                            className={styles.titleInput}
+                            className={styles.giftTitleInput}
                             type="text"
                             name="title"
                             onChange={handleInputChange}
@@ -106,46 +110,24 @@ function UserConnectedGiftDetail(props) {
                             onClick={() => onClickInput(index)}
                         />
 
-                        <div className={styles.giftLink}>
-
-                            <FontAwesomeIcon
-                                className={`${styles.saveIcon} ${styles.giftIcon}`}
-                                style={editingGift ? null : { display: "none" }}
-                                icon={faFloppyDisk}
-                                onClick={saveChanges}
-
-                            />
-
-                            <FontAwesomeIcon
-                                className={`${styles.returnIcon} ${styles.giftIcon}`}
-                                style={editingGift ? null : { display: "none" }}
-                                icon={faRotateLeft}
-                            />
-
-                            <FontAwesomeIcon
-                                className={`${styles.givedIcon} ${styles.giftIcon}`}
-                                icon={faGift}
-                            />
-
-                        </div>
                     </div>
 
                     <div className={styles.textAreaContainer}>
 
                         <textarea
-                            className={styles.textInput}
+                            className={styles.giftTextInput}
                             onChange={handleInputChange}
                             value={textInput}
                             name="text"
                             disabled={inputDisabled}
-                            onClick={() => onClickInput(index)}/>
+                            onClick={() => onClickInput(index)} />
 
                     </div>
 
                     <div>
 
                         <input
-                            className={styles.urlInput}
+                            className={styles.giftUrlInput}
                             type="text"
                             name="url"
                             onChange={handleInputChange}
@@ -153,7 +135,30 @@ function UserConnectedGiftDetail(props) {
                             disabled={inputDisabled}
                             onClick={() => onClickInput(index)}
                         />
-                        
+
+                    </div>
+
+                    <div className={styles.giftLinkUserConnected}>
+
+                        <FontAwesomeIcon
+                            className={`${styles.saveIcon} ${styles.giftIcon}`}
+                            style={editingGift ? null : { display: "none" }}
+                            icon={faFloppyDisk}
+                            onClick={saveChanges}
+
+                        />
+
+                        <FontAwesomeIcon
+                            className={`${styles.returnIcon} ${styles.giftIcon}`}
+                            style={editingGift ? null : { display: "none" }}
+                            icon={faRotateLeft}
+                        />
+
+                        <FontAwesomeIcon
+                            className={`${styles.givedIcon} ${styles.giftIcon}`}
+                            icon={faGift}
+                        />
+
                     </div>
 
                 </div>

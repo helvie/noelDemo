@@ -22,7 +22,6 @@ function GiftsList(props) {
 
     // Fonction de gestion des modifications des inputs
     const handleInputChange = (modifiedData) => {
-        // console.log("modifiedData "+modifiedData.titleInput)
         // Mettre à jour l'état `editingData` avec les données modifiées
         setEditingData(modifiedData);
         onChange();

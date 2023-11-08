@@ -5,11 +5,14 @@ import StartSeparationSection from './smallElements/StartSeparationSection';
 import EndSeparationSection from './smallElements/EndSeparationSection';
 import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SectionNameSeparation from './smallElements/SectionNameSeparation';
 
 //______________________________________________________________________________
 
 
 function UserConnectedGiftsContainer(props) {
+
+    let nbGifts = 0;
 
     //....Récupération des données contenues dans les propriétés de composants
     const {
@@ -19,7 +22,7 @@ function UserConnectedGiftsContainer(props) {
         onClick,
         data,
         inputChangeInParent,
-        onInputChange,
+        // onInputChange,
         editingGift,
         inputDisabled,
         resetGift,
@@ -29,7 +32,11 @@ function UserConnectedGiftsContainer(props) {
 
     } = props;
 
-//______________________________________________________________________________
+    console.log("editingGif in container : " + editingGift)
+    console.log("resetGift in container : " + resetGift)
+
+
+    //______________________________________________________________________________
 
     //....Fonction de gestion d'ajout de nouveau cadeau
     const handleAddNewGift = () => {
@@ -45,14 +52,16 @@ function UserConnectedGiftsContainer(props) {
         addNewGift(newGiftData);
     };
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     //....Gestion de la modification des input. Envoi des données dans le parent au fur et à mesure
     const handleInputChange = (modifiedDataFromChildren) => {
+        console.log("modifiedDataFromChildren in container : "
+            + modifiedDataFromChildren.giftKey)
         inputChangeInParent(modifiedDataFromChildren)
     }
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     const giftsList = data.gifts
@@ -62,7 +71,7 @@ function UserConnectedGiftsContainer(props) {
             <UserConnectedGiftDetail
                 //....clé unique obligatoire
                 key={index}
-                //....c'est pareil mais je pensais qu'on pouvais l'appeler index pis non
+                //....c'est pareil mais je pensais qu'on pouvait l'appeler index pis non
                 index={index}
                 //....fonction de détection de changement de cadeau à éditer
                 onClickInput={() => onClickInput(index)}
@@ -86,7 +95,9 @@ function UserConnectedGiftsContainer(props) {
         //....S'il n'y a pas de données aucun renvoi
         null;
 
-//______________________________________________________________________________
+    { nbGifts = data.gifts ? data.gifts.length : 0 }
+
+    //______________________________________________________________________________
 
 
     //....Affichage
@@ -97,7 +108,13 @@ function UserConnectedGiftsContainer(props) {
                 className={styles.nameSection}
                 style={{ color: color }}
             >
-                Moi - {props.data.pseudo}
+                <SectionNameSeparation />
+
+                <p className={styles.userConnectedPseudo}>Moi {props.data.pseudo}<span className={styles.nbGifts}> {nbGifts} &copy;
+                </span></p>
+                <div className={isExpanded ? styles.separationHide : styles.separationDisplay}>
+                    <SectionNameSeparation />
+                </div>
             </div>
 
             <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
@@ -113,7 +130,7 @@ function UserConnectedGiftsContainer(props) {
                         </div>
 
                         <div className={styles.caddyIconContainer}>
-                            
+
                             <FontAwesomeIcon
                                 className={styles.caddyIconUser}
                                 icon={faCartPlus}

@@ -1,11 +1,9 @@
 import styles from '../styles/Home.module.css'
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { faLink, faHandBackFist, faCartPlus } from '@fortawesome/free-solid-svg-icons';
+import { faLink, faHandBackFist, faCartPlus, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { formatDate } from '../utils/formatDate';
-
 //______________________________________________________________________________
 
 function GiftDetail(props) {
@@ -33,9 +31,16 @@ function GiftDetail(props) {
         <>
             <div className={styles.giftDetail}>
 
-                <h3>{data.title}</h3>
+                <h3 className={styles.giftTitle}>{data.title} <FontAwesomeIcon
+                    className={styles.giftIcon}
+                    icon={isExpanded ? faCaretUp : faCaretDown}
+                    onClick={onClick}
+                /></h3>
 
-                <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>                    <p>{data.detail}</p>
+                <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
+                    <p className={styles.giftText}>{data.detail} <a className={styles.linkIcon} href={data.url} target="_blank" rel="noopener noreferrer">
+                    {data.url &&<FontAwesomeIcon className={styles.giftIcon} icon={faLink} />}
+                </a></p>
                     <p className={styles.updateDate}>Modifié le : {formatDate(data.date)}</p>
                 </div>
 
@@ -43,20 +48,11 @@ function GiftDetail(props) {
 
             <div className={styles.giftLink}>
 
-                <a className={styles.linkIcon} href={data.url} target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon className={styles.giftIcon} icon={faLink} />
-                </a>
-
                 <FontAwesomeIcon
                     className={styles.giftIcon}
                     icon={faCartPlus}
                     onClick={handleCartPlusClick} />
 
-                <FontAwesomeIcon
-                    className={styles.giftIcon}
-                    icon={isExpanded ? faMinus : faPlus}
-                    onClick={onClick}
-                />
             </div>
         </>
 

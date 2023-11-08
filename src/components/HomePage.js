@@ -6,8 +6,26 @@ import { usersArray } from '../utils/datas';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { envVariables } from '../../env';
+import { chatConversation } from '@/utils/chatConversation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCommentDots, faEye } from '@fortawesome/free-solid-svg-icons';
+import ChatContainer from "../components/ChatContainer";
+import user from '../reducers/user'
+import ConnectionUser from './ConnectionUser';
+import { useSelector, useDispatch } from 'react-redux';
+import { login, logout } from '../reducers/user'
+const moment = require('moment');
+require('moment/locale/fr');
 
 function HomePage() {
+
+    const user = useSelector((state) => state.user.token);
+    const sizeOfWindow = useSelector((state) => state.windowSize);
+
+    console.log(user)
+    console.log(sizeOfWindow)
+
+    const firstMessageDate = moment(chatConversation[0].datetime);
 
     //############################### ETATS #################################
 
@@ -56,191 +74,169 @@ function HomePage() {
     const [connectedUserSection, setConnectedUserSection] = useState(null)
     const [personsSections, setPersonsSections] = useState(null)
 
+    // const router = useRouter();
+    const dispatch = useDispatch();
+
+    const [signinName, setSigninName] = useState('');
+    const [signinPassword, setSigninPassword] = useState('');
+    const [errors, setErrors] = useState({});
 
     //########################################################################
 
     let colorNumber = 1;
 
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
-    const colors = ["#FFD700", "#7fa348", "#f3e4df"]
+    const colors = ["#e6bc14", "#ffffff", "#e62530"]
+    // , "#16ad66"
 
-    // useEffect(() => {
 
-    //     fetch("http://noel.helvie.fr/api/gettoken.php", {
-    //         headers: envVariables,
-    //     })
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             setToken(data)
+    // const handleUserLogin = (logs) => {
+    //     console.log(logs)
+    // }
 
-    //             fetch("http://noel.helvie.fr/api/getlistes.php", {
-    //                 headers:
-    //                 {
-    //                     "user-name":"moarmel",
-    //                     "app-name":"NoelTan",
-    //                     "noel-token": token
-    //                 }
+    const handleUserLogin = (logs) => {
+        console.log(envVariables);
 
-    //             })
-    //                 .then(response => response.json())
-    //                 .then(data => {
-    //                     console.log(data);
-    //                     setGiftsList2(data)
-    //                     // console.log(giftsList2)
-    //                 })
-    //                 .catch(error => {
-    //                     console.log("zarbi")
+        // useEffect(() => {
 
-    //                 });
-
-    //         })
-    //         .catch(error => {
-    //             console.log("Token raté")
-
-    //         });
-
-    // }, []);
-    useEffect(() => {
-    
-        fetch("https://noel.helvie.fr/api/gettoken.php", {
-            headers: envVariables,
-        })
-        .then(response => response.text())
-        .then(tokenData => { // Renommez la variable ici
-            console.log(tokenData)
-                setToken(tokenData);
-    
-            fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
-                headers: {
-                    "user-name":"moarmel",
-                    "app-name":"NoelTan",
-                    "noel-token": tokenData // Utilisez la variable renommée ici
-                }
+        fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
+            method: 'POST',
+            headers: {
+                "App-Name": envVariables.AppName,
+                "App-Key": envVariables.AppKey,
+                "content-type": 'application/json'
+            },
+            body: JSON.stringify({
+                login: logs.signinName,
+                mdp: logs.signinPassword
             })
-            .then(response => response.json())
-            .then(giftsData => { // Renommez la variable ici
-                console.log(giftsData)
-                    setGiftsList2(giftsData);
+
+
+        })
+            .then(response => response.text())
+            .then(tokenData => {
+                console.log(tokenData);
+                setToken(tokenData);
+
+                fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
+                    headers: {
+                        "user-name": logs.signinName,
+                        "app-name": "NoelTan",
+                        "noel-token": tokenData // Utilisez la variable renommée ici
+                    }
+                })
+                    .then(response => response.json())
+                    .then(giftsData => { // Renommez la variable ici
+                        dispatch(login({
+                            name: logs.signinName,
+                            token: logs.signinPassword
+                        }))
+
+                        setGiftsList2(giftsData);
+                        console.log(user)
+                    })
+                    .catch(error => {
+                        console.log("Erreur lors de la récupération des listes");
+                    });
+
             })
             .catch(error => {
-                console.log("Erreur lors de la récupération des listes");
+                console.log("Erreur lors de la récupération du token");
             });
-    
-        })
-        .catch(error => {
-            console.log("Erreur lors de la récupération du token");
-        });
-    
-    }, []);
+    }
+    // }, []);
 
     useEffect(() => {
 
+        //######################### JSX STOCKE DANS VARIABLES #######################
 
+        //....Création d'une variable, à partir des datas, filtrés juste sur l'utilisateur
+        //....création d'un composant user par donnée. Envoi dans le composant des
+        //....propriétés envoyées par celui-ci. (variables ou fonctions) A chaque
+        //....modification d'un état utilisé par le composant, celui ci se mettra à jour
+        let connectedUserSectionMapping;
 
-    //######################### JSX STOCKE DANS VARIABLES #######################
+        if (giftsList2) {
+            connectedUserSectionMapping = giftsList2
+                .filter((data) => data.pseudo === "MoArmel")
+                .map((data, i) => {
+                    const color = colors[0];
+                    return (
+                        //....composant user
+                        <UserConnectedGiftsContainer
+                            //....clé unique obligatoire
+                            key={-2}
+                            //....background color
+                            color={color}
+                            //....statut depliage de la section
+                            isExpanded={openedSectionUser}
+                            //....fonction de dépliage de la section
+                            onClick={() => handleUserSectionClick(i)}
+                            //....fonction de dépliage de la section
+                            onClickInput={(key) => handleInputClick(key)}
+                            //....données
+                            data={data}
+                            //....fonction de gestion de changement des inputs
+                            inputChangeInParent={handleInputChange}
+                            //....booléen cadeau en cours de modification
+                            editingGift={editingGift}
+                            //....statut de l'édition des inputs
+                            inputDisabled={inputDisabled}
+                            //....booléen réinitialisation des input si pas d'enregistrement dans modale
+                            resetGift={resetGift}
+                            //....fonction d'enregistrement
+                            saveChanges={openModal}
+                            //....fonction d'ajout de nouveau cadeau
+                            addNewGift={addNewGift}
 
-    //....Création d'une variable, à partir des datas, filtrés juste sur l'utilisateur
-    //....création d'un composant user par donnée. Envoi dans le composant des
-    //....propriétés envoyées par celui-ci. (variables ou fonctions) A chaque
-    //....modification d'un état utilisé par le composant, celui ci se mettra à jour
-    let connectedUserSectionMapping;
-    
-    if(giftsList2){
-        connectedUserSectionMapping = giftsList2
-        .filter((data) => data.pseudo === "Armel")
-        .map((data, i) => {
-            const color = colors[0];
-            return (
-                //....composant user
-                <UserConnectedGiftsContainer
-                    //....clé unique obligatoire
-                    key={-2}
-                    //....background color
-                    color={color}
-                    //....statut depliage de la section
-                    isExpanded={openedSectionUser}
-                    //....fonction de dépliage de la section
-                    onClick={() => handleUserSectionClick(i)}
-                    //....fonction de dépliage de la section
-                    onClickInput={(index) => handleInputClick(index)}
-                    //....données
-                    data={data}
-                    //....
-                    inputChangeInParent={handleInputChange}
-                    //....fonction de gestion de changement des inputs
-                    onInputChange={handleInputChange}
-                    //....booléen cadeau en cours de modification
-                    editingGift={editingGift}
-                    //....statut de l'édition des inputs
-                    inputDisabled={inputDisabled}
-                    //....booléen réinitialisation des input si pas d'enregistrement dans modale
-                    resetGift={resetGift}
-                    //....fonction d'enregistrement
-                    saveChanges={openModal}
-                    //....fonction d'ajout de nouveau cadeau
-                    addNewGift={addNewGift}
-
-                />
-            )
-        })}
+                        />
+                    )
+                })
+        }
 
         setConnectedUserSection(connectedUserSectionMapping)
 
-    //______________________________________________________________________________
+        //______________________________________________________________________________
 
 
-    //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
-    //....création d'un composant personne par donnée.
-    let personsSectionsMapping;
-    
-    if(giftsList2){personsSectionsMapping = giftsList2
-        .filter((data) => data.login !== "moarmel")
-        .map((data, i) => {
-            const color = colors[colorNumber];
-            colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
-            return (
-                //....composants personnes
-                <GiftsContainer
-                    //....clé unique obligatoire
-                    key={i}
-                    //....background color
-                    color={color}
-                    //....statut depliage de la section (true si index stocké dans l'état)
-                    isExpanded={openedSectionIndex === i}
-                    //....fonction de dépliage de la section
-                    onClick={() => handleSectionClick(i)}
-                    //....données
-                    data={data}
-                    //....fonction de vol de cadau
-                    onClickCartPlus={stolenGiftRegistered}
+        //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
+        //....création d'un composant personne par donnée.
+        let personsSectionsMapping;
 
-                />
-            )
-        })
+        if (giftsList2) {
+            personsSectionsMapping = giftsList2
+                .filter((data) => data.pseudo !== "MoArmel")
+                .map((data, i) => {
+                    const color = colors[colorNumber];
+                    colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
+                    // colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
+
+                    return (
+                        //....composants personnes
+                        <GiftsContainer
+                            //....clé unique obligatoire
+                            key={i}
+                            //....background color
+                            color={color}
+                            //....statut depliage de la section (true si index stocké dans l'état)
+                            isExpanded={openedSectionIndex === i}
+                            //....fonction de dépliage de la section
+                            onClick={() => handleSectionClick(i)}
+                            //....données
+                            data={data}
+                            //....fonction de vol de cadau
+                            onClickCartPlus={stolenGiftRegistered}
+
+                        />
+                    )
+                })
             setPersonsSections(personsSectionsMapping)
 
-        console.log(personsSections)
-        console.log(connectedUserSection)
-    
-    }
+        }
 
 
-    }, [giftsList2, openedSectionUser, openedSectionIndex]);
-    // useEffect(() => {
+    }, [giftsList2, openedSectionUser, openedSectionIndex, editingGift]);
 
-    //     fetch("http://noel.helvie.fr/api/check.php", {
-    //         headers: envVariables,
-    //     })
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             console.log(data)
-    //         })
-    //         .catch(error => {
-    //             console.log("essai1")
-
-    //         });
-
-    // }, []);
 
 
 
@@ -289,8 +285,6 @@ function HomePage() {
 
     //.....Dépliage/pliage déclenché au click sur la section d'une personne 
     const handleSectionClick = (index) => {
-
-        // console.log("cliqué !")
 
         //....si la section de l'user est ouverte, indication que la modale est ouverte
         //....au clic sur une section (et non sur un input)
@@ -387,7 +381,7 @@ function HomePage() {
             //....cadeau en couors de modification
             if (index === editingGift) {
                 //....Initialisation de la variable du cadeau modifié
-                const modifiedGiftIndex = modifiedData.index;
+                const modifiedGiftIndex = modifiedData.giftKey;
                 //....S'il s'agit de cadeaux supplémentaires par rapport aux datas initiales
                 if (modifiedGiftIndex >= 0 && modifiedGiftIndex < data.gifts.length) {
                     //....Mise à jour
@@ -455,11 +449,15 @@ function HomePage() {
     const handleInputChange = (modifiedDataFromChildren) => {
         setModifiedData(modifiedDataFromChildren)
 
+        console.log("modifiedDataFromChildren in parent : " + modifiedDataFromChildren.giftKey)
+
         //....Initialisation de l'index du cadeau modifié
-        const idx = modifiedDataFromChildren.index;
+        const idx = modifiedDataFromChildren.giftKey;
 
         //....Mise à jour de l'état indiquant quel cadeau est en cours de modification
         setEditingGift(idx)
+
+        console.log("editingGift in parent : " + editingGift)
     };
 
     //______________________________________________________________________________
@@ -521,102 +519,41 @@ function HomePage() {
         setGiftSavedModalVisible(false);
     };
 
-    // //######################### JSX STOCKE DANS VARIABLES #######################
-
-    // //....Création d'une variable, à partir des datas, filtrés juste sur l'utilisateur
-    // //....création d'un composant user par donnée. Envoi dans le composant des
-    // //....propriétés envoyées par celui-ci. (variables ou fonctions) A chaque
-    // //....modification d'un état utilisé par le composant, celui ci se mettra à jour
-    // const connectedUserSection = datas
-    //     .filter((data) => data.pseudo === "Armel")
-    //     .map((data, i) => {
-    //         const color = colors[0];
-    //         return (
-    //             //....composant user
-    //             <UserConnectedGiftsContainer
-    //                 //....clé unique obligatoire
-    //                 key={-2}
-    //                 //....background color
-    //                 color={color}
-    //                 //....statut depliage de la section
-    //                 isExpanded={openedSectionUser}
-    //                 //....fonction de dépliage de la section
-    //                 onClick={() => handleUserSectionClick(i)}
-    //                 //....fonction de dépliage de la section
-    //                 onClickInput={(index) => handleInputClick(index)}
-    //                 //....données
-    //                 data={data}
-    //                 //....
-    //                 inputChangeInParent={handleInputChange}
-    //                 //....fonction de gestion de changement des inputs
-    //                 onInputChange={handleInputChange}
-    //                 //....booléen cadeau en cours de modification
-    //                 editingGift={editingGift}
-    //                 //....statut de l'édition des inputs
-    //                 inputDisabled={inputDisabled}
-    //                 //....booléen réinitialisation des input si pas d'enregistrement dans modale
-    //                 resetGift={resetGift}
-    //                 //....fonction d'enregistrement
-    //                 saveChanges={openModal}
-    //                 //....fonction d'ajout de nouveau cadeau
-    //                 addNewGift={addNewGift}
-
-    //             />
-    //         )
-    //     })
-
-    // //______________________________________________________________________________
-
-
-    // //....Création d'une variable, à partir des datas, filtrés, tous sauf l'utilisateur
-    // //....création d'un composant personne par donnée.
-    // const personsSections = datas
-    //     .filter((data) => data.pseudo !== "Armel")
-    //     .map((data, i) => {
-    //         const color = colors[colorNumber];
-    //         colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
-    //         return (
-    //             //....composants personnes
-    //             <GiftsContainer
-    //                 //....clé unique obligatoire
-    //                 key={i}
-    //                 //....background color
-    //                 color={color}
-    //                 //....statut depliage de la section (true si index stocké dans l'état)
-    //                 isExpanded={openedSectionIndex === i}
-    //                 //....fonction de dépliage de la section
-    //                 onClick={() => handleSectionClick(i)}
-    //                 //....données
-    //                 data={data}
-    //                 //....fonction de vol de cadau
-    //                 onClickCartPlus={stolenGiftRegistered}
-
-    //             />
-    //         )
-    //     })
-
     //############################## AFFICHAGE #################################
 
     return (
         <main>
-            <div className={styles.orgContent}>
+            {user ? (<>
+                <div className={styles.orgContent}>
 
-                {/* {isLoading ? (
+                    {/* {isLoading ? (
                     <div>Chargement en cours...</div>
                 ) : ( */}
-                <>
-                {/* {giftsList2 && (<div>{giftsList2}</div>)} */}
 
-                {personsSections && (<div><h3>courgette {personsSections[0]["login"]}</h3></div>)}
-                    <div className={styles.firstSection}>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                        um voluptates a cumque velit Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
-                        um voluptates a cumque velit
+                    <div className={styles.chatSection}>
+                        {sizeOfWindow.width < 480
+                            ? <p className={styles.firstChatTitle}>DERNIER MESSAGE</p> :
+                            <p className={styles.firstChatTitle}>### DERNIER MESSAGE ###</p>
+                        }
+
+                        <p className={styles.firstChatContent}>De <span className={styles.firstChatName}>{chatConversation[0].sender}</span>  :
+                            <span className={styles.firstChatText}> {chatConversation[0].text} </span>
+                            <span className={styles.firstChatDate}>({firstMessageDate.format("ddd DD/MM/YYYY à HH[h]mm")})</span></p>
+                        <FontAwesomeIcon
+                            className={styles.giftChatIcon}
+                            icon={faCommentDots}
+                        // onClick={handleCartPlusClick} 
+                        />
+                        <a href="#chat" className={styles.giftChatIconLink}>
+                            <FontAwesomeIcon
+                                className={styles.giftChatIcon}
+                                icon={faEye}
+                            />
+                        </a>
+
+                        {/* <a href="#présentationSection" onClick={(e) => scrollToSection(e, 'presentationSection')}>Présentation</a> */}
                     </div>
+
                     {/*...Affichage du jsx stocké dans la variable connectedUserSection */}
                     {connectedUserSection}
 
@@ -641,9 +578,15 @@ function HomePage() {
                     {/*...Affichage des divs stockées dans la variable personsSections */}
                     {personsSections}
 
-                </>
-                {/* )} */}
-            </div>
+
+                    {/* )} */}
+                </div>
+                <ChatContainer messages={chatConversation} />
+
+
+            </>) : (
+                <ConnectionUser onValidation={handleUserLogin} />
+            )}
         </main >
 
     );
