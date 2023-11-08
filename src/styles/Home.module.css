@@ -55,6 +55,7 @@
   flex-direction: row;
   justify-content: space-evenly;
   font-size: 80px;
+  overflow: hidden; 
   width: 100%;
   font-family: 'XmasSweaterStitch-xXYq';
 }
