@@ -1,7 +1,7 @@
 import stylesHeader from '../../styles/HeaderFooter.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { noelLogos } from '@/utils/noelLogos';
+import { noelLogosJsx } from '@/utils/noelLogosJsx';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateWindowSize } from '../../reducers/windowSize';
@@ -10,9 +10,9 @@ const Header = () => {
 
   const dispatch = useDispatch();
 
-  const noelLogosJsx = noelLogos.map((data, i) => {
-    return <div key={i}> {data}</div>;
-  });
+  // const noelLogosJsx = noelLogos.map((data, i) => {
+  //   return <div key={i}> {data}</div>;
+  // });
 
   const [windowSize, setWindowSize] = useState({
     width: undefined,

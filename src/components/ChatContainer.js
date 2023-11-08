@@ -2,7 +2,7 @@ import styles from '../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faCommentDots } from '@fortawesome/free-solid-svg-icons';
-import { noelLogos } from '@/utils/noelLogos';
+import { noelLogos } from '@/utils/noelLogosJsx';
 const moment = require('moment');
 require('moment/locale/fr');
 
