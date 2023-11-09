@@ -28,7 +28,7 @@ function App({ Component, pageProps }) {
     <Provider store={store}>
       <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>C'est Noël !</title>
+        <title>C&apos;est Noël !</title>
       </Head>
       <Component {...pageProps} />
     </Provider>
