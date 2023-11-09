@@ -58,6 +58,7 @@
   width: 100%;
   font-family: 'XmasSweaterStitch-xXYq';
   overflow: hidden;
+  max-width:100vw;
 }
 
 .startSeparationSection p {
@@ -460,7 +461,7 @@
 
 .loginForm input {
   height: 50px;
-  width: 25vw;
+  min-width: 25vw;
   color:var(--color1); 
   outline: 7px dotted white;
   border: 0;
@@ -544,6 +545,10 @@
 .giftText,
 .giftTextInput {
   font-size: 16px;
+}
+
+.loginForm input {
+  min-width: 50vw;
 }
 
   }

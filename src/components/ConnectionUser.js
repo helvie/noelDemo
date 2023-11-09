@@ -100,8 +100,8 @@ function ConnectionUser(props) {
 
           {/* --------------------------- Input name -------------------------- */}
 
-          <div className={styles.inputRegistrationContainer}>
-            <p className={styles.orgInputTitle}>Prénom</p>
+          {/* <div className={styles.inputRegistrationContainer}> */}
+            <p className={styles.connectionInputTitle}>Prénom</p>
             <input
               className={styles.inputRegistration}
               type="text"
@@ -112,12 +112,12 @@ function ConnectionUser(props) {
               value={signinName}
             />
             {errors.name && <p className={styles.error}>{errors.name}</p>}
-          </div>
+          {/* </div> */}
 
           {/* ------------------------ Input mot de passe ----------------------- */}
 
-          <div className={styles.inputRegistrationContainer}>
-            <p className={styles.orgInputTitle}>Mot de passe</p>
+          {/* <div className={styles.inputRegistrationContainer}> */}
+            <p className={styles.connectionInputTitle}>Mot de passe</p>
 
             <input
               className={styles.inputRegistration}
@@ -130,7 +130,7 @@ function ConnectionUser(props) {
             />
             {errors.password && <p className={styles.error}>{errors.password}</p>}
 
-          </div>
+          {/* </div> */}
 
           {/* ------------------ Bouton de validation du formulaire ------------- */}
 
