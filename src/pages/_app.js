@@ -27,7 +27,8 @@ function App({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <Head>
-        <title>Next.js App</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>C'est Noël !</title>
       </Head>
       <Component {...pageProps} />
     </Provider>
