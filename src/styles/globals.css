@@ -61,14 +61,14 @@ p {
   margin:0;
   padding:o;
 }
-
+/* 
 /* input:focus {
   outline:none;
 }
 
 textarea:focus {
   outline:none;
-} */
+} */ */
 input:-webkit-autofill{
   -webkit-box-shadow: 0 0 0 1000px var(--color5) inset;
 }

@@ -98,7 +98,7 @@ function UserConnectedGiftDetail(props) {
             <div className={styles.gift}>
 
                 <div className={editingGift ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
-                    <div className={styles.giftTitleAndLink}>
+                    {/* <div className={styles.giftTitleAndLink}> */}
 
                         <input
                             className={styles.giftTitleInput}
@@ -110,9 +110,9 @@ function UserConnectedGiftDetail(props) {
                             onClick={() => onClickInput(index)}
                         />
 
-                    </div>
+                    {/* </div> */}
 
-                    <div className={styles.textAreaContainer}>
+                    {/* <div className={styles.textAreaContainer}> */}
 
                         <textarea
                             className={styles.giftTextInput}
@@ -122,9 +122,9 @@ function UserConnectedGiftDetail(props) {
                             disabled={inputDisabled}
                             onClick={() => onClickInput(index)} />
 
-                    </div>
+                    {/* </div> */}
 
-                    <div>
+                    {/* <div> */}
 
                         <input
                             className={styles.giftUrlInput}
@@ -136,7 +136,7 @@ function UserConnectedGiftDetail(props) {
                             onClick={() => onClickInput(index)}
                         />
 
-                    </div>
+                    {/* </div> */}
 
                     <div className={styles.giftLinkUserConnected}>
 

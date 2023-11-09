@@ -55,9 +55,9 @@
   flex-direction: row;
   justify-content: space-evenly;
   font-size: 80px;
-  overflow: hidden; 
   width: 100%;
   font-family: 'XmasSweaterStitch-xXYq';
+  overflow: hidden;
 }
 
 .startSeparationSection p {
@@ -148,7 +148,7 @@
   font-size: 16px;
   font-weight: bold;
   font-family: 'goodbye-crewel-world-nf.regular';
-  width: 100%;
+  width: 100%;  height: auto; /* Ajuste la hauteur en fonction du contenu */
 }
 
 .editingGiftDetailToUpdate textarea {
@@ -180,8 +180,7 @@
   outline: 7px dotted #f1cb34;
   /* margin-left: 20px; */
   width: 100%;
-  font-family: 'goodbye-crewel-world-nf.regular';
-}
+  font-family: 'goodbye-crewel-world-nf.regular';    overflow-y: hidden; /* Permet au textarea de s'ajuster en hauteur */}
 
 .giftUrlInput {
   background-color: #f1cb34;
@@ -191,9 +190,10 @@
   border: 0;
   outline: 7px dotted #f1cb34;
   font-size: 15px;
-  /* margin-left: 20px; */
+  overflow-wrap: break-word;
   width: 100%;
-  font-family: 'goodbye-crewel-world-nf.regular';
+  font-family: 'goodbye-crewel-world-nf.regular';  
+  flex:wrap;
 }
 
 .giftDetailToUpdate {
@@ -589,6 +589,14 @@
       padding-left: 5vw;
       font-size: 18px;
 
+    }
+
+    .giftTextInput {
+      min-height:150px;
+    }
+
+    .giftUrlInput {
+      min-height: 80px;
     }
 
 
