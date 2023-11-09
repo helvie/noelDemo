@@ -1,4 +1,3 @@
-
 @font-face {
   font-family: 'XmasSweaterStitch-xXYq';
   src: local('XmasSweaterStitch-xXYq'), url(../fonts/XmasSweaterStitch-xXYq.ttf) format('truetype');
@@ -15,12 +14,12 @@
 }
 
 @font-face {
-  font-family:'Quicksand-VariableFont_wght';
+  font-family: 'Quicksand-VariableFont_wght';
   src: local('Quicksand-VariableFont_wght'), url(../fonts/Quicksand-VariableFont_wght.ttf) format('truetype');
 }
 
 @font-face {
-  font-family:'kingthings-xstitch.regular';
+  font-family: 'kingthings-xstitch.regular';
   src: local('kingthings-xstitch.regular'), url(../fonts/kingthings-xstitch.regular.ttf) format('truetype');
 }
 
@@ -40,13 +39,9 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    max-width: 100vw;
-    /* overflow: hidden; */
+  max-width: 100vw;
 }
 
-main{
-max-width: 100vw;
-}
 
 * {
   box-sizing: border-box;
@@ -57,27 +52,17 @@ h1 {
 }
 
 h2 {
-  font-size:40px;
+  font-size: 40px;
   font-weight: normal;
   margin: 0;
   padding: 0;
 }
 
 p {
-  margin:0;
-  padding:o;
-}
-/* 
-/* input:focus {
-  outline:none;
+  margin: 0;
+  padding: o;
 }
 
-textarea:focus {
-  outline:none;
-} */ */
-input:-webkit-autofill{
+input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px var(--color5) inset;
 }
-
-
-
