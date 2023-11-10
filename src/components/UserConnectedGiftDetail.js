@@ -19,13 +19,15 @@ function UserConnectedGiftDetail(props) {
         onClickInput,
         resetGift,
         inputDisabled,
-        saveChanges
+        saveChanges,
+        handleOfferedClick,
+        idListe
     }
         = props;
 
-    console.log("editingGif in detail : " + editingGift)
-    console.log("resetGift in detail : " + resetGift)
-    console.log("index in detail : " + index)
+        // console.log("index "+index)
+        // console.log("editinggift "+editingGift)
+
 
     //______________________________________________________________________________
 
@@ -50,6 +52,10 @@ function UserConnectedGiftDetail(props) {
         setTextInput(data.detail);
         setUrlInput(data.url);
     };
+    
+
+   
+
 
     //______________________________________________________________________________
 
@@ -157,6 +163,8 @@ function UserConnectedGiftDetail(props) {
                         <FontAwesomeIcon
                             className={`${styles.givedIcon} ${styles.giftIcon}`}
                             icon={faGift}
+                            // onclick={handleOfferedClick}
+                            onClick={() => handleOfferedClick(index, idListe, data.offered)}
                         />
 
                     </div>

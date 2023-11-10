@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styles from '../styles/Home.module.css';
 import { useRouter } from 'next/router';
-import Header from './smallElements/Header';
-import { BACKEND_URL } from '../utils/urls';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -94,7 +92,7 @@ function ConnectionUser(props) {
 
         <div className={styles.loginForm}>
 
-          <h1 className={styles.formTitle}>Connectez-vous !</h1>
+          <h1 className={styles.formTitle}>Connecte-toi !</h1>
 
           {/* <form className="w-full"> */}
 
@@ -117,7 +115,7 @@ function ConnectionUser(props) {
           {/* ------------------------ Input mot de passe ----------------------- */}
 
           {/* <div className={styles.inputRegistrationContainer}> */}
-            <p className={styles.connectionInputTitle}>Mot de passe</p>
+            <p style={{marginTop:"30px"}} className={styles.connectionInputTitle}>Mot de passe</p>
 
             <input
               className={styles.inputRegistration}

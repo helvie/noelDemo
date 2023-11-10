@@ -40,6 +40,20 @@
   margin-bottom: 20px;
 }
 
+.offeredGift {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.offeredGiftTitleAndLink {
+  display: flex;
+  flex-direction: column;
+  width:90%
+  /* justify-content: space-between; */
+}
+
 .giftsSection {
   width: 100%;
   position: relative;
@@ -84,9 +98,13 @@
   padding: 30px 30px 0 30px;
   color: var(--color1);
   font-family: 'goodbye-crewel-world-nf.regular';
-
 }
 
+.offeredGiftsList {
+  padding: 30px 30px 0 30px;
+  color: var(--color4);
+  font-family: 'goodbye-crewel-world-nf.regular';
+}
 .absoluteContainer {
   position: relative;
 }
@@ -104,9 +122,14 @@
   flex-direction:row;
   justify-content:center;
   margin-bottom:20px;
-
 }
 
+.giftLinkUserConnectedOffered {
+  font-size: 20px;
+
+  margin-bottom:20px;
+  margin-top:10px;
+}
 .detailDisplay {
   max-height: 10000px;
   overflow: hidden;
@@ -150,7 +173,7 @@
   border-color: white;
   border: 0;
   outline: 7px dotted var(--color1);
-  font-size: 16px;
+  font-size: 20px;
   color: white;
 }
 
@@ -159,11 +182,9 @@
   border-color: white;
   border: 0;
   outline: 7px dotted var(--color1);
-  font-size: 16px;
+  font-size: 20px;
   color: white;
 }
-
-
 
 .giftTextInput {
   background-color: #f1cb34;
@@ -202,6 +223,24 @@
   width: 100%;
 }
 
+.giftDetailOffered {
+  width:100%;
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  color:#7c660e;
+}
+
+.giftDetailOffered h1 {
+  font-size:22px;
+}
+.giftDetailOffered p {
+  font-size:18px;
+}
+
+/* .offeredGiftUrl {
+  color:#7c660e;
+} */
 
 
 .modal {
@@ -423,7 +462,7 @@
   color:var(--color1); 
   outline: 7px dotted white;
   border: 0;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   margin-top: 15px;
   font-size:1.3rem;
 }
@@ -443,6 +482,19 @@
 
  .loginForm::placeholder {
   font-size:50px;
+}
+
+.error {
+  color:var(--color2);
+font-size:20px;
+}
+
+.addGiftIconContainer {
+  width:100%;
+  text-align:center;
+  color:var(--color1);
+  font-size:26px;
+  margin-bottom:10px;
 }
 
 @media (max-width: 1024px) {
@@ -559,6 +611,8 @@
     .giftUrlInput {
       min-height: 80px;
     }
+
+ 
 
 
     }

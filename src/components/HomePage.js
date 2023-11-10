@@ -22,9 +22,6 @@ function HomePage() {
     const user = useSelector((state) => state.user);
     const sizeOfWindow = useSelector((state) => state.windowSize);
 
-    console.log(user)
-    console.log(sizeOfWindow)
-
     const firstMessageDate = moment(chatConversation[0].datetime);
 
     //############################### ETATS #################################
@@ -69,7 +66,6 @@ function HomePage() {
 
     // const [isLoading, setIsLoading] = useState(false);
 
-    const [token, setToken] = useState("");
     const [giftsList2, setGiftsList2] = useState(null)
     const [connectedUserSection, setConnectedUserSection] = useState(null)
     const [personsSections, setPersonsSections] = useState(null)
@@ -89,60 +85,206 @@ function HomePage() {
     const colors = ["#e6bc14", "#ffffff", "#e62530"]
     // , "#16ad66"
 
+    
 
-    // const handleUserLogin = (logs) => {
-    //     console.log(logs)
-    // }
+    const updateGiftsList2 = (giftListId, giftId, offeredStatus) => {
 
-    const handleUserLogin = (logs) => {
-        console.log(envVariables);
+        // Utilisez map pour créer une nouvelle copie avec les modifications nécessaires
+        const updatedGiftsList2 = giftsList2.map(giftList => {
+          // Vérifiez d'abord si listId correspond
+          if (giftList.idListe === giftListId) {
+            // Ensuite, mappez sur les cadeaux de cette liste
+            const updatedGifts = giftList.gifts.map(gift => {
+              // Ensuite, vérifiez si giftId correspond
+              if (gift.id === giftId) {
+                // Mettez à jour le statut uniquement si giftId est égal à 200
+                return { ...gift, offered: offeredStatus };
+              }
+              // Si ce n'est pas le cadeau avec giftId 200, retournez-le tel quel
+              return gift;
+            });
+      
+            // Retournez la liste mise à jour avec les cadeaux modifiés
+            return { ...giftList, gifts: updatedGifts };
+          }
+      
+          // Si ce n'est pas la liste avec listId correspondant, retournez-la telle quelle
+          return giftList;
+        });
 
-        // useEffect(() => {
+        // console.log(updatedGiftsList2)
+      
+        // Mettez à jour l'état avec la nouvelle copie
+        setGiftsList2(updatedGiftsList2);
+      };
 
-        fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
-            method: 'POST',
+
+
+    const handleOfferedClick = (index, idListe, offered) => {
+
+        console.log(user.token)
+        console.log(user.name)
+        console.log(index)
+        console.log(idListe)
+        console.log(!offered)
+
+        fetch("https://noel.helvie.fr/api/euPasEuCadeau", {
+            method: 'PUT',
             headers: {
-                "App-Name": envVariables.AppName,
-                "App-Key": envVariables.AppKey,
+                "Noel-Token": user.token,
+                "User-Name": user.name,
+                "App-Name":"NoelTan",
                 "content-type": 'application/json'
             },
             body: JSON.stringify({
-                login: logs.signinName,
-                mdp: logs.signinPassword
+                id: index,
+                idListe: idListe,
+                eu: !offered
             })
         })
+        .then(response => response.text())
+        .then(data => {
+            console.log("coucou");
+            updateGiftsList2(idListe, index, !offered)
+
+        })
+        .catch(error => {
+            console.log("Erreur maj statut cadeau", error);
+        });
+    };
+
+    const handleUserLogin = (logs) => {
+
+        console.log(envVariables);
+
+
+        // useEffect(() => {
+
+
+        fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
+
+            method: 'POST',
+
+            headers: {
+
+                "App-Name": envVariables.AppName,
+                "App-Key": envVariables.AppKey,
+                "content-type": 'application/json'
+
+            },
+
+            body: JSON.stringify({
+                login: logs.signinName,
+                mdp: logs.signinPassword
+
+            })
+
+        })
+
             .then(response => response.text())
             .then(tokenData => {
+
                 console.log(tokenData);
+                setSigninName(logs.signinName)
+
                 // setToken(tokenData);
+
                 dispatch(login({
                     name: logs.signinName,
                     token: tokenData
                 }))
 
+
                 fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
+
                     headers: {
+
                         "user-name": logs.signinName,
                         "app-name": "NoelTan",
                         "noel-token": tokenData // Utilisez la variable renommée ici
                     }
+
                 })
+
                     .then(response => response.json())
                     .then(giftsData => { // Renommez la variable ici
 
-
                         setGiftsList2(giftsData);
                         console.log(user)
+                        console.log(giftsData)
+
                     })
+
                     .catch(error => {
+
                         console.log("Erreur lors de la récupération des listes");
+
                     });
 
+
             })
+
             .catch(error => {
+
                 console.log("Erreur lors de la récupération du token");
+
             });
+
     }
+
+    // const handleUserLogin = (logs) => {
+    //     console.log(logs)
+    // }
+
+    // const handleUserLogin = (logs) => {
+    //     console.log(envVariables);
+
+    //     // useEffect(() => {
+
+    //     fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
+    //         method: 'POST',
+    //         headers: {
+    //             "App-Name": envVariables.AppName,
+    //             "App-Key": envVariables.AppKey,
+    //             "content-type": 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             login: logs.signinName,
+    //             mdp: logs.signinPassword
+    //         })
+    //     })
+    //         .then(response => response.text())
+    //         .then(tokenData => {
+    //             console.log(tokenData);
+    //             // setToken(tokenData);
+    //             dispatch(login({
+    //                 name: logs.signinName,
+    //                 token: tokenData
+    //             }))
+
+    //             fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
+    //                 headers: {
+    //                     "user-name": logs.signinName,
+    //                     "app-name": "NoelTan",
+    //                     "noel-token": tokenData // Utilisez la variable renommée ici
+    //                 }
+    //             })
+    //                 .then(response => response.json())
+    //                 .then(giftsData => { // Renommez la variable ici
+
+
+    //                     setGiftsList2(giftsData);
+    //                     console.log(user)
+    //                 })
+    //                 .catch(error => {
+    //                     console.log("Erreur lors de la récupération des listes");
+    //                 });
+
+    //         })
+    //         .catch(error => {
+    //             console.log("Erreur lors de la récupération du token");
+    //         });
+    // }
     // }, []);
 
     useEffect(() => {
@@ -157,7 +299,7 @@ function HomePage() {
 
         if (giftsList2) {
             connectedUserSectionMapping = giftsList2
-                .filter((data) => data.pseudo.toLowerCase() === user.name.toLowerCase())
+                .filter((data) => data.pseudo.toLowerCase() === signinName.toLowerCase())
                 .map((data, i) => {
                     const color = colors[0];
                     return (
@@ -172,11 +314,11 @@ function HomePage() {
                             //....fonction de dépliage de la section
                             onClick={() => handleUserSectionClick(i)}
                             //....fonction de dépliage de la section
-                            onClickInput={(key) => handleInputClick(key)}
+                            onClickInput={(giftId) => handleInputClick(giftId)}
                             //....données
                             data={data}
                             //....fonction de gestion de changement des inputs
-                            inputChangeInParent={handleInputChange}
+                            inputChangeInParent={(objectChange)=>handleInputChange(objectChange)}
                             //....booléen cadeau en cours de modification
                             editingGift={editingGift}
                             //....statut de l'édition des inputs
@@ -187,6 +329,11 @@ function HomePage() {
                             saveChanges={openModal}
                             //....fonction d'ajout de nouveau cadeau
                             addNewGift={addNewGift}
+
+                            idListe={data.idListe}
+
+                            handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+
 
                         />
                     )
@@ -204,11 +351,10 @@ function HomePage() {
 
         if (giftsList2) {
             personsSectionsMapping = giftsList2
-                .filter((data) => data.pseudo.toLowerCase() !== user.name.toLowerCase())
+                .filter((data) => data.pseudo.toLowerCase() !== signinName.toLowerCase())
                 .map((data, i) => {
                     const color = colors[colorNumber];
                     colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
-                    // colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
 
                     return (
                         //....composants personnes
@@ -375,13 +521,16 @@ function HomePage() {
     //....Gestion de l'enregistrement des modifications depuis la modale
     const handleSaveChanges = () => {
         //....Création, à partir du tableau de données, d'une copie des datas
-        const updatedDatas = datas.map((data, index) => {
+        const updatedDatas = datas.map((data, index) => {        
+            console.log("data.id"+data.id)
+            console.log("editingGift"+editingGift)
+
             //....Si l'index du cadeau, dans le tableau, correspond à l'index du
-            //....cadeau en couors de modification
-            if (index === editingGift) {
+            //....cadeau en cours de modification
+            if (data.id === editingGift) {
                 //....Initialisation de la variable du cadeau modifié
                 const modifiedGiftIndex = modifiedData.giftKey;
-                //....S'il s'agit de cadeaux supplémentaires par rapport aux datas initiales
+                //....S'il s'agit d'un cadeau déjà existant
                 if (modifiedGiftIndex >= 0 && modifiedGiftIndex < data.gifts.length) {
                     //....Mise à jour
                     return {
@@ -446,9 +595,9 @@ function HomePage() {
     //....Fonction implémentée dans le composant UserConnectedGiftDetail, qui, se
     //....déclenche à chaque modification dans un input
     const handleInputChange = (modifiedDataFromChildren) => {
-        setModifiedData(modifiedDataFromChildren)
 
-        console.log("modifiedDataFromChildren in parent : " + modifiedDataFromChildren.giftKey)
+        // console.log(modifiedDataFromChildren.giftKey)
+        setModifiedData(modifiedDataFromChildren)
 
         //....Initialisation de l'index du cadeau modifié
         const idx = modifiedDataFromChildren.giftKey;
@@ -456,13 +605,14 @@ function HomePage() {
         //....Mise à jour de l'état indiquant quel cadeau est en cours de modification
         setEditingGift(idx)
 
-        console.log("editingGift in parent : " + editingGift)
     };
 
     //______________________________________________________________________________
 
     //....Au clic dans un input de cadeau
     const handleInputClick = (clickedIndex) => {
+        console.log("clickedIndex "+clickedIndex)
+        console.log("editingGift "+editingGift)
         //....s'il y a bien un cadeau modifié (pas de cadeau = -1) ou qu'on clique
         //....ailleurs que dans un cadeau qui est déjà en cours de modification
         if (editingGift !== -1 && editingGift !== clickedIndex) {
@@ -489,9 +639,9 @@ function HomePage() {
         const updatedDatas = [...datas];
 
         //....Identification des datas de l'utilisateur connecté
-        const userIndex = updatedDatas.findIndex((data) => data.pseudo === "Armel");
+        const userIndex = updatedDatas.findIndex((data) => data.pseudo === user.name);
 
-        //....Vérification de l'existance de l'utilisateur (à vérifier... chatgpt)
+        //....Vérification de l'existance de l'utilisateur 
         if (userIndex !== -1) {
             //....Ajout du nouveau cadeau aux données de cet utilisateur
             updatedDatas[userIndex].gifts.push(newGift);
@@ -522,7 +672,7 @@ function HomePage() {
 
     return (
         <main>
-            {user.name ? (<>
+            {signinName ? (<>
                 <div className={styles.orgContent}>
 
                     {/* {isLoading ? (
@@ -561,8 +711,8 @@ function HomePage() {
                         <div className={styles.modal}>
                             <div className={styles.modalDialog}>
                                 {/* <button className={styles.modalCloseButton} onClick={closeModal}></button> */}
-                                <button onClick={handleSaveChanges}>On enregistre</button>
-                                <button onClick={resetData}>On remet comme avant</button>
+                                <button onClick={handleSaveChanges}>Sûr.e de vouloir enregistrer !!!</button>
+                                <button onClick={resetData}>Bof, on remet comme avant</button>
                             </div>
                         </div>
                     )}

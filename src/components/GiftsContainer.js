@@ -14,16 +14,16 @@ function GiftsContainer(props) {
 
     function decodeCaracteresSpeciaux(chaine) {
         return chaine.replace(/&eacute;/g, "é")
-                     .replace(/&egrave;/g, "è")
-                     .replace(/&ecirc;/g, "ê")
-                     .replace(/&euml;/g, "ë")
-                     .replace(/&agrave;/g, "à")
-                     .replace(/&acirc;/g, "â")
-                     .replace(/&iuml;/g, "ï")
-                     .replace(/&ouml;/g, "ö")
-                     .replace(/&ucirc;/g, "û")
-                     .replace(/&apos;/g, "'")
-                     .replace(/&quot;/g, '"');
+            .replace(/&egrave;/g, "è")
+            .replace(/&ecirc;/g, "ê")
+            .replace(/&euml;/g, "ë")
+            .replace(/&agrave;/g, "à")
+            .replace(/&acirc;/g, "â")
+            .replace(/&iuml;/g, "ï")
+            .replace(/&ouml;/g, "ö")
+            .replace(/&ucirc;/g, "û")
+            .replace(/&apos;/g, "'")
+            .replace(/&quot;/g, '"');
     }
 
     let giftsList = "";
@@ -38,13 +38,13 @@ function GiftsContainer(props) {
         color
     } = props;
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
 
     //....Etat de gestion de l'affichage ou masquage des détails du cadeau
     const [openedDetailIndex, setOpenedDetailIndex] = useState(null);
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
 
     //....Fonction déclenchant l'affichage ou masquage des détails du cadeau
@@ -58,48 +58,50 @@ function GiftsContainer(props) {
         }
     };
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     //....Fonction de vol de cadeau
     const handleCartPlusClick = (data) => {
         //....Envoyer les données au parent (GiftsContainer)
         onClickCartPlus(data);
     };
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
-    if(data.gifts){
+    if (data.gifts) {
 
         nbGifts = data.gifts.length;
-        
+
         giftsList = data.gifts.map((data, index) => (
-        //....récupérés du tableau de données tableau de données
-        //....un composant par cadeau
-        
-        
+            //....récupérés du tableau de données tableau de données
+            //....un composant par cadeau
 
-        <div className={styles.gift} key={index}>
-            <GiftDetail
-                //....clé obligatoire
-                key={index}
-                //....statut de l'affichage des détail
-                isExpanded={openedDetailIndex === index}
-                //....fonction de clic sur le plus ou moins pour affichage détail
-                onClick={() => handleGiftClick(index)}
-                //....données
-                data={data}
-                //....clé obligatoire
-                // index={index}
-                //....fonction de vol de cadeau
-                onClickCartPlus={handleCartPlusClick}
-            />
-        </div>
-    ))}
-    else{
+
+
+            <div className={styles.gift} key={index}>
+                <GiftDetail
+                    //....clé obligatoire
+                    key={data.id}
+                    //....index du cadeau
+                    index={data.id}
+                    //....statut de l'affichage des détail
+                    isExpanded={openedDetailIndex === index}
+                    //....fonction de clic sur le plus ou moins pour affichage détail
+                    onClick={() => handleGiftClick(index)}
+                    //....données
+                    data={data}
+                    //....fonction de vol de cadeau
+                    onClickCartPlus={handleCartPlusClick}
+                />
+            </div>
+        ))
+    }
+    else {
         nbGifts = 0;
-        giftsList = null};
+        giftsList = null
+    };
 
-//______________________________________________________________________________
+    //______________________________________________________________________________
 
     //....Affichage
     return (
@@ -110,9 +112,9 @@ function GiftsContainer(props) {
                 className={styles.nameSection}
                 style={{ color: color }}>
                 <p className={styles.pseudo}>{data.pseudo}
-                <span className={styles.nbGifts}> {nbGifts}<span className={styles.logoGift}>&copy;</span></span>
-                
-                </p> 
+                    <span className={styles.nbGifts}> {nbGifts}<span className={styles.logoGift}>&copy;</span></span>
+
+                </p>
                 <div className={isExpanded ? styles.separationHide : styles.separationDisplay}>
                     <SectionNameSeparation />
                 </div>                {/* <p className={styles.chatSeparation}>###########################################"</p> */}
@@ -121,7 +123,7 @@ function GiftsContainer(props) {
 
 
             <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
-            <p style={{ color: color }} className={styles.intro}>{decodeCaracteresSpeciaux(data.intro)}</p>
+                <p style={{ color: color }} className={styles.intro}>{decodeCaracteresSpeciaux(data.intro)}</p>
 
                 <div className={styles.giftsSection} style={{ backgroundColor: props.color }}>
                     <div className={styles.absoluteContainer}>

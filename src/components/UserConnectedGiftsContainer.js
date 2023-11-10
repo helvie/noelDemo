@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
+import UserConnectedGiftDetailOffered from './UserConnectedGiftDetailOffered';
 import UserConnectedGiftDetail from './UserConnectedGiftDetail';
 import StartSeparationSection from './smallElements/StartSeparationSection';
 import EndSeparationSection from './smallElements/EndSeparationSection';
-import { faCartPlus } from '@fortawesome/free-solid-svg-icons';
+import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SectionNameSeparation from './smallElements/SectionNameSeparation';
 
@@ -15,7 +16,7 @@ function UserConnectedGiftsContainer(props) {
     let nbGifts = 0;
 
     //....Récupération des données contenues dans les propriétés de composants
-    const { 
+    const {
         color,
         isExpanded,
         onClick,
@@ -27,12 +28,14 @@ function UserConnectedGiftsContainer(props) {
         resetGift,
         saveChanges,
         onClickInput,
-        addNewGift
+        addNewGift,
+        handleOfferedClick,
+        idListe
 
     } = props;
 
-    console.log("editingGif in container : " + editingGift)
-    console.log("resetGift in container : " + resetGift)
+    // console.log("editinggift "+editingGift)
+
 
 
     //______________________________________________________________________________
@@ -54,38 +57,61 @@ function UserConnectedGiftsContainer(props) {
     //______________________________________________________________________________
 
     //....Gestion de la modification des input. Envoi des données dans le parent au fur et à mesure
-    const handleInputChange = (modifiedDataFromChildren) => {
-        console.log("modifiedDataFromChildren in container : "
-            + modifiedDataFromChildren.giftKey)
-        inputChangeInParent(modifiedDataFromChildren)
-    }
+    // const handleInputChange = (modifiedDataFromChildren) => {
+    //     inputChangeInParent(modifiedDataFromChildren)
+    // }
 
     //______________________________________________________________________________
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
+    const offeredGiftsList = data.gifts
+        //....récupérés du tableau de données tableau de données
+        ? data.gifts.filter(gift => gift.offered === true).map((data, index) => (
+            //....un composant par cadeau
+            <UserConnectedGiftDetailOffered
+                //....clé unique obligatoire
+                key={data.id}
+                //....c'est pareil mais je pensais qu'on pouvait l'appeler index pis non
+                index={data.id}
+                //....données
+                data={data}
+                idListe={idListe}
+
+                handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+            />
+
+        ))
+        :
+        //....S'il n'y a pas de données aucun renvoi
+        null;
+
+    //....Création de la variable contenant les div d'affichage des différents cadeaux
     const giftsList = data.gifts
         //....récupérés du tableau de données tableau de données
-        ? data.gifts.map((data, index) => (
+        ? data.gifts.filter(gift => gift.offered === false).map((data, index) => (
             //....un composant par cadeau
             <UserConnectedGiftDetail
                 //....clé unique obligatoire
-                key={index}
+                key={data.id}
                 //....c'est pareil mais je pensais qu'on pouvait l'appeler index pis non
-                index={index}
+                index={data.id}
                 //....fonction de détection de changement de cadeau à éditer
-                onClickInput={() => onClickInput(index)}
+                onClickInput={(giftId) => onClickInput(giftId)}
                 //....données
                 data={data}
                 //....fonction de gestion de changement des inputs
-                onInputChange={handleInputChange}
+                onInputChange={(changeObject) => inputChangeInParent(changeObject)}
                 //....booléen cadeau en cours de modification
-                editingGift={editingGift === index}
+                editingGift={editingGift === data.id}
                 //....statut de l'édition des inputs
                 inputDisabled={inputDisabled}
                 //....booléen réinitialisation des input si pas d'enregistrement dans modale
                 resetGift={resetGift === index}
                 //....fonction d'enregistrement
                 saveChanges={saveChanges}
+                idListe={idListe}
+
+                handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
 
             />
 
@@ -122,21 +148,30 @@ function UserConnectedGiftsContainer(props) {
 
                         {/*...Affichage du composant */}
                         <StartSeparationSection />
+                        <div className={styles.addGiftIconContainer}>
+
+                            <FontAwesomeIcon
+                                className={styles.addGiftIconUser}
+                                icon={faFileCirclePlus}
+                                onClick={handleAddNewGift}
+                            />
+                        </div>
 
                         <div className={styles.giftsList}>
                             {/*...Affichage du JSX stocké dans la variable giftsList */}
                             {giftsList}
                         </div>
-
-                        <div className={styles.caddyIconContainer}>
-
-                            <FontAwesomeIcon
-                                className={styles.caddyIconUser}
-                                icon={faCartPlus}
-                                onClick={handleAddNewGift}
-                            />
-
+                        <div className={styles.offeredGiftsList}>
+                            <p className={styles.startSeparationSection}
+                                style={{ fontSize: "30px", color: "#7c660e", letterSpacing: "12px" }}>&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
+                            </p>
+                            {/*...Affichage du JSX stocké dans la variable giftsList */}
+                            {offeredGiftsList}
+                            <p className={styles.startSeparationSection}
+                                style={{ fontSize: "30px", color: "#7c660e", letterSpacing: "12px" }}>&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
+                            </p>
                         </div>
+
 
                         {/*...Affichage du composant */}
                         <EndSeparationSection />
