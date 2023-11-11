@@ -1,7 +1,7 @@
 import styles from '../styles/Home.module.css';
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk, faGift, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk, faGift, faRotateLeft, faCircleChevronUp, faCircleChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 function UserConnectedGiftDetail(props) {
     const {
@@ -15,7 +15,9 @@ function UserConnectedGiftDetail(props) {
         inputDisabled,
         openModalInHome,
         handleOfferedClick,
-        idListe
+        idListe,
+        giftUp,
+        giftDown
     } = props;
 
     const [titleInput, setTitleInput] = useState(data.title);
@@ -28,13 +30,13 @@ function UserConnectedGiftDetail(props) {
             titleInput !== data.title ||
             detailInput !== data.detail ||
             urlInput !== data.url
-          ) {
+        ) {
             // Réinitialisez les champs d'entrée avec les données d'origine
             setTitleInput(data.title);
             setDetailInput(data.detail);
             setUrlInput(data.url);
-          }
-          editingGiftToFalse()
+        }
+        editingGiftToFalse()
     }
 
     const returnChanges = () => {
@@ -42,9 +44,9 @@ function UserConnectedGiftDetail(props) {
     }
 
     useEffect(() => {
-        if(resetGift){
-        resetInputs()
-    }
+        if (resetGift) {
+            resetInputs()
+        }
     }, [resetGift])
 
     // Fonction gérant la modification des entrées
@@ -118,6 +120,20 @@ function UserConnectedGiftDetail(props) {
                         icon={faGift}
                         onClick={() => handleOfferedClick(index, idListe, data.offered)}
                     />
+
+                    {/* <div className={styles.giftInputIconsContainer}> */}
+                    <FontAwesomeIcon
+                        className={`${styles.arrowIcon} ${styles.giftIcon}`}
+                        icon={faCircleChevronUp}
+                        onClick={()=>giftUp(data.id)}
+                    />
+                    <FontAwesomeIcon
+                        className={`${styles.arrowIcon} ${styles.giftIcon}`}
+                        icon={faCircleChevronDown}
+                        onClick={()=>giftDown(data.id)}
+                        
+                    />
+                    {/* </div> */}
                 </div>
             </div>
         </div>

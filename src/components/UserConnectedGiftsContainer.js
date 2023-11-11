@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 
 
 function UserConnectedGiftsContainer(props) {
-    
+
 
     const [addedNewGift, setAddedNewGift] = useState(null);
 
@@ -36,7 +36,9 @@ function UserConnectedGiftsContainer(props) {
         addNewGift,
         handleOfferedClick,
         idListe,
-        resetGift
+        resetGift,
+        giftUp,
+        giftDown
 
     } = props;
 
@@ -69,7 +71,7 @@ function UserConnectedGiftsContainer(props) {
     // }
 
     //______________________________________________________________________________
-        //....Création de la variable contenant les div d'affichage des différents cadeaux
+    //....Création de la variable contenant les div d'affichage des différents cadeaux
     const offeredGiftsList = data.gifts
         //....récupérés du tableau de données tableau de données
         ? data.gifts
@@ -111,7 +113,7 @@ function UserConnectedGiftsContainer(props) {
             //....fonction de gestion de changement des inputs
             onInputChange={(changeObject) => inputChangeInParent(changeObject)}
             //....booléen cadeau en cours de modification
-            editingGift={editingGift===999999}
+            editingGift={editingGift === 999999}
             //....statut de l'édition des inputs
             inputDisabled={inputDisabled}
             //....fonction d'enregistrement
@@ -119,6 +121,8 @@ function UserConnectedGiftsContainer(props) {
             idListe={idListe}
 
             handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+            giftUp = {(id)=>giftUp(id)}
+            giftDown = {(id)=>giftDown(id)}
 
         />
 
@@ -129,8 +133,8 @@ function UserConnectedGiftsContainer(props) {
         //....récupérés du tableau de données tableau de données
         ? data.gifts.filter(gift => gift.offered === false).map((data, index) => (
             //....un composant par cadeau
-            
-            
+
+
             <UserConnectedGiftDetail
                 //....clé unique obligatoire
                 key={data.id}
@@ -153,6 +157,8 @@ function UserConnectedGiftsContainer(props) {
                 editingGiftToFalse={editingGiftToFalse}
 
                 handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+                giftUp = {(id)=>giftUp(id)}
+                giftDown = {(id)=>giftDown(id)}
 
             />
 
@@ -211,22 +217,15 @@ function UserConnectedGiftsContainer(props) {
 
                         {renderAddGiftIcon()}
 
-                        {/* {data.find(item => item.id === 999999) &&
-                            <div className={styles.addGiftIconContainer}>
-                                <FontAwesomeIcon
-                                    className={styles.addGiftIcon}
-                                    icon={faFileCirclePlus}
-                                    onClick={handleAddNewGift}
-                                />
-                            </div>
-                        } */}
-
                         {addedNewGift && newEmptyGift}
+                        <div className={styles.giftInputContainer}>
 
-                        <div className={styles.giftsList}>
-                            {/*...Affichage du JSX stocké dans la variable giftsList */}
-                            {giftsList}
+                            <div className={styles.giftsList}>
+                                {/*...Affichage du JSX stocké dans la variable giftsList */}
+                                {giftsList}
+                            </div>
                         </div>
+
                         <div className={styles.offeredGiftsList}>
                             <p className={styles.startSeparationSection}
                                 style={{ fontSize: "30px", color: "#7c660e", letterSpacing: "12px" }}>&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;

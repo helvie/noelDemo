@@ -75,6 +75,29 @@ function HomePage() {
 
     let colorNumber = 1;
 
+    const giftUp = (id) => {
+
+    }
+
+    const giftDown = (id) => {
+        console.log(id)
+    }
+
+    console.log(giftsList2)
+
+    const swapOrder = (giftsList, targetOrder) => {
+        const targetIndex = giftsList.findIndex(gift => gift.order === targetOrder);
+    
+        if (targetIndex !== -1 && targetIndex < giftsList.length - 1) {
+            const nextOrder = giftsList[targetIndex + 1].order;
+    
+            // Échange des valeurs
+            giftsList[targetIndex + 1].order = targetOrder;
+            giftsList[targetIndex].order = nextOrder;
+        }
+    
+        return giftsList;
+    }
 
     const removeGiftById = (idToRemove) => {
         setGiftsConnectedUserList((prevList) => {
@@ -135,7 +158,7 @@ function HomePage() {
             method: 'PUT',
             headers: {
                 "Noel-Token": user.token,
-                "User-Name": user.name,
+                "User-Name": encodeURIComponent(user.name),
                 "App-Name": "NoelTan",
                 "content-type": 'application/json'
             },
@@ -197,7 +220,7 @@ function HomePage() {
 
                     headers: {
 
-                        "user-name": logs.signinName,
+                        "user-name": encodeURIComponent(logs.signinName),
                         "app-name": "NoelTan",
                         "noel-token": tokenData // Utilisez la variable renommée ici
                     }
@@ -276,8 +299,9 @@ function HomePage() {
                             handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
                             resetGift={resetGift}
                             editingGiftToFalse={editingGiftToFalse}
-
-
+                            giftUp = {(id)=>giftUp(id)}
+                            giftDown = {(id)=>giftDown(id)}
+            
                         />
                     )
                 })
@@ -525,7 +549,7 @@ function HomePage() {
                 method: 'POST',
                 headers: {
                     "Noel-Token": user.token,
-                    "User-Name": user.name,
+                    "User-Name": encodeURIComponent(user.name),
                     "App-Name": "NoelTan",
                     "content-type": 'application/json'
                 },
@@ -563,7 +587,7 @@ function HomePage() {
                 method: 'POST',
                 headers: {
                     "Noel-Token": user.token,
-                    "User-Name": user.name,
+                    "User-Name": encodeURIComponent(user.name),
                     "App-Name": "NoelTan",
                     "content-type": 'application/json'
                 },

@@ -156,12 +156,12 @@
 }
 
 .giftTitleInput {
-  background-color: #f1cb34;
+  background-color: var(--color5);
   padding: 10px;
   margin-bottom: 20px;
   color: var(--color1);
   border: 0;
-  outline: 7px dotted #f1cb34;
+  outline: 7px dotted var(--color5);
   font-size: 16px;
   font-weight: bold;
   font-family: 'goodbye-crewel-world-nf.regular';
@@ -187,23 +187,23 @@
 }
 
 .giftTextInput {
-  background-color: #f1cb34;
+  background-color: var(--color5);
   padding: 10px;
   margin-bottom: 20px;
   color: var(--color1);
   border: 0;
-  outline: 7px dotted #f1cb34;
+  outline: 7px dotted var(--color5);
   width: 100%;
   font-family: 'goodbye-crewel-world-nf.regular';    
   }
 
 .giftUrlInput {
-  background-color: #f1cb34;
+  background-color: var(--color5);
   padding: 10px;
   margin-bottom: 20px;
   color: var(--color1);
   border: 0;
-  outline: 7px dotted #f1cb34;
+  outline: 7px dotted var(--color5);
   font-size: 15px;
   overflow-wrap: break-word;
   width: 100%;
@@ -500,6 +500,12 @@ font-size:20px;
 .addGiftIcon{
   cursor:pointer;
 }
+
+/* .giftInputContainer {
+  display:flex;
+  flex-direction:row;
+} */
+
 
 @media (max-width: 1024px) {
 
