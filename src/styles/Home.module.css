@@ -497,6 +497,10 @@ font-size:20px;
   margin-bottom:10px;
 }
 
+.addGiftIcon{
+  cursor:pointer;
+}
+
 @media (max-width: 1024px) {
 
 .chatSection {

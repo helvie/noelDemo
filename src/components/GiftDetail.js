@@ -15,16 +15,26 @@ function GiftDetail(props) {
         onClick,
         onClickCartPlus,
         index,
+        idListe
     }
         = props;
 
+
     //______________________________________________________________________________
 
-    //....Fonction de vol de cadeau
     const handleCartPlusClick = () => {
-        //....Envoyer les données au parent (GiftsContainer)
-        onClickCartPlus(data);
-    };
+        // Copier l'objet data et apporter les modifications nécessaires
+        const modifiedData = {
+          ...data,
+          id: 999998,
+          Ordre: 999998,
+          idListe:idListe,
+          giftKey:999998
+        };
+      
+        // Envoyer les données modifiées au parent (GiftsContainer)
+        onClickCartPlus(modifiedData);
+      };
     //______________________________________________________________________________
 
     return (

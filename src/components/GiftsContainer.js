@@ -35,7 +35,8 @@ function GiftsContainer(props) {
         onClick,
         isExpanded,
         onClickCartPlus,
-        color
+        color,
+        idListe
     } = props;
 
     //______________________________________________________________________________
@@ -60,11 +61,11 @@ function GiftsContainer(props) {
 
     //______________________________________________________________________________
 
-    //....Fonction de vol de cadeau
-    const handleCartPlusClick = (data) => {
-        //....Envoyer les données au parent (GiftsContainer)
-        onClickCartPlus(data);
-    };
+    // //....Fonction de vol de cadeau
+    // const handleCartPlusClick = (data) => {
+    //     //....Envoyer les données au parent (GiftsContainer)
+    //     onClickCartPlus(data);
+    // };
     //______________________________________________________________________________
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
@@ -72,7 +73,7 @@ function GiftsContainer(props) {
 
         nbGifts = data.gifts.length;
 
-        giftsList = data.gifts.map((data, index) => (
+        giftsList = data.gifts.filter(gift=>gift.offered===false).map((data, index) => (
             //....récupérés du tableau de données tableau de données
             //....un composant par cadeau
 
@@ -90,8 +91,10 @@ function GiftsContainer(props) {
                     onClick={() => handleGiftClick(index)}
                     //....données
                     data={data}
+
+                    idListe = {idListe}
                     //....fonction de vol de cadeau
-                    onClickCartPlus={handleCartPlusClick}
+                    onClickCartPlus={(giftData)=>onClickCartPlus(giftData)}
                 />
             </div>
         ))

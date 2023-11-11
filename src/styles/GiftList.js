@@ -16,7 +16,7 @@ function GiftsList(props) {
     const [editingData, setEditingData] = useState({
         isEditing: false,
         titleInput: '',
-        textInput: '',
+        detailInput: '',
         urlInput: '',
     });
 

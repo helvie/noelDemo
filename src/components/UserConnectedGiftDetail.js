@@ -1,178 +1,126 @@
-import styles from '../styles/Home.module.css'
-import React from 'react';
+import styles from '../styles/Home.module.css';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
 import { faFloppyDisk, faGift, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
-import { useEffect } from 'react';
-
-//______________________________________________________________________________
-
 
 function UserConnectedGiftDetail(props) {
-
-    //....Récupération des données contenues dans les propriétés de composants
     const {
         data,
+        resetGift,
+        editingGiftToFalse,
         onInputChange,
         index,
         editingGift,
         onClickInput,
-        resetGift,
         inputDisabled,
-        saveChanges,
+        openModalInHome,
         handleOfferedClick,
         idListe
-    }
-        = props;
+    } = props;
 
-        // console.log("index "+index)
-        // console.log("editinggift "+editingGift)
-
-
-    //______________________________________________________________________________
-
-    const title = data ? data.title : "";
-    const text = data ? data.detail : "";
-    const url = data ? data.url : "";
+    const [titleInput, setTitleInput] = useState(data.title);
+    const [detailInput, setDetailInput] = useState(data.detail);
+    const [urlInput, setUrlInput] = useState(data.url);
 
 
-    //....Etat de l'input titre du cadeau, modifié au fur et à mesure de la saisie
-    const [titleInput, setTitleInput] = useState(title);
-
-    //....Etat de l'input texte du cadeau, modifié au fur et à mesure de la saisie
-    const [textInput, setTextInput] = useState(text);
-
-    //....Etat de l'input url du cadeau, modifié au fur et à mesure de la saisie
-    const [urlInput, setUrlInput] = useState(url);
-
-
-    // Fonction de réinitialisation des inputs avec les données initiales
     const resetInputs = () => {
-        setTitleInput(data.title);
-        setTextInput(data.detail);
-        setUrlInput(data.url);
-    };
-    
+        if (
+            titleInput !== data.title ||
+            detailInput !== data.detail ||
+            urlInput !== data.url
+          ) {
+            // Réinitialisez les champs d'entrée avec les données d'origine
+            setTitleInput(data.title);
+            setDetailInput(data.detail);
+            setUrlInput(data.url);
+          }
+          editingGiftToFalse()
+    }
 
-   
+    const returnChanges = () => {
+        resetInputs();
+    }
 
-
-    //______________________________________________________________________________
-
-
-    //....Vérification du statut de reset à chaque initialisation ou Màj du composant
     useEffect(() => {
-        //....et mise à jour des inputs, le cas échéant
-        if (resetGift) {
-            resetInputs();
-        }
-    }, [resetGift]);
+        if(resetGift){
+        resetInputs()
+    }
+    }, [resetGift])
 
-
-    //______________________________________________________________________________
-
-
-    //....Fonction gérant la modification des inputs
+    // Fonction gérant la modification des entrées
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        // Mise à jour, au fur et à mesure de la saisie, de l'état correspondant à l'input modifié
+        // Mise à jour de l'état en fonction de l'entrée modifiée
         if (name === 'title') {
             setTitleInput(value);
         } else if (name === 'text') {
-            setTextInput(value);
+            setDetailInput(value);
         } else if (name === 'url') {
             setUrlInput(value);
         }
 
-        //....Appel de la fonction de rappel pour informer le parent des modifications
-        //....permettra par la suite d'enregistrer les données dans le parent
-        // Mise à jour de modifiedData en temps réel
+        // Appel de la fonction de rappel pour informer le parent des modifications
         onInputChange({
             titleInput: name === 'title' ? value : titleInput,
-            textInput: name === 'text' ? value : textInput,
+            detailInput: name === 'text' ? value : detailInput,
             urlInput: name === 'url' ? value : urlInput,
-            giftKey: props.index
+            giftKey: props.index,
+            idListe: props.idListe
         });
-
     };
 
-    //______________________________________________________________________________
-
     return (
-        <>
-            <div className={styles.gift}>
+        <div className={styles.gift}>
+            <div className={editingGift || index === 999999 ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
+                <input
+                    className={styles.giftTitleInput}
+                    type="text"
+                    name="title"
+                    onChange={handleInputChange}
+                    value={titleInput}
+                    disabled={inputDisabled}
+                    onClick={() => onClickInput(index)}
+                />
+                <textarea
+                    className={styles.giftTextInput}
+                    onChange={handleInputChange}
+                    value={detailInput}
+                    name="text"
+                    disabled={inputDisabled}
+                    onClick={() => onClickInput(index)}
+                />
+                <input
+                    className={styles.giftUrlInput}
+                    type="text"
+                    name="url"
+                    onChange={handleInputChange}
+                    value={urlInput}
+                    disabled={inputDisabled}
+                    onClick={() => onClickInput(index)}
+                />
+                <div className={styles.giftLinkUserConnected}>
+                    <FontAwesomeIcon
+                        className={`${styles.saveIcon} ${styles.giftIcon}`}
+                        style={editingGift ? null : { display: "none" }}
+                        icon={faFloppyDisk}
+                        onClick={openModalInHome}
+                    />
+                    <FontAwesomeIcon
+                        className={`${styles.returnIcon} ${styles.giftIcon}`}
+                        style={editingGift ? null : { display: "none" }}
+                        icon={faRotateLeft}
+                        onClick={returnChanges}
 
-                <div className={editingGift ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
-                    {/* <div className={styles.giftTitleAndLink}> */}
-
-                        <input
-                            className={styles.giftTitleInput}
-                            type="text"
-                            name="title"
-                            onChange={handleInputChange}
-                            value={titleInput}
-                            disabled={inputDisabled}
-                            onClick={() => onClickInput(index)}
-                        />
-
-                    {/* </div> */}
-
-                    {/* <div className={styles.textAreaContainer}> */}
-
-                        <textarea
-                            className={styles.giftTextInput}
-                            onChange={handleInputChange}
-                            value={textInput}
-                            name="text"
-                            disabled={inputDisabled}
-                            onClick={() => onClickInput(index)} />
-
-                    {/* </div> */}
-
-                    {/* <div> */}
-
-                        <input
-                            className={styles.giftUrlInput}
-                            type="text"
-                            name="url"
-                            onChange={handleInputChange}
-                            value={urlInput}
-                            disabled={inputDisabled}
-                            onClick={() => onClickInput(index)}
-                        />
-
-                    {/* </div> */}
-
-                    <div className={styles.giftLinkUserConnected}>
-
-                        <FontAwesomeIcon
-                            className={`${styles.saveIcon} ${styles.giftIcon}`}
-                            style={editingGift ? null : { display: "none" }}
-                            icon={faFloppyDisk}
-                            onClick={saveChanges}
-
-                        />
-
-                        <FontAwesomeIcon
-                            className={`${styles.returnIcon} ${styles.giftIcon}`}
-                            style={editingGift ? null : { display: "none" }}
-                            icon={faRotateLeft}
-                        />
-
-                        <FontAwesomeIcon
-                            className={`${styles.givedIcon} ${styles.giftIcon}`}
-                            icon={faGift}
-                            // onclick={handleOfferedClick}
-                            onClick={() => handleOfferedClick(index, idListe, data.offered)}
-                        />
-
-                    </div>
-
+                    />
+                    <FontAwesomeIcon
+                        className={`${styles.givedIcon} ${styles.giftIcon}`}
+                        icon={faGift}
+                        onClick={() => handleOfferedClick(index, idListe, data.offered)}
+                    />
                 </div>
-
             </div>
-        </>
+        </div>
     );
 }
 
