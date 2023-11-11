@@ -98,7 +98,7 @@ function ConnectionUser(props) {
 
           {/* --------------------------- Input name -------------------------- */}
 
-          {props.errorLoginPass && <div style={{color:"#e6bc14", marginBottom:"20px"}}>N'importe nawak ce que tu as mis comme login ou mot de passe !</div>}
+          {props.errorLoginPass && <div style={{color:"#e6bc14", marginBottom:"20px"}}>N&apos;importe nawak ce que tu as mis comme login ou mot de passe !;</div>}
 
           {/* <div className={styles.inputRegistrationContainer}> */}
             <p className={styles.connectionInputTitle}>Prénom</p>
