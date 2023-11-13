@@ -15,9 +15,13 @@ function GiftDetail(props) {
         onClick,
         onClickCartPlus,
         index,
-        idListe
+        idListe,
+        onUrlClick
     }
         = props;
+
+
+
 
 
     //______________________________________________________________________________
@@ -25,16 +29,16 @@ function GiftDetail(props) {
     const handleCartPlusClick = () => {
         // Copier l'objet data et apporter les modifications nécessaires
         const modifiedData = {
-          ...data,
-          id: 999998,
-          Ordre: 999998,
-          idListe:idListe,
-          giftKey:999998
+            ...data,
+            id: 999998,
+            Ordre: 999998,
+            idListe: idListe,
+            giftKey: 999998
         };
-      
+
         // Envoyer les données modifiées au parent (GiftsContainer)
         onClickCartPlus(modifiedData);
-      };
+    };
     //______________________________________________________________________________
 
     return (
@@ -48,9 +52,18 @@ function GiftDetail(props) {
                 /></h3>
 
                 <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
-                    <p className={styles.giftText}>{data.detail} <a className={styles.linkIcon} href={data.url} target="_blank" rel="noopener noreferrer">
-                    {data.url &&<FontAwesomeIcon className={styles.giftIcon} icon={faLink} />}
-                </a></p>
+                    <p className={styles.giftText}>
+                        {data.detail}
+                        <a
+                            className={styles.linkIcon}
+                            onClick={()=>onUrlClick(data.url)}
+                        >
+                            <FontAwesomeIcon
+                                className={styles.giftIcon}
+                                icon={faLink}
+                            />
+                        </a>
+                    </p>
                     <p className={styles.updateDate}>Modifié le : {formatDate(data.date)}</p>
                 </div>
 

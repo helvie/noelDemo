@@ -14,7 +14,9 @@ import { useEffect } from 'react';
 function UserConnectedGiftsContainer(props) {
 
 
+
     const [addedNewGift, setAddedNewGift] = useState(null);
+    
 
     const myDate = new Date();
     const formattedDate = `${myDate.getFullYear()}-${String(myDate.getMonth() + 1).padStart(2, '0')}-${String(myDate.getDate()).padStart(2, '0')} ${String(myDate.getHours()).padStart(2, '0')}:${String(myDate.getMinutes()).padStart(2, '0')}:${String(myDate.getSeconds()).padStart(2, '0')}`;
@@ -38,10 +40,12 @@ function UserConnectedGiftsContainer(props) {
         idListe,
         resetGift,
         giftUp,
-        giftDown
+        giftDown,
+        orderChange
 
     } = props;
 
+    console.log(orderChange)
 
     //______________________________________________________________________________
 
@@ -127,11 +131,13 @@ function UserConnectedGiftsContainer(props) {
         />
 
 
-
+    
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     const giftsList = data.gifts
         //....récupérés du tableau de données tableau de données
-        ? data.gifts.filter(gift => gift.offered === false).map((data, index) => (
+        ? data.gifts.filter(gift => gift.offered === false)
+        .sort((a, b) => b.Ordre - a.Ordre)
+        .map((data, index) => (
             //....un composant par cadeau
 
 
@@ -219,11 +225,12 @@ function UserConnectedGiftsContainer(props) {
 
                         {addedNewGift && newEmptyGift}
                         <div className={styles.giftInputContainer}>
-
+{orderChange &&
                             <div className={styles.giftsList}>
                                 {/*...Affichage du JSX stocké dans la variable giftsList */}
                                 {giftsList}
                             </div>
+                            }
                         </div>
 
                         <div className={styles.offeredGiftsList}>

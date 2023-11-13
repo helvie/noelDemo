@@ -32,6 +32,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
+
 // const persistor = persistStore(store);
 
 function App({ Component, pageProps }) {

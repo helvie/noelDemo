@@ -131,7 +131,7 @@
   margin-top:10px;
 }
 .detailDisplay {
-  max-height: 10000px;
+  /* max-height: 60000px; */
   overflow: hidden;
   transition: max-height 0.5s ease-in-out;
 }

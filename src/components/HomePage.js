@@ -11,13 +11,20 @@ import ChatContainer from "../components/ChatContainer";
 import ConnectionUser from './ConnectionUser';
 import { useSelector, useDispatch } from 'react-redux';
 import { login, logout } from '../reducers/user'
+import { useRouter } from 'next/router';
+
 const moment = require('moment');
+
 require('moment/locale/fr');
+
 
 function HomePage() {
 
+
+
     let idConnectedUserList = 0;
 
+    const router = useRouter();
 
     const user = useSelector((state) => state.user);
     const sizeOfWindow = useSelector((state) => state.windowSize);
@@ -66,6 +73,7 @@ function HomePage() {
     const [signinName, setSigninName] = useState('');
     const [errors, setErrors] = useState({});
     const [resetGift, setResetGift] = useState(-1);
+    const [orderChange, setOrderChange] = useState(1);
 
     const [errorLoginPass, setErrorLoginPass] = useState(null);
 
@@ -75,41 +83,111 @@ function HomePage() {
 
     let colorNumber = 1;
 
-    const giftUp = (id) => {
-
-    }
-
-    const giftDown = (id) => {
-        console.log(id)
-    }
-
-    console.log(giftsList2)
-
-    const swapOrder = (giftsList, targetOrder) => {
-        const targetIndex = giftsList.findIndex(gift => gift.order === targetOrder);
-    
-        if (targetIndex !== -1 && targetIndex < giftsList.length - 1) {
-            const nextOrder = giftsList[targetIndex + 1].order;
-    
-            // Échange des valeurs
-            giftsList[targetIndex + 1].order = targetOrder;
-            giftsList[targetIndex].order = nextOrder;
+    const handleUrlClick = (url) => {
+        console.log("Navigating to:", url);
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
         }
-    
-        return giftsList;
+        window.open(url, "_blank");
+      };
+
+
+    const swapOrderInBdd = (idRemplacant, idRemplace) => {
+        console.log(idRemplacant)
+        console.log(idRemplace)
+        return fetch("https://noel.helvie.fr/api/changeOrdreCadeau", {
+            method: 'POST',
+            headers: {
+                "Noel-Token": user.token,
+                "User-Name": encodeURIComponent(user.name),
+                "App-Name": "NoelTan",
+                "content-type": 'application/json'
+            },
+            body: JSON.stringify({
+                IdRemplacant: idRemplacant,
+                IdRemplace: idRemplace,
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP! Statut: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log("Réussi", data);
+            return data; 
+        })
+        .catch(error => {
+            console.error("Erreur maj statut cadeau", error);
+            throw error; 
+        });
+    };
+
+// Fonction pour échanger l'ordre avec le cadeau du dessus
+const swapOrderWithAbove = async (giftsConnectedUserList, targetId) => {
+    const targetIndex = giftsConnectedUserList[0].gifts
+        .sort((a, b) => b.Ordre - a.Ordre)
+        .findIndex(gift => gift.id === targetId);
+
+    if (targetIndex > 0) {
+        const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
+        const aboveOrder = giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre;
+        const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
+        const aboveId = giftsConnectedUserList[0].gifts[targetIndex - 1].id;
+        try {
+            const result = await swapOrderInBdd(aboveId, currentId);
+            console.log("swapOrderInBdd result:", result);
+            // Continuer avec le reste du code ici...
+            giftsConnectedUserList[0].gifts[targetIndex].Ordre = aboveOrder;
+            giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre = currentOrder;
+            setOrderChange(orderChange + 1);
+            // Autres opérations...
+        } catch (error) {
+            console.error("Erreur lors de swapOrderInBdd:", error);
+            // Gérer l'erreur ici...
+        }
     }
+};
+
+// Fonction pour échanger l'ordre avec le cadeau du dessous
+const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
+    const targetIndex = giftsConnectedUserList[0].gifts
+        .sort((a, b) => b.Ordre - a.Ordre)
+        .findIndex(gift => gift.id === targetId);
+
+    if (targetIndex !== -1 && targetIndex < giftsConnectedUserList[0].gifts.length - 1) {
+        const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
+        const belowOrder = giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre;
+        const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
+        const belowId = giftsConnectedUserList[0].gifts[targetIndex + 1].id;
+
+        try {
+            const result = await swapOrderInBdd(currentId, belowId);
+            console.log("swapOrderInBdd result:", result);
+            // Continuer avec le reste du code ici...
+            giftsConnectedUserList[0].gifts[targetIndex].Ordre = belowOrder;
+            giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre = currentOrder;
+            setOrderChange(orderChange + 1);
+            // Autres opérations...
+        } catch (error) {
+            console.error("Erreur lors de swapOrderInBdd:", error);
+            // Gérer l'erreur ici...
+        }
+    }
+};
 
     const removeGiftById = (idToRemove) => {
         setGiftsConnectedUserList((prevList) => {
-          // Vérifiez si prevList est non vide et si gifts est défini
-          if (prevList.length > 0 && prevList[0].gifts) {
-            const updatedGifts = prevList[0].gifts.filter((gift) => gift.id !== idToRemove);
-            return [{ ...prevList[0], gifts: updatedGifts }];
-          }
-      
-          return prevList;
+            // Vérifiez si prevList est non vide et si gifts est défini
+            if (prevList.length > 0 && prevList[0].gifts) {
+                const updatedGifts = prevList[0].gifts.filter((gift) => gift.id !== idToRemove);
+                return [{ ...prevList[0], gifts: updatedGifts }];
+            }
+
+            return prevList;
         });
-      };
+    };
 
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
     const colors = ["#e6bc14", "#ffffff", "#e62530"]
@@ -214,6 +292,7 @@ function HomePage() {
                     name: logs.signinName,
                     token: tokenData
                 }))
+                console.log(tokenData)
 
 
                 fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
@@ -232,6 +311,7 @@ function HomePage() {
 
                         setGiftsList2(giftsData.filter((data) => data.pseudo.toLowerCase() !== logs.signinName.toLowerCase()));
                         setGiftsConnectedUserList(giftsData.filter((data) => data.pseudo.toLowerCase() === logs.signinName.toLowerCase()));
+                        console.log(giftsData.filter((data) => data.pseudo.toLowerCase() === logs.signinName.toLowerCase()))
                     })
 
                     .catch(error => {
@@ -272,7 +352,7 @@ function HomePage() {
                         //....composant user
                         <UserConnectedGiftsContainer
                             //....clé unique obligatoire
-                            key={-2}
+                            key={999997}
                             //....background color
                             color={color}
                             //....statut depliage de la section
@@ -299,9 +379,9 @@ function HomePage() {
                             handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
                             resetGift={resetGift}
                             editingGiftToFalse={editingGiftToFalse}
-                            giftUp = {(id)=>giftUp(id)}
-                            giftDown = {(id)=>giftDown(id)}
-            
+                            giftUp={(id) => swapOrderWithAbove(giftsConnectedUserList, id)}
+                            giftDown={(id) => swapOrderWithBelow(giftsConnectedUserList, id)}
+                            orderChange={orderChange}
                         />
                     )
                 })
@@ -340,6 +420,9 @@ function HomePage() {
                             onClickCartPlus={(dataGift) => handleSaveChanges(dataGift)}
 
                             idListe={idConnectedUserList}
+
+                            onUrlClick={(url)=>handleUrlClick(url)}
+
                         />
                     )
                 })
@@ -349,7 +432,8 @@ function HomePage() {
         setResetGift(-1)
 
 
-    }, [giftsList2, giftsConnectedUserList, openedSectionUser, openedSectionIndex, editingGift, user]);
+    }, [giftsList2, giftsConnectedUserList, openedSectionUser,
+        openedSectionIndex, editingGift, user, orderChange]);
 
 
 
@@ -542,6 +626,7 @@ function HomePage() {
 
     //....Gestion de l'enregistrement des modifications depuis la modale
     const handleSaveChanges = (giftDatas) => {
+        console.log(giftDatas)
 
         if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
 
@@ -583,6 +668,8 @@ function HomePage() {
         }
         else {
 
+
+            console.log(giftDatas.urlInput)
             fetch("https://noel.helvie.fr/api/updateCadeau", {
                 method: 'POST',
                 headers: {
@@ -592,10 +679,10 @@ function HomePage() {
                     "content-type": 'application/json'
                 },
                 body: JSON.stringify({
-                    idListe: giftDatas.idListe,
+                    id: giftDatas.giftKey,
                     title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
                     detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-                    url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+                    url: giftDatas.urlInput ? encodeURIComponent(giftDatas.urlInput) : giftDatas.url ? encodeURIComponent(giftDatas.url) : "",
                 })
             })
                 .then(response => {

@@ -36,7 +36,8 @@ function GiftsContainer(props) {
         isExpanded,
         onClickCartPlus,
         color,
-        idListe
+        idListe,
+        onUrlClick
     } = props;
 
     //______________________________________________________________________________
@@ -95,6 +96,8 @@ function GiftsContainer(props) {
                     idListe = {idListe}
                     //....fonction de vol de cadeau
                     onClickCartPlus={(giftData)=>onClickCartPlus(giftData)}
+
+                    onUrlClick={(url)=>onUrlClick(url)}
                 />
             </div>
         ))
