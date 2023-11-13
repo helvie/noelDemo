@@ -682,7 +682,7 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
                     id: giftDatas.giftKey,
                     title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
                     detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-                    url: giftDatas.urlInput ? encodeURIComponent(giftDatas.urlInput) : giftDatas.url ? encodeURIComponent(giftDatas.url) : "",
+                    url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
                 })
             })
                 .then(response => {
