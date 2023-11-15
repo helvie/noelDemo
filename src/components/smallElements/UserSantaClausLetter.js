@@ -20,9 +20,11 @@ const UserSantaClausLetter = (props) => {
         closeLetterSection
     } = props;
 
+    console.log(user.intro)
+
     useEffect(() => {
         setUserLetterInput(user.intro)
-    }, [user.email])
+    }, [user.intro])
 
 
     const handleSaveData = async () => {
