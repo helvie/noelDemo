@@ -72,7 +72,7 @@ function GiftsContainer(props) {
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     if (data.gifts) {
 
-        nbGifts = data.gifts.length;
+        { nbGifts = data.gifts ? data.gifts.filter(gift => !gift.offered).length : 0 }
 
         giftsList = data.gifts.filter(gift=>gift.offered===false).map((data, index) => (
             //....récupérés du tableau de données tableau de données

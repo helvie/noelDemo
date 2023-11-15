@@ -6,9 +6,13 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateWindowSize } from '../../reducers/windowSize';
 
-const Header = () => {
+const Header = (props) => {
 
   const dispatch = useDispatch();
+
+  const {
+    openUserDataChange
+  } = props;
 
   // const noelLogosJsx = noelLogos.map((data, i) => {
   //   return <div key={i}> {data}</div>;
@@ -53,7 +57,11 @@ const Header = () => {
             noelLogosJsx.slice(0, 10) :
             noelLogosJsx
         }
-        <FontAwesomeIcon icon={faBars} style={{ fontSize: "30px", color: "darkred" }}></FontAwesomeIcon>
+        <FontAwesomeIcon 
+        icon={faBars} 
+        style={{ fontSize: "30px", color: "darkred" }}
+          onClick={openUserDataChange}
+        />
       </div>
     </>
   );

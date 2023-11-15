@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styles from '../styles/Home.module.css';
 import { useRouter } from 'next/router';
+import Header from '../components/smallElements/Header'
 
 ////////////////////////////////////////////////////////////////////////////////
 
 function ConnectionUser(props) {
 
 
-  const router = useRouter();
-  const dispatch = useDispatch();
 
   const [signinName, setSigninName] = useState('');
   const [signinPassword, setSigninPassword] = useState('');
@@ -57,36 +56,14 @@ function ConnectionUser(props) {
     setErrors({});
   };
 
-  // //oooooooooooo Récupération des données de l'utilisateur en base de données oooooooooo
 
-  // function ConnectionUser() {
-
-  //   fetch(`${BACKEND_URL}/users/signin`, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ name: signinName, password: signinPassword })
-  //   })
-  //     .then(response => response.json())
-
-  //     // Transfert vers page d'accueil
-  //     .then(data => {
-  //       if (data.result) {
-
-  //         dispatch(login(data))
-  //         router.push('/');
-  //         return true
-  //       }
-  //       else {
-
-  //         return false
-  //       }
-  //     })
-  // }
 
   ////////////////////////////////////////////////////////////////////////////////
 
   return (
     <main className={styles.orgContent}>
+            {/* <Header /> */}
+
       <div className={styles.formContainer}>
 
 

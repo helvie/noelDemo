@@ -16,7 +16,7 @@ function UserConnectedGiftsContainer(props) {
 
 
     const [addedNewGift, setAddedNewGift] = useState(null);
-    
+
 
     const myDate = new Date();
     const formattedDate = `${myDate.getFullYear()}-${String(myDate.getMonth() + 1).padStart(2, '0')}-${String(myDate.getDate()).padStart(2, '0')} ${String(myDate.getHours()).padStart(2, '0')}:${String(myDate.getMinutes()).padStart(2, '0')}:${String(myDate.getSeconds()).padStart(2, '0')}`;
@@ -125,50 +125,50 @@ function UserConnectedGiftsContainer(props) {
             idListe={idListe}
 
             handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
-            giftUp = {(id)=>giftUp(id)}
-            giftDown = {(id)=>giftDown(id)}
+            giftUp={(id) => giftUp(id)}
+            giftDown={(id) => giftDown(id)}
 
         />
 
 
-    
+
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     const giftsList = data.gifts
         //....récupérés du tableau de données tableau de données
         ? data.gifts.filter(gift => gift.offered === false)
-        .sort((a, b) => b.Ordre - a.Ordre)
-        .map((data, index) => (
-            //....un composant par cadeau
+            .sort((a, b) => b.Ordre - a.Ordre)
+            .map((data, index) => (
+                //....un composant par cadeau
 
 
-            <UserConnectedGiftDetail
-                //....clé unique obligatoire
-                key={data.id}
-                //....
-                index={data.id}
-                //....fonction de détection de changement de cadeau à éditer
-                onClickInput={(giftId) => onClickInput(giftId)}
-                //....données
-                data={data}
-                //....fonction de gestion de changement des inputs
-                onInputChange={(changeObject) => inputChangeInParent(changeObject)}
-                //....booléen cadeau en cours de modification
-                editingGift={editingGift === data.id}
-                //....statut de l'édition des inputs
-                inputDisabled={inputDisabled}
-                //....fonction d'enregistrement
-                openModalInHome={openModalInHome}
-                idListe={idListe}
-                resetGift={resetGift === data.id}
-                editingGiftToFalse={editingGiftToFalse}
+                <UserConnectedGiftDetail
+                    //....clé unique obligatoire
+                    key={data.id}
+                    //....
+                    index={data.id}
+                    //....fonction de détection de changement de cadeau à éditer
+                    onClickInput={(giftId) => onClickInput(giftId)}
+                    //....données
+                    data={data}
+                    //....fonction de gestion de changement des inputs
+                    onInputChange={(changeObject) => inputChangeInParent(changeObject)}
+                    //....booléen cadeau en cours de modification
+                    editingGift={editingGift === data.id}
+                    //....statut de l'édition des inputs
+                    inputDisabled={inputDisabled}
+                    //....fonction d'enregistrement
+                    openModalInHome={openModalInHome}
+                    idListe={idListe}
+                    resetGift={resetGift === data.id}
+                    editingGiftToFalse={editingGiftToFalse}
 
-                handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
-                giftUp = {(id)=>giftUp(id)}
-                giftDown = {(id)=>giftDown(id)}
+                    handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+                    giftUp={(id) => giftUp(id)}
+                    giftDown={(id) => giftDown(id)}
 
-            />
+                />
 
-        ))
+            ))
         :
         //....S'il n'y a pas de données aucun renvoi
         null;
@@ -215,32 +215,32 @@ function UserConnectedGiftsContainer(props) {
             </div>
 
             <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
-                <div className={styles.giftsSection} style={{ backgroundColor: color }}>
+                <div className={styles.giftsSection}>
                     <div className={styles.absoluteContainer}>
 
                         {/*...Affichage du composant */}
-                        <StartSeparationSection />
+                        {/* <StartSeparationSection /> */}
 
                         {renderAddGiftIcon()}
 
                         {addedNewGift && newEmptyGift}
                         <div className={styles.giftInputContainer}>
-{orderChange &&
-                            <div className={styles.giftsList}>
-                                {/*...Affichage du JSX stocké dans la variable giftsList */}
-                                {giftsList}
-                            </div>
+                            {orderChange &&
+                                <div className={styles.giftsList}>
+                                    {/*...Affichage du JSX stocké dans la variable giftsList */}
+                                    {giftsList}
+                                </div>
                             }
                         </div>
 
                         <div className={styles.offeredGiftsList}>
-                            <p className={styles.startSeparationSection}
-                                style={{ fontSize: "30px", color: "#7c660e", letterSpacing: "12px" }}>&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
+                        <p className={styles.startSeparationOfferedGift}>
+                            &#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
                             </p>
                             {/*...Affichage du JSX stocké dans la variable giftsList */}
                             {offeredGiftsList}
-                            <p className={styles.startSeparationSection}
-                                style={{ fontSize: "30px", color: "#7c660e", letterSpacing: "12px" }}>&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
+                            <p className={styles.startSeparationOfferedGift}>
+                                &#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
                             </p>
                         </div>
 
