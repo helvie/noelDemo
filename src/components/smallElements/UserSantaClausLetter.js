@@ -67,7 +67,7 @@ const UserSantaClausLetter = (props) => {
     return (
 
         <div className={styles.changeUserData}>
-            <h2>Alors, qu'as-tu à dire au Père-Noël ?</h2>
+            <h2>Alors, qu&apos;as-tu à dire au Père-Noël ?</h2>
                 <textarea
                     className={styles.changeUserDataTextarea}
                     type="text"
