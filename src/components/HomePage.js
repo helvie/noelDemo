@@ -493,7 +493,7 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
                             intro: userData.intro
                         }))
 
-                        fetch("http://noel.helvie.fr/api/getChat.php", {
+                        fetch("https://noel.helvie.fr/api/getChat.php", {
 
                             headers: {
 
