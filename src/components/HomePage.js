@@ -28,16 +28,8 @@ const moment = require('moment');
 
 require('moment/locale/fr');
 
-const tokenService = TokenForUserService();
-const userInfosService = UserInfosService();
-const chatService = ChatService();
-const listesEtCadeauxService = ListesEtCadeauxService();
-
 
 function HomePage() {
-
-
-
 
     let idConnectedUserList = 0;
 
@@ -256,32 +248,6 @@ function HomePage() {
         }
     };
 
-    // const getUserInfos = async () => {
-    //     try {
-    //         console.log(userDatas.id)
-
-    //         const response = await fetch("https://noel.helvie.fr/api/getuserinfos", {
-    //             headers: {
-    //                 "Noel-Token": user.token,
-    //                 "User-Name": encodeURIComponent(user.name),
-    //                 "App-Name": "NoelTan",
-    //                 "content-type": 'application/json'
-    //             },
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error(`Erreur HTTP! Statut: ${response.status}`);
-    //         }
-
-    //         const data = await response.text();
-    //         console.log("Réussi", data);
-    //         return data;
-    //     } catch (error) {
-    //         console.error("Erreur recupération infos user", error);
-    //         throw error;
-    //     }
-    // };
-
     const swapOrderInBdd = async (idRemplacant, idRemplace) => {
         console.log(idRemplacant);
         console.log(idRemplace);
@@ -458,147 +424,6 @@ function HomePage() {
             });
     };
 
-
-    //     const handleUserLogin = async (logs) => {
-    //         const { success, token, name } = await handleUserLogin(logs);
-
-    //         if (success) {
-    //             setSigninName(name);
-    //     }
-    // }
-
-
-
-    // const handleUserLogin = (logs) => {
-
-
-    //     fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
-
-    //         method: 'POST',
-    //         headers: {
-
-    //             "App-Name": envVariables.AppName,
-    //             "App-Key": envVariables.AppKey,
-    //             "content-type": 'application/json'
-    //         },
-
-    //         body: JSON.stringify({
-    //             login: logs.signinName,
-    //             mdp: logs.signinPassword
-
-    //         })
-
-    //     })
-    //         // .then(response => response.text())
-    //         .then(response => {
-    //             if (response.status === 200) {
-    //                 setErrorLoginPass(false)
-    //                 return response.text();
-    //             } else {
-    //                 setErrorLoginPass(true)
-    //                 throw new Error("Failed to get token. Status: " + response.status);
-    //             }
-    //         })
-    //         .then(tokenData => {
-
-    //             setSigninName(logs.signinName);
-    //             dispatch(login({
-    //                 token: tokenData
-    //             }))
-    //             console.log(tokenData)
-
-    //             fetch("https://noel.helvie.fr/api/getuserinfos.php", {
-
-    //                 headers: {
-
-    //                     "user-name": encodeURIComponent(logs.signinName),
-    //                     "app-name": "NoelTan",
-    //                     "noel-token": tokenData
-    //                 }
-
-    //             })
-
-    //                 .then(response => response.json())
-    //                 .then(userData => {
-
-    //                     console.log(userData)
-
-    //                     dispatch(updateUserData({
-    //                         id: userData.id,
-    //                         name: userData.login,
-    //                         cible: userData.cible,
-    //                         email: userData.email,
-    //                         enfant: userData.enfant,
-    //                         intro: userData.intro
-    //                     }))
-
-    //                     fetch("https://noel.helvie.fr/api/getChat.php", {
-
-    //                         headers: {
-
-    //                             "user-name": encodeURIComponent(logs.signinName),
-    //                             "app-name": "NoelTan",
-    //                             "noel-token": tokenData
-    //                         }
-
-    //                     })
-    //                         .then(response => response.json())
-    //                         .then(tchat => {
-
-    //                             setTchatData(tchat.sort((a, b) => b.date - a.date));
-    //                             console.log(tchat)
-
-    //                             fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
-
-    //                                 headers: {
-
-    //                                     "user-name": encodeURIComponent(logs.signinName),
-    //                                     "app-name": "NoelTan",
-    //                                     "noel-token": tokenData // Utilisez la variable renommée ici
-    //                                 }
-
-    //                             })
-
-    //                                 .then(response => response.json())
-    //                                 .then(giftsData => { // Renommez la variable ici
-    //                                     console.log(giftsData)
-
-    //                                     setGiftsList2(giftsData.filter((data) => data.pseudo.toLowerCase() !== logs.signinName.toLowerCase()));
-    //                                     setGiftsConnectedUserList(giftsData.filter((data) => data.pseudo.toLowerCase() === logs.signinName.toLowerCase()));
-
-    //                                 })
-
-    //                                 .catch(error => {
-
-    //                                     console.log("Erreur lors de la récupération des listes");
-
-    //                                 });
-
-    //                         })
-
-    //                         .catch(error => {
-
-    //                             console.log("Erreur lors de la récupération du tchat");
-
-    //                         });
-
-    //                 })
-
-    //                 .catch(error => {
-
-    //                     console.log("Erreur lors de la récupération des listes");
-
-    //                 });
-
-    //         })
-
-    //         .catch(error => {
-
-    //             console.log("Erreur lors de la récupération du token");
-
-    //         });
-
-    // }
 
 
     useEffect(() => {
