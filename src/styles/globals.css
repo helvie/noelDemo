@@ -27,7 +27,7 @@
   --color1: #1b1f53;
   --color2: #e6bc14;
   --color3: white;
-  --color4: #e62530;
+  --color4: #f5363f;
   --color5: #16ad66;
 }
 
@@ -39,6 +39,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   max-width: 100vw;
+  min-height:100vh;
 }
 
 
@@ -64,4 +65,10 @@ p {
 
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+
+main {
+  min-height: 100vh;
+  display:flex;
+  flex-direction:column;
 }

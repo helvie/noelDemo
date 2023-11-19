@@ -9,40 +9,47 @@ import { useSelector, useDispatch } from 'react-redux';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const UserNameChange = (props) => {
+const SendMail = (props) => {
 
-    const [userPseudoInput, setUserPseudoInput] = useState("")
-    const [isChecked, setIsChecked] = useState(0);
+    const [mailMessageInput, setMailMessageInput] = useState("")
+    const [mailObjectInput, setMailObjectInput] = useState("")
 
     const user = useSelector((state) => state.user);
 
     const {
-        closeNameSection
+        name,
+        mailRecipient,
+        closeMailSend,
+
     } = props;
 
+    console.log(user.id)
+    console.log(name)
 
-    useEffect(() => {
-        console.log("user " + user)
-        setUserPseudoInput(user.name)
-        {user.enfant==1 ? setIsChecked(true) : setIsChecked(false)}
-    }, [user.name])
-
+    const mailRoute = mailRecipient === "santaClaus" ?
+        "envoiMessagePereNoel" :
+        "envoiMessageCible"
 
 
     const handleSaveData = async () => {
-        console.log(isChecked)
-        const dataToSave = {
-            id: user.id,
-            email: user.email,
-            login: userPseudoInput,
-            enfant: isChecked
+        const dataToSave =
+        {
+            idExpediteur: user.id,
+            loginCible: name,
+            message: mailMessageInput,
+            objet: mailObjectInput || "",
+            corps: "<p>TEST !!!</p>"
         }
 
-        closeNameSection();
+
+
+        // }
+
+        // closeNameSection();
 
         try {
 
-            const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {
+            const response = await fetch(`https://noel.helvie.fr/api/${mailRoute}`, {
                 method: 'POST',
                 headers: {
                     "Noel-Token": user.token,
@@ -70,33 +77,34 @@ const UserNameChange = (props) => {
 
 
 
-    const handleToggle = () => {
-        setIsChecked(!isChecked);
-
-    };
-
     return (
 
-        <div className={styles.changeUserData}>
-            <h2>Entre ton nouveau pseudo !</h2>
+        <div className={styles.writeMailSection}>
+            {mailRecipient === "person" ?
+                <h2>Envoie ton message à {name} </h2> :
+                mailRecipient === "santaClaus" ?
+                    <h2>Envoie ton message au père-noël de {name}</h2> :
+                    null
 
+            }
 
-            <input
-                className={styles.changeUserDataInput}
+            {mailRecipient === "person" &&
+                <input
+                    className={styles.sendMailInput}
+                    type="text"
+                    name="mailObject"
+                    onChange={(e) => setMailObjectInput(e.target.value)}
+                    value={mailObjectInput || ''}
+                />}
+
+            <textarea
+                className={styles.sendMailTextarea}
                 type="text"
-                name="pseudo"
-                onChange={(e) => setUserPseudoInput(e.target.value)}
-                value={userPseudoInput || ''}
+                name="mailMessage"
+                onChange={(e) => setMailMessageInput(e.target.value)}
+                value={mailMessageInput || ''}
+                rows={4}
             />
-
-            <div className={styles.toggleSwitchContainer}>
-                <Switch
-                    checked={isChecked}
-                    onChange={handleToggle}
-                    style={{ color: "#f5363f" }}
-                />
-                <span style={{ fontSize: "25px" }}>{isChecked ? 'Enfant' : 'Adulte'}</span>
-            </div>
 
 
             <div className={styles.userDataSaveLogosContainer}>
@@ -104,7 +112,7 @@ const UserNameChange = (props) => {
                 <FontAwesomeIcon
                     className={styles.returnUserDataIcon}
                     icon={faRotateLeft}
-                    onClick={() => closeNameSection()}
+                    onClick={closeMailSend}
                 />
 
                 <FontAwesomeIcon
@@ -120,4 +128,4 @@ const UserNameChange = (props) => {
     )
 }
 
-export default UserNameChange;
+export default SendMail;

@@ -42,8 +42,11 @@ function GiftDetail(props) {
     //______________________________________________________________________________
 
     return (
-        <>
+        <>              
+
             <div className={styles.giftDetail}>
+
+
 
                 <h3 className={styles.giftTitle}>{data.title} <FontAwesomeIcon
                     className={styles.giftIcon}

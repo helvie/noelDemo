@@ -128,9 +128,11 @@ function UserConnectedGiftsContainer(props) {
             giftUp={(id) => giftUp(id)}
             giftDown={(id) => giftDown(id)}
 
+
+
         />
 
-
+    const dataGiftsNoOffered = data.gifts.filter(gift => gift.offered === false);
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     const giftsList = data.gifts
@@ -139,6 +141,7 @@ function UserConnectedGiftsContainer(props) {
             .sort((a, b) => b.Ordre - a.Ordre)
             .map((data, index) => (
                 //....un composant par cadeau
+
 
 
                 <UserConnectedGiftDetail
@@ -166,6 +169,9 @@ function UserConnectedGiftsContainer(props) {
                     giftUp={(id) => giftUp(id)}
                     giftDown={(id) => giftDown(id)}
 
+                    position={index === dataGiftsNoOffered.length - 1 ? "dernier" :
+                    index === 0 ? "premier" : "milieu"}
+   
                 />
 
             ))
@@ -234,8 +240,8 @@ function UserConnectedGiftsContainer(props) {
                         </div>
 
                         <div className={styles.offeredGiftsList}>
-                        <p className={styles.startSeparationOfferedGift}>
-                            &#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
+                            <p className={styles.startSeparationOfferedGift}>
+                                &#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
                             </p>
                             {/*...Affichage du JSX stocké dans la variable giftsList */}
                             {offeredGiftsList}

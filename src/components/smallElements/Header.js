@@ -14,9 +14,6 @@ const Header = (props) => {
     openUserDataChange
   } = props;
 
-  // const noelLogosJsx = noelLogos.map((data, i) => {
-  //   return <div key={i}> {data}</div>;
-  // });
 
   const [windowSize, setWindowSize] = useState({
     width: undefined,
@@ -57,9 +54,9 @@ const Header = (props) => {
             noelLogosJsx.slice(0, 10) :
             noelLogosJsx
         }
-        <FontAwesomeIcon 
-        icon={faBars} 
-        style={{ fontSize: "30px", color: "darkred" }}
+        <FontAwesomeIcon
+          icon={faBars}
+          style={{ fontSize: "30px", color: "darkred" }}
           onClick={openUserDataChange}
         />
       </div>

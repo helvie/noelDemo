@@ -10,9 +10,6 @@ const Footer = () => {
 
   const dispatch = useDispatch();
 
-  // const noelLogosJsx = noelLogos.map((data, i) => {
-  //   return <div key={i}> {data}</div>;
-  // });
 
   const [windowSize, setWindowSize] = useState({
     width: undefined,
@@ -44,8 +41,8 @@ const Footer = () => {
   }, []);
 
   return (
-    <>      
-    <div className={stylesHeader.headerTop}></div>
+    <>
+      <div className={stylesHeader.headerTop}></div>
 
       <div className={stylesHeader.headerContainer}>
         {windowSize.width < 480

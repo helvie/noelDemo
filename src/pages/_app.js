@@ -13,6 +13,8 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import user from '../reducers/user';
 import windowSize from '../reducers/windowSize';
+import { useRouter } from 'next/router';
+
 
 // const rootReducer = combineReducers({
 //   // Ajoutez vos reducers ici

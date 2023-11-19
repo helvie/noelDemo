@@ -17,12 +17,14 @@ function UserConnectedGiftDetail(props) {
         handleOfferedClick,
         idListe,
         giftUp,
-        giftDown
+        giftDown,
+        position
     } = props;
 
     const [titleInput, setTitleInput] = useState(data.title);
     const [detailInput, setDetailInput] = useState(data.detail);
     const [urlInput, setUrlInput] = useState(data.url);
+
 
 
     const resetInputs = () => {
@@ -122,17 +124,17 @@ function UserConnectedGiftDetail(props) {
                     />
 
                     {/* <div className={styles.giftInputIconsContainer}> */}
-                    <FontAwesomeIcon
+                    {position !=="premier" && <FontAwesomeIcon
                         className={`${styles.arrowIcon} ${styles.giftIcon}`}
                         icon={faCircleChevronUp}
                         onClick={()=>giftUp(data.id)}
-                    />
-                    <FontAwesomeIcon
+                    />}
+                    {position !=="dernier" && <FontAwesomeIcon
                         className={`${styles.arrowIcon} ${styles.giftIcon}`}
                         icon={faCircleChevronDown}
                         onClick={()=>giftDown(data.id)}
                         
-                    />
+                    />}
                     {/* </div> */}
                 </div>
             </div>

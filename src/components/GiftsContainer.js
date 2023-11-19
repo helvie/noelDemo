@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus, faLink, faHandBackFist } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faLink, faMessage } from '@fortawesome/free-solid-svg-icons';
 import { formatDate } from '../utils/formatDate';
 import GiftDetail from './GiftDetail';
 import StartSeparationSection from './smallElements/StartSeparationSection';
 import EndSeparationSection from './smallElements/EndSeparationSection';
 import SectionNameSeparation from './smallElements/SectionNameSeparation';
+import SendMail from './smallElements/SendMail';
 
 //______________________________________________________________________________
 
@@ -37,16 +38,20 @@ function GiftsContainer(props) {
         onClickCartPlus,
         color,
         idListe,
-        onUrlClick
+        onUrlClick,
+        openedSecretMessage,
+        setOpenedSecretMessage,
     } = props;
+
+    console.log("openedSecret " + openedSecretMessage)
 
     //______________________________________________________________________________
 
 
     //....Etat de gestion de l'affichage ou masquage des détails du cadeau
-    const [openedDetailIndex, setOpenedDetailIndex] = useState(null);
-
-    //______________________________________________________________________________
+    const [openedDetailIndex, setOpenedDetailIndex] = useState(false);
+    const [openedSantaClausSecretMessage, setOpenedSantaClausSecretMessage] = useState(false);
+    const [openedPersonSecretMessage, setOpenedPersonSecretMessage] = useState(false);
 
 
     //....Fonction déclenchant l'affichage ou masquage des détails du cadeau
@@ -59,6 +64,19 @@ function GiftsContainer(props) {
             setOpenedDetailIndex(index);
         }
     };
+
+    const openSecretMessage = (recipient) => {
+        recipient === "santaClaus" ?
+            (setOpenedPersonSecretMessage(false), setOpenedSantaClausSecretMessage(true)) :
+            recipient === "person" ?
+            (setOpenedPersonSecretMessage(true), setOpenedSantaClausSecretMessage(false)):
+            null
+    }
+
+    const closeMailSend = () => {
+        setOpenedSantaClausSecretMessage(false)
+        setOpenedPersonSecretMessage(false)
+    }
 
     //______________________________________________________________________________
 
@@ -74,7 +92,7 @@ function GiftsContainer(props) {
 
         { nbGifts = data.gifts ? data.gifts.filter(gift => !gift.offered).length : 0 }
 
-        giftsList = data.gifts.filter(gift=>gift.offered===false).map((data, index) => (
+        giftsList = data.gifts.filter(gift => gift.offered === false).map((data, index) => (
             //....récupérés du tableau de données tableau de données
             //....un composant par cadeau
 
@@ -93,11 +111,11 @@ function GiftsContainer(props) {
                     //....données
                     data={data}
 
-                    idListe = {idListe}
+                    idListe={idListe}
                     //....fonction de vol de cadeau
-                    onClickCartPlus={(giftData)=>onClickCartPlus(giftData)}
+                    onClickCartPlus={(giftData) => onClickCartPlus(giftData)}
 
-                    onUrlClick={(url)=>onUrlClick(url)}
+                    onUrlClick={(url) => onUrlClick(url)}
                 />
             </div>
         ))
@@ -113,6 +131,8 @@ function GiftsContainer(props) {
     return (
         <>
 
+
+
             <div
                 onClick={onClick}
                 className={styles.nameSection}
@@ -123,8 +143,7 @@ function GiftsContainer(props) {
                 </p>
                 <div className={isExpanded ? styles.separationHide : styles.separationDisplay}>
                     <SectionNameSeparation />
-                </div>                {/* <p className={styles.chatSeparation}>###########################################"</p> */}
-                {/* <p style={{fontSize:"40px", color:"#16ad66",  letterSpacing: "12px"}}>&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;&#094;</p> */}
+                </div>
             </div>
 
 
@@ -132,9 +151,63 @@ function GiftsContainer(props) {
                 <p style={{ color: color }} className={styles.intro}>{decodeCaracteresSpeciaux(data.intro)}</p>
 
                 <div className={styles.giftsSection} style={{ backgroundColor: props.color }}>
+
+
                     <div className={styles.absoluteContainer}>
                         {/*...Affichage du composant */}
                         <StartSeparationSection />
+                        <div className={styles.secretMessageLogos}>
+                            {!openedSecretMessage &&
+
+                                <span><FontAwesomeIcon
+                                    className={styles.secretMessageIcon}
+                                    icon={faMessage}
+                                    onClick={() => setOpenedSecretMessage(data.idUser)}
+                                /></span>
+                            }
+                            {openedSecretMessage &&
+                                <div className={styles.sendMailContainer}>
+                                    <div>
+                                        <img className={styles.orgImg2}
+                                            src={"images/handGift.png"}
+                                            alt="Organism Image"
+                                            height="40px"
+                                            onClick={() => openSecretMessage("person")}
+
+                                        />
+                                        <img className={styles.orgImg2}
+                                            src={"images/santaClaus.png"}
+                                            alt="Organism Image"
+                                            height="40px"
+                                            onClick={() => openSecretMessage("santaClaus")}
+
+                                        />
+                                    </div>
+                                    {openedSantaClausSecretMessage &&
+
+                                        <SendMail
+                                            name={data.pseudo}
+                                            mailRecipient="santaClaus"
+                                            closeMailSend={()=>closeMailSend()}
+
+                                        />
+                                    }
+                                    {openedPersonSecretMessage &&
+
+                                        <SendMail
+                                            name={data.pseudo}
+                                            mailRecipient="person"
+                                            closeMailSend={()=>closeMailSend()}
+                                        />
+                                    }
+                                </div>
+
+                            }
+
+
+                        </div>
+
+
                         <div className={styles.giftsList}>
                             {/*...Affichage du JSX stocké dans la variable giftsList */}
                             {giftsList}

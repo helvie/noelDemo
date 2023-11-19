@@ -7,32 +7,101 @@
 }
 
 .userDataLogosContainer {
-  height:100px;
-  width:100%;
+  height: 100px;
+  width: 100%;
   /* background-color:burlywood; */
-  font-size:30px;  
-  width:50vw;
-  display:flex;
-  flex-direction:row;
-  justify-content:space-between;
+  font-size: 30px;
+  width: 50vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 
 }
 
 .userDataSaveLogosContainer {
-  font-size:26px;
+  font-size: 26px;
 
 }
 
 
 .userDataChangeContainer {
-  display:flex;
-  flex-direction:row;
-  justify-content:center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .toggleSwitchContainer {
-  margin-top:20px;
-  margin-bottom:20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.secretMessageLogos {
+  display: flex;
+  flex-direction: raw;
+  justify-content: center;
+
+}
+
+.secretMessageLogos img,
+.secretMessageLogos span {
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+.sendMailContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+.mailMessage {
+  background-color: var(--color3);
+  border: 0;
+  width: 70%;
+  height: 150px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  font-size: 22px;
+  font-family: 'goodbye-crewel-world-nf.regular';
+  color: var(--color1)
+}
+
+.writeMailSection {
+  width: 80vw;
+  background-color: var(--color5);
+  border: 15px dotted var(--color1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.sendMailTextarea {
+  width: 80%;
+  height: 120px;
+  font-size: 24px;
+  font-family: 'goodbye-crewel-world-nf.regular';
+  color: var(--color1);
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.sendMailInput {
+  width: 80%;
+  height: 50px;
+  font-size: 24px;
+  font-family: 'goodbye-crewel-world-nf.regular';
+  color: var(--color1);
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+
 }
 
 /* .changeUserOneData {
@@ -42,78 +111,80 @@
   font-size:30px;  
 
 } */
+.secretMessageIcon {
+  color: var(--color1);
+  font-size: 35px;
+}
 
 .returnUserDataIcon {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .saveUserDataIcon {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .userDataIcon {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .changeUserData {
-  width:100vw;
-  background-color:var(--color5);
+  width: 100vw;
+  background-color: var(--color5);
   border-top: 15px dotted var(--color1);
   border-bottom: 15px dotted var(--color1);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .changeUserData h2 {
   margin-bottom: 0;
-  margin-top:0;
-  font-size:28px;
+  margin-top: 0;
+  font-size: 28px;
 }
 
 .changeUserDataInput {
-  background-color:var(--color3);
-  border:0;  
-  width:40%;
-  height:50px;
-  margin-bottom:15px;
-  margin-top:15px;
-  font-size:22px;
+  background-color: var(--color3);
+  border: 0;
+  width: 40%;
+  height: 50px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  font-size: 22px;
   font-family: 'goodbye-crewel-world-nf.regular';
-  color:var(--color1);
+  color: var(--color1);
 
 }
 
 .changeUserDataTextarea {
-  background-color:var(--color3);
-  border:0;  
-  width:70%;
-  height:150px;
-  margin-bottom:15px;
-  margin-top:15px;
-  font-size:22px;
+  background-color: var(--color3);
+  border: 0;
+  width: 70%;
+  height: 150px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  font-size: 22px;
   font-family: 'goodbye-crewel-world-nf.regular';
-  color:var(--color1)
-
+  color: var(--color1)
 }
 
 .toggle-switch-container span {
-  color:yellow;
-  font-size:50px;
+  color: yellow;
+  font-size: 50px;
 }
 
 .changeuserDataInput :focus {
-  background-color:var(--color1);
-  border:0;
+  background-color: var(--color1);
+  border: 0;
 }
 
 
 
 .userDataSaveLogosContainer :first-child {
-  margin-right:10px;
+  margin-right: 10px;
 }
 
 .nameSection {
@@ -129,7 +200,7 @@
   /* text-shadow: 2px 0 0 var(--color5), 2px 2px 0 var(--color5), 0 2px 0 var(--color5), -2px 2px 0 var(--color5), -2px 0 0 var(--color5), -2px -2px 0 var(--color5), 0 -2px 0 var(--color5), 2px -2px 0 var(--color5); */
   font-family: 'XmasSweaterStitch-xXYq';
   cursor: pointer;
-  text-align: center; 
+  text-align: center;
 }
 
 .intro {
@@ -138,7 +209,7 @@
   text-align: center;
   padding-right: 50px;
   padding-left: 50px;
-  margin-bottom:30px;
+  margin-bottom: 30px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 30px;
   font-family: 'goodbye-crewel-world-nf.regular';
@@ -161,8 +232,8 @@
 .offeredGiftTitleAndLink {
   display: flex;
   flex-direction: column;
-  width:90%
-  /* justify-content: space-between; */
+  width: 90%
+    /* justify-content: space-between; */
 }
 
 .giftsSection {
@@ -179,7 +250,7 @@
   font-size: 80px;
   font-family: 'XmasSweaterStitch-xXYq';
   overflow: hidden;
-  max-width:100vw;
+  max-width: 100vw;
 }
 
 .startSeparationSection p {
@@ -216,34 +287,36 @@
   color: var(--color4);
   font-family: 'goodbye-crewel-world-nf.regular';
 }
+
 .absoluteContainer {
   position: relative;
 }
 
 .giftLink {
-  font-size: 20px;
-  color:var(--color5);
+  font-size: 26px;
+  color: var(--color5);
 
 }
 
 .giftLinkUserConnected {
   font-size: 20px;
-  width:100%;
-  display:flex;
-  flex-direction:row;
-  justify-content:center;
-  margin-bottom:20px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .giftLinkUserConnected {
-  color:white;
+  color: white;
 }
 
 .giftLinkUserConnectedOffered {
   font-size: 20px;
-  margin-bottom:20px;
-  margin-top:10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
 }
+
 .detailDisplay {
   /* max-height: 60000px; */
   overflow: hidden;
@@ -279,25 +352,25 @@
   font-size: 16px;
   font-weight: bold;
   font-family: 'goodbye-crewel-world-nf.regular';
-  width: 100%;   
+  width: 100%;
 }
 
 .editingGiftDetailToUpdate textarea {
-  background-color: var(--color1);
+  background-color: var(--color2);
   border-color: white;
   border: 0;
-  outline: 7px dotted var(--color1);
+  outline: 8px dotted var(--color4);
   font-size: 20px;
-  color: white;
+  color: var(--color1);
 }
 
 .editingGiftDetailToUpdate input {
-  background-color: var(--color1);
+  background-color: var(--color2);
   border-color: white;
   border: 0;
-  outline: 7px dotted var(--color1);
+  outline: 8px dotted var(--color4);
   font-size: 20px;
-  color: white;
+  color: var(--color1);
 }
 
 .giftTextInput {
@@ -308,8 +381,8 @@
   border: 0;
   outline: 8px dotted var(--color4);
   width: 100%;
-  font-family: 'goodbye-crewel-world-nf.regular';    
-  }
+  font-family: 'goodbye-crewel-world-nf.regular';
+}
 
 .giftUrlInput {
   background-color: var(--color5);
@@ -321,8 +394,8 @@
   font-size: 15px;
   overflow-wrap: break-word;
   width: 100%;
-  font-family: 'goodbye-crewel-world-nf.regular';  
-  flex:wrap;
+  font-family: 'goodbye-crewel-world-nf.regular';
+  flex: wrap;
 }
 
 .giftDetailToUpdate {
@@ -338,25 +411,26 @@
 }
 
 .giftDetailOffered {
-  width:100%;
-  display:flex;
-  flex-direction:row;
-  justify-content:space-between;
-  color:var(--color4)
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: var(--color4)
 }
 
 .startSeparationOfferedGift {
-  font-size: 30px; 
-  color: var(--color4); 
+  font-size: 30px;
+  color: var(--color4);
   letter-spacing: 12px;
   font-family: 'XmasSweaterStitch-xXYq';
 }
 
 .giftDetailOffered h1 {
-  font-size:22px;
+  font-size: 22px;
 }
+
 .giftDetailOffered p {
-  font-size:18px;
+  font-size: 18px;
 }
 
 /* .offeredGiftUrl {
@@ -449,14 +523,14 @@
 }
 
 .linkIcon {
-  color:var(--color5);
-  font-size:24px;
+  color: var(--color5);
+  font-size: 24px;
 }
 
 .giftTitle,
 .giftTitleInput {
   font-size: 24px;
-  margin-top:0;
+  margin-top: 0;
 }
 
 .giftText,
@@ -505,7 +579,7 @@
   color: white;
   margin-right: 5px;
   margin-left: 5px;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .firstChatContent {
@@ -513,25 +587,25 @@
   margin-bottom: 10px;
 }
 
-.chatDate{
-  color:var(--color4);
+.chatDate {
+  color: var(--color4);
   margin-bottom: 30px;
 
 }
 
 .chatText {
-  color:var(--color1);
+  color: var(--color1);
 }
 
 .chatName {
-  color:var(--color3);
-  font-size:24px;
+  color: var(--color3);
+  font-size: 24px;
 }
 
 .chatInput {
   background-color: var(--color2);
   padding: 10px;
-  margin-top:30px;
+  margin-top: 30px;
   margin-bottom: 20px;
   color: var(--color1);
   border: 0;
@@ -539,8 +613,8 @@
   font-size: 22px;
   font-weight: bold;
   font-family: 'goodbye-crewel-world-nf.regular';
-  width: 100%; 
-  height:90px;
+  width: 100%;
+  height: 90px;
 }
 
 
@@ -556,7 +630,7 @@
 }
 
 .chatContainer {
-  border-top: var(--color1) 8px dotted;
+  border-top: var(--color1) 12px dotted;
   font-family: 'goodbye-crewel-world-nf.regular';
   color: var(--color1);
   text-align: center;
@@ -568,20 +642,20 @@
 }
 
 .chatContainer .giftChatIcon {
-    color:var(--color4);
-    font-size:26px;
-    margin-top:0;
-    margin-bottom:30px;
+  color: var(--color4);
+  font-size: 26px;
+  margin-top: 0;
+  margin-bottom: 30px;
 }
 
 .chatContainer h1 {
-  margin-bottom:0px;
+  margin-bottom: 0px;
 }
 
 .chatContainer .chatInput {
   background-color: var(--color3);
   padding: 10px;
-  margin-top:30px;
+  margin-top: 30px;
   margin-bottom: 20px;
   color: var(--color1);
   border: 0;
@@ -589,8 +663,8 @@
   font-size: 22px;
   font-weight: bold;
   font-family: 'goodbye-crewel-world-nf.regular';
-  width: 100%; 
-  height:90px;
+  width: 100%;
+  height: 90px;
 }
 
 
@@ -599,7 +673,7 @@
 }
 
 .chatLogoContainer {
-  margin-top:10px;
+  margin-top: 10px;
 }
 
 /* .chatName {
@@ -634,58 +708,57 @@
 .loginForm h1 {
   margin-top: 0;
   margin-bottom: 30px;
-  color:var(--color4)
-
+  color: var(--color4)
 }
 
 .loginForm input {
   height: 50px;
   min-width: 25vw;
-  color:var(--color1); 
+  color: var(--color1);
   outline: 7px dotted white;
   border: 0;
   margin-bottom: 10px;
   margin-top: 15px;
-  font-size:1.3rem;
+  font-size: 1.3rem;
 }
 
 .loginForm button {
   border-radius: 10px;
   font-family: 'goodbye-crewel-world-nf.regular';
-  font-size:30px;
-  margin-top:50px;
+  font-size: 30px;
+  margin-top: 50px;
   background-color: white;
-  border:0;
-  color:var(--color4);
+  border: 0;
+  color: var(--color4);
   padding: 10px;
-  padding-bottom:20px;
+  padding-bottom: 20px;
   cursor: pointer;
- }
+}
 
- .loginForm::placeholder {
-  font-size:50px;
+.loginForm::placeholder {
+  font-size: 50px;
 }
 
 .error {
-  color:var(--color2);
-font-size:20px;
+  color: var(--color2);
+  font-size: 20px;
 }
 
 .addGiftIconContainer {
-  width:100%;
-  text-align:center;
-  color:var(--color3);
-  font-size:26px;
-  margin-bottom:10px;
+  width: 100%;
+  text-align: center;
+  color: var(--color3);
+  font-size: 26px;
+  margin-bottom: 10px;
 }
 
-.addGiftIcon{
-  cursor:pointer;
+.addGiftIcon {
+  cursor: pointer;
 }
 
 .keyIcon {
-  font-size:40px;
-  margin-top:20px;
+  font-size: 40px;
+  margin-top: 20px;
 }
 
 /* .giftInputContainer {
@@ -698,32 +771,32 @@ font-size:20px;
 
 
 
-.nameSection {
-  font-size: 55px;
-}
+  .nameSection {
+    font-size: 55px;
+  }
 
-.nbGifts {
-  font-size: 40px;
-}
+  .nbGifts {
+    font-size: 40px;
+  }
 
-.intro {
-  font-size:26px;
-}
+  .intro {
+    font-size: 26px;
+  }
 
-.giftTitle,
-.giftTitleInput {
-  font-size: 22px;
-}
+  .giftTitle,
+  .giftTitleInput {
+    font-size: 22px;
+  }
 
-.giftText,
-.giftTextInput {
-  font-size: 18px;
-}
+  .giftText,
+  .giftTextInput {
+    font-size: 18px;
+  }
 
-.chatContainer {
-  padding-right: 10vw;
-  padding-left: 10vw;
-}
+  .chatContainer {
+    padding-right: 10vw;
+    padding-left: 10vw;
+  }
 }
 
 @media (max-width: 768px) {
@@ -733,96 +806,104 @@ font-size:20px;
   }
 
   .chatSection {
-    font-size:24px;
+    font-size: 24px;
   }
 
 
-  
+
   .nbGifts {
     font-size: 40px;
   }
 
   .intro {
-    font-size:24px;
+    font-size: 24px;
     padding-right: 20px;
     padding-left: 20px;
   }
 
   .giftTitle,
-.giftTitleInput {
-  font-size: 20px;
+  .giftTitleInput {
+    font-size: 20px;
+  }
+
+  .giftText,
+  .giftTextInput {
+    font-size: 16px;
+  }
+
+  .loginForm input {
+    min-width: 50vw;
+  }
+
 }
 
-.giftText,
-.giftTextInput {
-  font-size: 16px;
-}
+@media (max-width: 480px) {
 
-.loginForm input {
-  min-width: 50vw;
-}
+  .chatSection {
+    font-size: 22px;
+  }
+
+  .intro {
+    font-size: 24px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .updateDate {
+    font-size: 12px;
+  }
+
+  .giftsList {
+    padding: 20px 10px 0 10px;
+    color: var(--color1);
+  }
+
+  .gift {
+    justify-content: left;
+
+    flex-direction: column;
+    align-items: left;
+  }
+
+  .giftLink {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--color5);
+  }
+
+  .updateDate {
+    margin-bottom: 10px;
+  }
+
+  .chatContainer {
+    padding-right: 5vw;
+    padding-left: 5vw;
+    font-size: 18px;
 
   }
-  @media (max-width: 480px) {
 
-    .chatSection {
-      font-size:22px;
-    }
+  .giftTextInput {
+    min-height: 150px;
+  }
 
-    .intro {
-      font-size:24px;
-      padding-right: 10px;
-      padding-left: 10px;
-    }
+  .giftUrlInput {
+    min-height: 80px;
+  }
 
-    .updateDate {
-      font-size: 12px;
-    }
-
-    .giftsList {
-      padding: 20px 10px 0 10px;
-      color: var(--color1);    
-    }
-
-    .gift {
-      justify-content: left;
-
-      flex-direction: column;
-      align-items:left;
-    }
-
-    .giftLink {
-      width:100%;
-      display:flex;
-      flex-direction:row;
-      justify-content:center;
-      color:var(--color5);
-    }
-
-    .updateDate {
-      margin-bottom: 10px;
-    }
-
-    .chatContainer {
-      padding-right: 5vw;
-      padding-left: 5vw;
-      font-size: 18px;
-
-    }
-
-    .giftTextInput {
-      min-height:150px;
-    }
-
-    .giftUrlInput {
-      min-height: 80px;
-    }
-
-    .chatInput {
-      min-height:150px;
-    }
-
- 
+  .chatInput {
+    min-height: 150px;
+  }
 
 
-    }
+
+
+
+
+}  
+.mailResponseContainer {
+    background-color: var(--color1);
+    height:100%;
+    flex-grow:1;
+  }

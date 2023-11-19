@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 ////////////////////////////////////////////////////////////////////////////////
 
 const ChatMessage = (props) => {
-    
+
 
     const {
         tchatOpen,
@@ -16,57 +16,57 @@ const ChatMessage = (props) => {
         setTchatOpen,
         saveMessage
     }
-    = props;
+        = props;
 
 
     return (
 
         <>
-        {tchatOpen &&
-            <textarea
-                className={styles.chatInput}
-                type="text"
-                name="title"
-                onChange={(e) => changeTchatInput(e.target.value)}
-                value={tchatInput}
-                rows={2}
-            />
-        }
-
-        <div className={styles.chatLogoContainer}>
-        {thisIsTop &&
-
-            <a href="#chat" className={styles.giftChatIconLink}>
-                <FontAwesomeIcon
-                    className={styles.giftChatIcon}
-                    icon={faEye}
-                />
-            </a>
-}
-            {!tchatOpen && <FontAwesomeIcon
-                className={styles.giftChatIcon}
-                icon={faCommentDots}
-                onClick={() => setTchatOpen(true)}
-            />}
-
             {tchatOpen &&
-                <>
-                    <FontAwesomeIcon
-                        className={styles.giftChatIcon}
-                        icon={faCommentSlash}
-                        onClick={() => setTchatOpen(false)}
+                <textarea
+                    className={styles.chatInput}
+                    type="text"
+                    name="title"
+                    onChange={(e) => changeTchatInput(e.target.value)}
+                    value={tchatInput}
+                    rows={2}
+                />
+            }
+
+            <div className={styles.chatLogoContainer}>
+                {thisIsTop &&
+
+                    <a href="#chat" className={styles.giftChatIconLink}>
+                        <FontAwesomeIcon
+                            className={styles.giftChatIcon}
+                            icon={faEye}
                         />
-                    <FontAwesomeIcon
-                        className={styles.giftChatIcon}
-                        icon={faPaperPlane}
-                        onClick={() => saveMessage()}
-                    />
-                </>
+                    </a>
                 }
-        </div>
+                {!tchatOpen && <FontAwesomeIcon
+                    className={styles.giftChatIcon}
+                    icon={faCommentDots}
+                    onClick={() => setTchatOpen(true)}
+                />}
+
+                {tchatOpen &&
+                    <>
+                        <FontAwesomeIcon
+                            className={styles.giftChatIcon}
+                            icon={faCommentSlash}
+                            onClick={() => setTchatOpen(false)}
+                        />
+                        <FontAwesomeIcon
+                            className={styles.giftChatIcon}
+                            icon={faPaperPlane}
+                            onClick={() => saveMessage()}
+                        />
+                    </>
+                }
+            </div>
 
 
-</>
+        </>
 
     )
 }

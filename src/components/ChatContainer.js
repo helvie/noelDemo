@@ -18,7 +18,8 @@ const ChatContainer = (props) => {
   const [bottomTchatInput, setBottomTchatInput] = useState('');
   const [bottomTchatOpen, setBottomTchatOpen] = useState(false);
 
-  const messages = props.messages.map((data, index) => (
+  const messages = props.messages
+  .filter(message => moment().subtract(2, 'years').isBefore(moment.unix(message.date)))  .map((data, index) => (
     <div key={index}>
       <p className={styles.chatContent}>De <span className={styles.chatName}>{data.login}</span>  :
         <span className={styles.chatText}> {data.contenu} </span>

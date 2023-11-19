@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.css';
 import GiftsContainer from './GiftsContainer'
 import UserConnectedGiftsContainer from './UserConnectedGiftsContainer'
 import { useEffect } from 'react';
-import { envVariables } from '../../env';
+// import { envVariables } from '../utils/envVariables';
 import ChatContainer from "../components/ChatContainer";
 import ChatMessage from "../components/smallElements/ChatMessage";
 import UserEmailChange from "../components/smallElements/UserEmailChange";
@@ -19,13 +19,23 @@ import { useRouter } from 'next/router';
 import { faAt, faUser, faUnlock, faFileLines, faBullseye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Header from '../components/smallElements/Header'
+import ChatService from './services/ChatService';
+import ListesEtCadeauxService from './services/ListesEtCadeauxService';
+import TokenForUserService from './services/TokenForUserService';
+import UserInfosService from './services/UserInfosService';
 
 const moment = require('moment');
 
 require('moment/locale/fr');
 
+const tokenService = TokenForUserService();
+const userInfosService = UserInfosService();
+const chatService = ChatService();
+const listesEtCadeauxService = ListesEtCadeauxService();
+
 
 function HomePage() {
+
 
 
 
@@ -82,15 +92,18 @@ function HomePage() {
     const [resetGift, setResetGift] = useState(-1);
     const [orderChange, setOrderChange] = useState(1);
 
-    const [errorLoginPass, setErrorLoginPass] = useState(null);
+    const [errorLoginPass, setErrorLoginPass] = useState(false);
 
     const [tchatData, setTchatData] = useState('');
     const [tchatInput, setTchatInput] = useState('');
     const [topTchatOpen, setTopTchatOpen] = useState(false);
     const [bottomTchatOpen, setBottomTchatOpen] = useState(false);
 
-    const [userDataChange, setUserDataChange]=useState('');
-    const [dataUserIcons, setDataUserIcons]=useState(false);
+    const [userDataChange, setUserDataChange] = useState('');
+    const [dataUserIcons, setDataUserIcons] = useState(false);
+    const [openedSecretMessage, setOpenedSecretMessage] = useState("");
+    console.log(openedSecretMessage)
+
 
     // const [emailChange, setEmailChange] = useState(false);
     // const [nameChange, setNameChange] = useState(false);
@@ -116,6 +129,72 @@ function HomePage() {
             url = "https://" + url;
         }
         window.open(url, "_blank");
+    };
+
+    const handleUserLogin = async (logs) => {
+        try {
+            // Step 1: Get token for user
+            const tokenService = TokenForUserService();
+            const tokenResponse = await tokenService.getTokenForUser(logs, setErrorLoginPass);
+    
+            if (tokenResponse.success) {
+                setErrorLoginPass(false);
+                const { token, name } = tokenResponse;
+                dispatch(login({
+                    token: token,
+                    name:name
+                }));
+                setSigninName(name)
+    
+                // Step 2: Get user information
+                const userInfoService = UserInfosService();
+                const userInfoResponse = await userInfoService.getUserInfos(name, token);
+    
+                if (userInfoResponse.success) {
+                    const userData = userInfoResponse.userData;
+    
+                    // Dispatch user data update
+                    dispatch(updateUserData({
+                        id: userData.id,
+                        name: userData.login,
+                        cible: userData.cible,
+                        email: userData.email,
+                        enfant: userData.enfant,
+                        intro: userData.intro
+                    }));
+    
+                    // Step 3: Get chat data
+                    const chatService = ChatService();
+                    const chatResponse = await chatService.getChatData(name, token);
+    
+                    if (chatResponse.success) {
+                        // Set chat data state
+                        setTchatData(chatResponse.chat);
+    
+                        // Step 4: Get gifts data
+                        const listesEtCadeauxService = ListesEtCadeauxService();
+                        const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(logs, token);
+    
+                        if (giftsResponse.success) {
+                            // Set gifts data states
+                            setGiftsList2(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() !== name.toLowerCase()));
+                            setGiftsConnectedUserList(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase()));
+                        } else {
+                            console.log("Erreur lors de la récupération des listes");
+                        }
+                    } else {
+                        console.log("Erreur lors de la récupération du tchat");
+                    }
+                } else {
+                    console.log("Erreur lors de la récupération des informations utilisateur");
+                }
+            } else {
+                setErrorLoginPass(true);
+                console.log("Erreur lors de la récupération du token");
+            }
+        } catch (error) {
+            console.error("Une erreur s'est produite lors de la connexion : ", error);
+        }
     };
 
     const saveMessage = async () => {
@@ -206,7 +285,7 @@ function HomePage() {
     const swapOrderInBdd = async (idRemplacant, idRemplace) => {
         console.log(idRemplacant);
         console.log(idRemplace);
-    
+
         try {
             const response = await fetch("https://noel.helvie.fr/api/changeOrdreCadeau", {
                 method: 'POST',
@@ -221,137 +300,86 @@ function HomePage() {
                     IdRemplace: idRemplace,
                 })
             });
-    
+
             if (!response.ok) {
                 throw new Error(`Erreur HTTP! Statut: ${response.status}`);
             }
-    
-            const data = await response.text();
-            console.log("Réussi", data);
-            return data;
+
+            // const data = await response;
+            console.log(response);
+            
+            return response.ok;
         } catch (error) {
             console.error("Erreur maj statut cadeau", error);
             throw error;
         }
     };
 
-    // // Fonction pour échanger l'ordre avec le cadeau du dessus
-    // const swapOrderWithAbove = async (giftsConnectedUserList, targetId) => {
-    //     const targetIndex = giftsConnectedUserList[0].gifts
-    //         .sort((a, b) => b.Ordre - a.Ordre)
-    //         .findIndex(gift => gift.id === targetId);
-
-    //     if (targetIndex > 0) {
-    //         const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
-    //         const aboveOrder = giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre;
-    //         const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
-    //         const aboveId = giftsConnectedUserList[0].gifts[targetIndex - 1].id;
-    //         try {
-    //             const result = await swapOrderInBdd(aboveId, currentId);
-    //             console.log("swapOrderInBdd result:", result);
-    //             // Continuer avec le reste du code ici...
-    //             giftsConnectedUserList[0].gifts[targetIndex].Ordre = aboveOrder;
-    //             giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre = currentOrder;
-    //             setOrderChange(orderChange + 1);
-    //             // Autres opérations...
-    //         } catch (error) {
-    //             console.error("Erreur lors de swapOrderInBdd:", error);
-    //             // Gérer l'erreur ici...
-    //         }
-    //     }
-    // };
-
-    // // Fonction pour échanger l'ordre avec le cadeau du dessous
-    // const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
-    //     console.log("cliqué")
-    //     const targetIndex = giftsConnectedUserList[0].gifts
-    //         .sort((a, b) => b.Ordre - a.Ordre)
-    //         .findIndex(gift => gift.id === targetId);
-
-    //     if (targetIndex !== -1 && targetIndex < giftsConnectedUserList[0].gifts.length - 1) {
-    //         const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
-    //         const belowOrder = giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre;
-    //         const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
-    //         const belowId = giftsConnectedUserList[0].gifts[targetIndex + 1].id;
-
-    //         try {
-    //             const result = await swapOrderInBdd(currentId, belowId);
-    //             console.log("swapOrderInBdd result:", result);
-    //             // Continuer avec le reste du code ici...
-    //             giftsConnectedUserList[0].gifts[targetIndex].Ordre = belowOrder;
-    //             giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre = currentOrder;
-    //             setOrderChange(orderChange + 1);
-    //             // Autres opérations...
-    //         } catch (error) {
-    //             console.error("Erreur lors de swapOrderInBdd:", error);
-    //             // Gérer l'erreur ici...
-    //         }
-    //     }
-    // };
 
     const swapOrderWithAbove = async (giftsConnectedUserList, targetId) => {
-    const targetIndex = giftsConnectedUserList[0].gifts
-        .sort((a, b) => b.Ordre - a.Ordre)
-        .findIndex(gift => gift.id === targetId);
+        const targetIndex = giftsConnectedUserList[0].gifts
+            .sort((a, b) => b.Ordre - a.Ordre)
+            .findIndex(gift => gift.id === targetId);
 
-    if (targetIndex > 0) {
-        const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
-        const aboveOrder = giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre;
-        const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
-        const aboveId = giftsConnectedUserList[0].gifts[targetIndex - 1].id;
+        if (targetIndex > 0) {
+            const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
+            const aboveOrder = giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre;
+            const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
+            const aboveId = giftsConnectedUserList[0].gifts[targetIndex - 1].id;
 
-        try {
-            const result = await swapOrderInBdd(aboveId, currentId);
-            console.log("swapOrderInBdd result:", result);
-
-            // Vérifier si le résultat est conforme à ce que tu attends
-            if (result === "success") {
-                giftsConnectedUserList[0].gifts[targetIndex].Ordre = aboveOrder;
-                giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre = currentOrder;
-                setOrderChange(orderChange + 1);
-                // Autres opérations...
-            } else {
-                console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
+            try {
+                const result = await swapOrderInBdd(aboveId, currentId);
+                console.log("swapOrderInBdd result:", result);
+            
+                // Vérifier si le résultat est conforme à ce que tu attends
+                if (result) {
+                    giftsConnectedUserList[0].gifts[targetIndex].Ordre = aboveOrder;
+                    giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre = currentOrder;
+                    setOrderChange(orderChange + 1);
+                    // Autres opérations...
+                } else {
+                    console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
+                    // Gérer l'erreur ici...
+                }
+            } catch (error) {
+                console.error("Erreur lors de swapOrderInBdd:", error);
                 // Gérer l'erreur ici...
             }
-        } catch (error) {
-            console.error("Erreur lors de swapOrderInBdd:", error);
-            // Gérer l'erreur ici...
         }
-    }
-};
+    };
 
-const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
-    const targetIndex = giftsConnectedUserList[0].gifts
-        .sort((a, b) => b.Ordre - a.Ordre)
-        .findIndex(gift => gift.id === targetId);
+    const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
+        const targetIndex = giftsConnectedUserList[0].gifts
+            .sort((a, b) => b.Ordre - a.Ordre)
+            .findIndex(gift => gift.id === targetId);
 
-    if (targetIndex !== -1 && targetIndex < giftsConnectedUserList[0].gifts.length - 1) {
-        const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
-        const belowOrder = giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre;
-        const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
-        const belowId = giftsConnectedUserList[0].gifts[targetIndex + 1].id;
+        if (targetIndex !== -1 && targetIndex < giftsConnectedUserList[0].gifts.length - 1) {
+            const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
+            const belowOrder = giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre;
+            const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
+            const belowId = giftsConnectedUserList[0].gifts[targetIndex + 1].id;
 
-        try {
-            const result = await swapOrderInBdd(currentId, belowId);
-            console.log("swapOrderInBdd result:", result);
 
-            // Vérifier si le résultat est conforme à ce que tu attends
-            if (result === "success") {
-                giftsConnectedUserList[0].gifts[targetIndex].Ordre = belowOrder;
-                giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre = currentOrder;
-                setOrderChange(orderChange + 1);
-                // Autres opérations...
-            } else {
-                console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
+            try {
+                const result = await swapOrderInBdd(currentId, belowId);
+                console.log("swapOrderInBdd result:", result);
+            
+                // Vérifier si le résultat est conforme à ce que tu attends
+                if (result) {
+                    giftsConnectedUserList[0].gifts[targetIndex].Ordre = belowOrder;
+                    giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre = currentOrder;
+                    setOrderChange(orderChange + 1);
+                    // Autres opérations...
+                } else {
+                    console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
+                    // Gérer l'erreur ici...
+                }
+            } catch (error) {
+                console.error("Erreur lors de swapOrderInBdd:", error);
                 // Gérer l'erreur ici...
             }
-        } catch (error) {
-            console.error("Erreur lors de swapOrderInBdd:", error);
-            // Gérer l'erreur ici...
         }
-    }
-};
+    };
 
     const removeGiftById = (idToRemove) => {
         setGiftsConnectedUserList((prevList) => {
@@ -366,7 +394,7 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
     };
 
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
-    const colors = ["#e6bc14", "#ffffff", "#bc232c"]
+    const colors = [ "#ffffff", "#e6bc14", "#f5363f"]
     // , "#16ad66"
 
     const editingGiftToFalse = () => {
@@ -430,136 +458,147 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
             });
     };
 
-    const handleUserLogin = (logs) => {
+
+    //     const handleUserLogin = async (logs) => {
+    //         const { success, token, name } = await handleUserLogin(logs);
+
+    //         if (success) {
+    //             setSigninName(name);
+    //     }
+    // }
 
 
-        fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
 
-            method: 'POST',
-            headers: {
+    // const handleUserLogin = (logs) => {
 
-                "App-Name": envVariables.AppName,
-                "App-Key": envVariables.AppKey,
-                "content-type": 'application/json'
-            },
 
-            body: JSON.stringify({
-                login: logs.signinName,
-                mdp: logs.signinPassword
+    //     fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
 
-            })
+    //         method: 'POST',
+    //         headers: {
 
-        })
-            // .then(response => response.text())
-            .then(response => {
-                if (response.status === 200) {
-                    setErrorLoginPass(false)
-                    return response.text();
-                } else {
-                    setErrorLoginPass(true)
-                    throw new Error("Failed to get token. Status: " + response.status);
-                }
-            })
-            .then(tokenData => {
+    //             "App-Name": envVariables.AppName,
+    //             "App-Key": envVariables.AppKey,
+    //             "content-type": 'application/json'
+    //         },
 
-                setSigninName(logs.signinName);
-                dispatch(login({
-                    token: tokenData
-                }))
-                console.log(tokenData)
+    //         body: JSON.stringify({
+    //             login: logs.signinName,
+    //             mdp: logs.signinPassword
 
-                fetch("https://noel.helvie.fr/api/getuserinfos.php", {
+    //         })
 
-                    headers: {
+    //     })
+    //         // .then(response => response.text())
+    //         .then(response => {
+    //             if (response.status === 200) {
+    //                 setErrorLoginPass(false)
+    //                 return response.text();
+    //             } else {
+    //                 setErrorLoginPass(true)
+    //                 throw new Error("Failed to get token. Status: " + response.status);
+    //             }
+    //         })
+    //         .then(tokenData => {
 
-                        "user-name": encodeURIComponent(logs.signinName),
-                        "app-name": "NoelTan",
-                        "noel-token": tokenData
-                    }
+    //             setSigninName(logs.signinName);
+    //             dispatch(login({
+    //                 token: tokenData
+    //             }))
+    //             console.log(tokenData)
 
-                })
+    //             fetch("https://noel.helvie.fr/api/getuserinfos.php", {
 
-                    .then(response => response.json())
-                    .then(userData => {
+    //                 headers: {
 
-                        console.log(userData)
+    //                     "user-name": encodeURIComponent(logs.signinName),
+    //                     "app-name": "NoelTan",
+    //                     "noel-token": tokenData
+    //                 }
 
-                        dispatch(updateUserData({
-                            id: userData.id,
-                            name: userData.login,
-                            cible: userData.cible,
-                            email: userData.email,
-                            enfant: userData.enfant,
-                            intro: userData.intro
-                        }))
+    //             })
 
-                        fetch("https://noel.helvie.fr/api/getChat.php", {
+    //                 .then(response => response.json())
+    //                 .then(userData => {
 
-                            headers: {
+    //                     console.log(userData)
 
-                                "user-name": encodeURIComponent(logs.signinName),
-                                "app-name": "NoelTan",
-                                "noel-token": tokenData
-                            }
+    //                     dispatch(updateUserData({
+    //                         id: userData.id,
+    //                         name: userData.login,
+    //                         cible: userData.cible,
+    //                         email: userData.email,
+    //                         enfant: userData.enfant,
+    //                         intro: userData.intro
+    //                     }))
 
-                        })
-                            .then(response => response.json())
-                            .then(tchat => {
+    //                     fetch("https://noel.helvie.fr/api/getChat.php", {
 
-                                setTchatData(tchat.sort((a, b) => b.date - a.date));
-                                console.log(tchat)
+    //                         headers: {
 
-                                fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
+    //                             "user-name": encodeURIComponent(logs.signinName),
+    //                             "app-name": "NoelTan",
+    //                             "noel-token": tokenData
+    //                         }
 
-                                    headers: {
+    //                     })
+    //                         .then(response => response.json())
+    //                         .then(tchat => {
 
-                                        "user-name": encodeURIComponent(logs.signinName),
-                                        "app-name": "NoelTan",
-                                        "noel-token": tokenData // Utilisez la variable renommée ici
-                                    }
+    //                             setTchatData(tchat.sort((a, b) => b.date - a.date));
+    //                             console.log(tchat)
 
-                                })
+    //                             fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
 
-                                    .then(response => response.json())
-                                    .then(giftsData => { // Renommez la variable ici
-                                        console.log(giftsData)
+    //                                 headers: {
 
-                                        setGiftsList2(giftsData.filter((data) => data.pseudo.toLowerCase() !== logs.signinName.toLowerCase()));
-                                        setGiftsConnectedUserList(giftsData.filter((data) => data.pseudo.toLowerCase() === logs.signinName.toLowerCase()));
+    //                                     "user-name": encodeURIComponent(logs.signinName),
+    //                                     "app-name": "NoelTan",
+    //                                     "noel-token": tokenData // Utilisez la variable renommée ici
+    //                                 }
 
-                                    })
+    //                             })
 
-                                    .catch(error => {
+    //                                 .then(response => response.json())
+    //                                 .then(giftsData => { // Renommez la variable ici
+    //                                     console.log(giftsData)
 
-                                        console.log("Erreur lors de la récupération des listes");
+    //                                     setGiftsList2(giftsData.filter((data) => data.pseudo.toLowerCase() !== logs.signinName.toLowerCase()));
+    //                                     setGiftsConnectedUserList(giftsData.filter((data) => data.pseudo.toLowerCase() === logs.signinName.toLowerCase()));
 
-                                    });
+    //                                 })
 
-                            })
+    //                                 .catch(error => {
 
-                            .catch(error => {
+    //                                     console.log("Erreur lors de la récupération des listes");
 
-                                console.log("Erreur lors de la récupération du tchat");
+    //                                 });
 
-                            });
+    //                         })
 
-                    })
+    //                         .catch(error => {
 
-                    .catch(error => {
+    //                             console.log("Erreur lors de la récupération du tchat");
 
-                        console.log("Erreur lors de la récupération des listes");
+    //                         });
 
-                    });
+    //                 })
 
-            })
+    //                 .catch(error => {
 
-            .catch(error => {
+    //                     console.log("Erreur lors de la récupération des listes");
 
-                console.log("Erreur lors de la récupération du token");
+    //                 });
 
-            });
+    //         })
 
-    }
+    //         .catch(error => {
+
+    //             console.log("Erreur lors de la récupération du token");
+
+    //         });
+
+    // }
 
 
     useEffect(() => {
@@ -632,7 +671,6 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
                 .map((data, i) => {
                     const color = colors[colorNumber];
                     colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
-
                     return (
                         //....composants personnes
                         <GiftsContainer
@@ -652,6 +690,14 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
                             idListe={idConnectedUserList}
 
                             onUrlClick={(url) => handleUrlClick(url)}
+                            
+                            openedSecretMessage={openedSecretMessage===data.idUser}
+                            // openedSantaClausSecretMessage={openedSantaClausSecretMessage===data.id}
+                            // openedPersonSecretMessage={openedPersonSecretMessage===data.id}
+                            setOpenedSecretMessage={(value)=>setOpenedSecretMessage(value)}
+                            // setOpenedSantaClausSecretMessage={(value)=>setOpenedSantaClausSecretMessage(value)}
+                            // setOpenedPersonSecretMessage={(value)=>setOpenedPersonSecretMessage(value)}
+
 
                         />
                     )
@@ -663,7 +709,7 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
 
 
     }, [giftsList2, giftsConnectedUserList, openedSectionUser,
-        openedSectionIndex, editingGift, user, orderChange]);
+        openedSectionIndex, editingGift, user, orderChange, openedSecretMessage]);
 
 
 
@@ -821,6 +867,8 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
         setSectionToOpenOrClose(-1)
         //....Remise à zéro de l'état modale ouverte depuis section
         setModalOpenFromHome(false)
+
+        setOpenedSecretMessage("")
 
 
     };
@@ -1013,7 +1061,8 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
 
     return (
         <main>
-                  <Header openUserDataChange={()=>setDataUserIcons(!dataUserIcons)}/>
+            <Header 
+            openUserDataChange={() => setDataUserIcons(!dataUserIcons)} />
 
 
             {/* {signinName ? (<> */}
@@ -1055,17 +1104,17 @@ const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
                                 icon={faBullseye}
                                 onClick={() => setUserDataChange(userDataChange === "target" ? "" : "target")}
                             />
-                        </div> }
+                        </div>}
 
 
                     </div>
 
-                    {userDataChange === "email" && <UserEmailChange closeEmailSection={()=>setUserDataChange("")}/>}
-                    {userDataChange === "name"  && <UserNameChange closeNameSection={()=>setUserDataChange("")}/>}
-                    {userDataChange === "password"  && <UserPasswordChange closePasswordSection={()=>setUserDataChange("")}/>}
-                    {userDataChange === "request"  && <UserPasswordRequest closeRequestSection={()=>setUserDataChange("")}/>}
-                    {userDataChange === "letter"  && <UserSantaClausLetter closeLetterSection={()=>setUserDataChange("")}/>}
-                    {userDataChange === "target"  && <UserGiftTarget closeTargetSection={()=>setUserDataChange("")}/>}
+                    {userDataChange === "email" && <UserEmailChange closeEmailSection={() => setUserDataChange("")} />}
+                    {userDataChange === "name" && <UserNameChange closeNameSection={() => setUserDataChange("")} />}
+                    {userDataChange === "password" && <UserPasswordChange closePasswordSection={() => setUserDataChange("")} />}
+                    {userDataChange === "request" && <UserPasswordRequest closeRequestSection={() => setUserDataChange("")} />}
+                    {userDataChange === "letter" && <UserSantaClausLetter closeLetterSection={() => setUserDataChange("")} />}
+                    {userDataChange === "target" && <UserGiftTarget closeTargetSection={() => setUserDataChange("")} />}
 
 
                     {/* {isLoading ? (
