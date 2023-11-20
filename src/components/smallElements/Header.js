@@ -56,7 +56,8 @@ const Header = (props) => {
         }
         <FontAwesomeIcon
           icon={faBars}
-          style={{ fontSize: "30px", color: "darkred" }}
+          className={stylesHeader.miniMenu}
+          // style={{ fontSize: "30px", color: "darkred" }}
           onClick={openUserDataChange}
         />
       </div>

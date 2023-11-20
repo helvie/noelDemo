@@ -41,11 +41,13 @@ function UserConnectedGiftsContainer(props) {
         resetGift,
         giftUp,
         giftDown,
-        orderChange
+        orderChange,
+        lowestOrderGift
 
     } = props;
 
-    console.log(orderChange)
+    console.log(lowestOrderGift)
+
 
     //______________________________________________________________________________
 
@@ -58,7 +60,7 @@ function UserConnectedGiftsContainer(props) {
             detail: "",
             url: "",
             id: 999999,
-            Ordre: 999999,
+            Ordre: lowestOrderGift-1,
             date: formattedDate,
             offered: false
         };
@@ -138,7 +140,7 @@ function UserConnectedGiftsContainer(props) {
     const giftsList = data.gifts
         //....récupérés du tableau de données tableau de données
         ? data.gifts.filter(gift => gift.offered === false)
-            .sort((a, b) => b.Ordre - a.Ordre)
+            .sort((a, b) => a.Ordre - b.Ordre)
             .map((data, index) => (
                 //....un composant par cadeau
 

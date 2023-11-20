@@ -19,7 +19,7 @@ const UserGiftTarget = (props) => {
 
     return (
 
-        <div className={styles.changeUserData}>
+        <div className={styles.changeUserDataContainer}>
             <h2>Ta cible est :</h2>
             <h1>{user.cible}</h1>
             

@@ -160,6 +160,13 @@
   font-size:70px;
 }
 
+.miniMenu { 
+  font-size: 30px; 
+  color: darkred; 
+  cursor: pointer;
+}
+
+
 
 
     @media (max-width: 992px) {

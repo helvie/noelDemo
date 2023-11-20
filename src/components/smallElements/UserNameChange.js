@@ -24,7 +24,7 @@ const UserNameChange = (props) => {
     useEffect(() => {
         console.log("user " + user)
         setUserPseudoInput(user.name)
-        {user.enfant==1 ? setIsChecked(true) : setIsChecked(false)}
+        { user.enfant == 1 ? setIsChecked(true) : setIsChecked(false) }
     }, [user.name])
 
 
@@ -78,26 +78,26 @@ const UserNameChange = (props) => {
     return (
 
         <div className={styles.changeUserData}>
-            <h2>Entre ton nouveau pseudo !</h2>
-
-
-            <input
-                className={styles.changeUserDataInput}
-                type="text"
-                name="pseudo"
-                onChange={(e) => setUserPseudoInput(e.target.value)}
-                value={userPseudoInput || ''}
-            />
-
-            <div className={styles.toggleSwitchContainer}>
-                <Switch
-                    checked={isChecked}
-                    onChange={handleToggle}
-                    style={{ color: "#f5363f" }}
+            {type === "name" && <div>
+                <h2>Entre ton nouveau pseudo !</h2>
+                <input
+                    className={styles.changeUserDataInput}
+                    type="text"
+                    name="pseudo"
+                    onChange={(e) => setUserPseudoInput(e.target.value)}
+                    value={userPseudoInput || ''}
                 />
-                <span style={{ fontSize: "25px" }}>{isChecked ? 'Enfant' : 'Adulte'}</span>
-            </div>
 
+                <div className={styles.toggleSwitchContainer}>
+                    <Switch
+                        checked={isChecked}
+                        onChange={handleToggle}
+                        style={{ color: "#f5363f" }}
+                    />
+                    <span style={{ fontSize: "25px" }}>{isChecked ? 'Enfant' : 'Adulte'}</span>
+                </div>
+            </div>
+            }
 
             <div className={styles.userDataSaveLogosContainer}>
 

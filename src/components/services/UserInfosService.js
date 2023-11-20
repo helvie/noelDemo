@@ -1,6 +1,3 @@
-// services/userInfoService.js
-import { useDispatch } from 'react-redux';
-import { updateUserData } from '@/reducers/user';
 
 const UserInfosService = () => {
     // const dispatch = useDispatch();

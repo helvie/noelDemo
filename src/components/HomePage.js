@@ -3,13 +3,10 @@ import styles from '../styles/Home.module.css';
 import GiftsContainer from './GiftsContainer'
 import UserConnectedGiftsContainer from './UserConnectedGiftsContainer'
 import { useEffect } from 'react';
-// import { envVariables } from '../utils/envVariables';
 import ChatContainer from "../components/ChatContainer";
 import ChatMessage from "../components/smallElements/ChatMessage";
-import UserEmailChange from "../components/smallElements/UserEmailChange";
-import UserNameChange from "../components/smallElements/UserNameChange";
+import UserEmailNameOrMDPChange from "./smallElements/UserEmailNameOrMDPChange";
 import UserPasswordRequest from "../components/smallElements/UserPasswordRequest";
-import UserPasswordChange from "../components/smallElements/UserPasswordChange";
 import UserSantaClausLetter from "../components/smallElements/UserSantaClausLetter";
 import UserGiftTarget from "../components/smallElements/UserGiftTarget";
 import ConnectionUser from './ConnectionUser';
@@ -38,7 +35,6 @@ function HomePage() {
     const user = useSelector((state) => state.user);
     const sizeOfWindow = useSelector((state) => state.windowSize);
 
-    // const firstMessageDate = moment(chatConversation[0].datetime);
 
     //############################### ETATS #################################
 
@@ -97,23 +93,41 @@ function HomePage() {
     console.log(openedSecretMessage)
 
 
-    // const [emailChange, setEmailChange] = useState(false);
-    // const [nameChange, setNameChange] = useState(false);
-    // const [passwordChange, setPasswordChange] = useState(false);
-    // const [santaClausLetter, setSantaClausLetter] = useState(false);
-    // const [giftTarget, setGiftTarget] = useState(false);
-    // const [userDatas, setUserDatas] = useState(
-    //     {
-    //         id: null,
-    //         login: null,
-    //         email: null,
-    //         enfant: null
-    //     }
-    // );
 
     //########################################################################
 
     let colorNumber = 1;
+
+    const updateChatName = (oldName, newName) => {
+        setTchatData((prevData) => {
+            // Créez une nouvelle copie en utilisant map pour éviter la mutation directe
+            const newData = prevData.map((message) => {
+                // Mettez à jour le login du message avec le nouveau nom
+                if (message.login === oldName) {
+                    return { ...message, login: newName };
+                }
+                return message;
+            });
+    
+            // Retournez la nouvelle liste mise à jour
+            return newData;
+        });
+    };
+
+    const updateConnectedUserName = (name) => {
+        setGiftsConnectedUserList((prevList) => {
+            // Créez une nouvelle copie en utilisant map pour éviter la mutation directe
+            const newList = prevList.map((gift) => {
+                // Mettez à jour le pseudo du premier élément avec le nouveau nom
+                if (gift.pseudo === user.name) {
+                    return { ...gift, pseudo: name };
+                }
+                return gift;
+            });
+    
+            // Retournez la nouvelle liste mise à jour
+            return newList;
+        });    }
 
     const handleUrlClick = (url) => {
         console.log("Navigating to:", url);
@@ -128,23 +142,23 @@ function HomePage() {
             // Step 1: Get token for user
             const tokenService = TokenForUserService();
             const tokenResponse = await tokenService.getTokenForUser(logs, setErrorLoginPass);
-    
+
             if (tokenResponse.success) {
                 setErrorLoginPass(false);
                 const { token, name } = tokenResponse;
                 dispatch(login({
                     token: token,
-                    name:name
+                    name: name
                 }));
                 setSigninName(name)
-    
+
                 // Step 2: Get user information
                 const userInfoService = UserInfosService();
                 const userInfoResponse = await userInfoService.getUserInfos(name, token);
-    
+
                 if (userInfoResponse.success) {
                     const userData = userInfoResponse.userData;
-    
+
                     // Dispatch user data update
                     dispatch(updateUserData({
                         id: userData.id,
@@ -154,23 +168,25 @@ function HomePage() {
                         enfant: userData.enfant,
                         intro: userData.intro
                     }));
-    
+
                     // Step 3: Get chat data
                     const chatService = ChatService();
                     const chatResponse = await chatService.getChatData(name, token);
-    
+
                     if (chatResponse.success) {
                         // Set chat data state
                         setTchatData(chatResponse.chat);
-    
+                        console.log(chatResponse.chat)
+
                         // Step 4: Get gifts data
                         const listesEtCadeauxService = ListesEtCadeauxService();
                         const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(logs, token);
-    
+
                         if (giftsResponse.success) {
                             // Set gifts data states
                             setGiftsList2(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() !== name.toLowerCase()));
                             setGiftsConnectedUserList(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase()));
+                        
                         } else {
                             console.log("Erreur lors de la récupération des listes");
                         }
@@ -190,63 +206,11 @@ function HomePage() {
     };
 
     const saveMessage = async () => {
-        try {
-            const idUser = giftsConnectedUserList.find(person => person.pseudo === user.name)?.idUser;
+        const chatService = ChatService();
 
-            const response = await fetch("https://noel.helvie.fr/api/insertChat", {
-                method: 'POST',
-                headers: {
-                    "Noel-Token": user.token,
-                    "User-Name": encodeURIComponent(user.name),
-                    "App-Name": "NoelTan",
-                    "content-type": 'application/json'
-                },
-                body: JSON.stringify({
-                    idUtilisateur: idUser,
-                    contenu: tchatInput,
-                })
-            });
+        const result = await chatService.saveMessage(tchatInput, giftsConnectedUserList, user);
+    }
 
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP! Statut: ${response.status}`);
-            }
-
-            const data = await response.text();
-            console.log("Réussi", data);
-            return data;
-        } catch (error) {
-            console.error("Erreur maj statut cadeau", error);
-            throw error;
-        }
-    };
-
-    const saveUserData = async () => {
-        try {
-            console.log(userDatas.id)
-
-            const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {
-                method: 'POST',
-                headers: {
-                    "Noel-Token": user.token,
-                    "User-Name": encodeURIComponent(user.name),
-                    "App-Name": "NoelTan",
-                    "content-type": 'application/json'
-                },
-                body: JSON.stringify(userDatas)
-            });
-
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP! Statut: ${response.status}`);
-            }
-
-            const data = await response.text();
-            console.log("Réussi", data);
-            return data;
-        } catch (error) {
-            console.error("Erreur maj statut cadeau", error);
-            throw error;
-        }
-    };
 
     const swapOrderInBdd = async (idRemplacant, idRemplace) => {
         console.log(idRemplacant);
@@ -273,7 +237,7 @@ function HomePage() {
 
             // const data = await response;
             console.log(response);
-            
+
             return response.ok;
         } catch (error) {
             console.error("Erreur maj statut cadeau", error);
@@ -282,9 +246,8 @@ function HomePage() {
     };
 
 
-    const swapOrderWithAbove = async (giftsConnectedUserList, targetId) => {
+    const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
         const targetIndex = giftsConnectedUserList[0].gifts
-            .sort((a, b) => b.Ordre - a.Ordre)
             .findIndex(gift => gift.id === targetId);
 
         if (targetIndex > 0) {
@@ -296,7 +259,7 @@ function HomePage() {
             try {
                 const result = await swapOrderInBdd(aboveId, currentId);
                 console.log("swapOrderInBdd result:", result);
-            
+
                 // Vérifier si le résultat est conforme à ce que tu attends
                 if (result) {
                     giftsConnectedUserList[0].gifts[targetIndex].Ordre = aboveOrder;
@@ -314,9 +277,8 @@ function HomePage() {
         }
     };
 
-    const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
+    const swapOrderWithAbove = async (giftsConnectedUserList, targetId) => {
         const targetIndex = giftsConnectedUserList[0].gifts
-            .sort((a, b) => b.Ordre - a.Ordre)
             .findIndex(gift => gift.id === targetId);
 
         if (targetIndex !== -1 && targetIndex < giftsConnectedUserList[0].gifts.length - 1) {
@@ -329,7 +291,7 @@ function HomePage() {
             try {
                 const result = await swapOrderInBdd(currentId, belowId);
                 console.log("swapOrderInBdd result:", result);
-            
+
                 // Vérifier si le résultat est conforme à ce que tu attends
                 if (result) {
                     giftsConnectedUserList[0].gifts[targetIndex].Ordre = belowOrder;
@@ -360,7 +322,7 @@ function HomePage() {
     };
 
     //.....couleurs des sections de personnes (jaune, vert, rose pâle)
-    const colors = [ "#ffffff", "#e6bc14", "#f5363f"]
+    const colors = ["#ffffff", "#e6bc14", "#f5363f"]
     // , "#16ad66"
 
     const editingGiftToFalse = () => {
@@ -438,6 +400,14 @@ function HomePage() {
 
         if (giftsConnectedUserList) {
 
+            const lowestOrderGift = giftsConnectedUserList[0].gifts
+            .filter(gift=>gift.offered===false)
+            .reduce((minGift, currentGift) => {
+                return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
+              }, null);
+              
+              console.log(lowestOrderGift.Ordre);
+
             connectedUserSectionMapping = giftsConnectedUserList
                 .map((data, i) => {
                     idConnectedUserList = data.idListe;
@@ -476,6 +446,8 @@ function HomePage() {
                             giftUp={(id) => swapOrderWithAbove(giftsConnectedUserList, id)}
                             giftDown={(id) => swapOrderWithBelow(giftsConnectedUserList, id)}
                             orderChange={orderChange}
+
+                            lowestOrderGift={lowestOrderGift.Ordre}
                         />
                     )
                 })
@@ -515,13 +487,13 @@ function HomePage() {
                             idListe={idConnectedUserList}
 
                             onUrlClick={(url) => handleUrlClick(url)}
-                            
-                            openedSecretMessage={openedSecretMessage===data.idUser}
+
+                            openedSecretMessage={openedSecretMessage === data.idUser}
                             // openedSantaClausSecretMessage={openedSantaClausSecretMessage===data.id}
                             // openedPersonSecretMessage={openedPersonSecretMessage===data.id}
-                            setOpenedSecretMessage={(value)=>setOpenedSecretMessage(value)}
-                            // setOpenedSantaClausSecretMessage={(value)=>setOpenedSantaClausSecretMessage(value)}
-                            // setOpenedPersonSecretMessage={(value)=>setOpenedPersonSecretMessage(value)}
+                            setOpenedSecretMessage={(value) => setOpenedSecretMessage(value)}
+                        // setOpenedSantaClausSecretMessage={(value)=>setOpenedSantaClausSecretMessage(value)}
+                        // setOpenedPersonSecretMessage={(value)=>setOpenedPersonSecretMessage(value)}
 
 
                         />
@@ -544,6 +516,8 @@ function HomePage() {
 
 
     const addNewGift = (newGift) => {
+
+        console.log(newGift)
 
 
 
@@ -886,8 +860,8 @@ function HomePage() {
 
     return (
         <main>
-            <Header 
-            openUserDataChange={() => setDataUserIcons(!dataUserIcons)} />
+            <Header
+                openUserDataChange={() => setDataUserIcons(!dataUserIcons)} />
 
 
             {/* {signinName ? (<> */}
@@ -915,7 +889,7 @@ function HomePage() {
                             <FontAwesomeIcon
                                 className={styles.userDataIcon}
                                 icon={faUnlock}
-                                onClick={() => setUserDataChange(userDataChange === "request" ? "" : "request")}
+                                onClick={() => setUserDataChange(userDataChange === "password" ? "" : "password")}
                             />
 
                             <FontAwesomeIcon
@@ -934,9 +908,9 @@ function HomePage() {
 
                     </div>
 
-                    {userDataChange === "email" && <UserEmailChange closeEmailSection={() => setUserDataChange("")} />}
-                    {userDataChange === "name" && <UserNameChange closeNameSection={() => setUserDataChange("")} />}
-                    {userDataChange === "password" && <UserPasswordChange closePasswordSection={() => setUserDataChange("")} />}
+                    {userDataChange === "email" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")} type={"email"} />}
+                    {userDataChange === "name" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")}  type={"name"} updateName={(name) => updateConnectedUserName(name)}   updateChatName={(oldName, newName) => updateChatName(oldName, newName)}/>}
+                    {userDataChange === "password" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")}  type={"password"} />}
                     {userDataChange === "request" && <UserPasswordRequest closeRequestSection={() => setUserDataChange("")} />}
                     {userDataChange === "letter" && <UserSantaClausLetter closeLetterSection={() => setUserDataChange("")} />}
                     {userDataChange === "target" && <UserGiftTarget closeTargetSection={() => setUserDataChange("")} />}
