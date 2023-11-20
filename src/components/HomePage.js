@@ -208,7 +208,12 @@ function HomePage() {
     const saveMessage = async () => {
         const chatService = ChatService();
 
-        const result = await chatService.saveMessage(tchatInput, giftsConnectedUserList, user);
+        const result = await chatService.saveMessage(tchatInput, giftsConnectedUserList, user)
+        if(result){
+            setTchatInput("")
+            setTopTchatOpen(false);
+            setBottomTchatOpen(false);
+        }
     }
 
 

@@ -47,10 +47,10 @@ const ChatService = () => {
       if (!response.ok) {
         throw new Error(`Erreur HTTP! Statut: ${response.status}`);
       }
+    //   const result = await response.text();
 
-      const data = await response.text();
-      console.log("Réussi", data);
-      return data;
+      return { success: true, message: 'message enregistré', result: response.ok };
+
     } catch (error) {
       console.error("Erreur maj statut cadeau", error);
       throw error;

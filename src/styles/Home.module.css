@@ -165,7 +165,7 @@
 .changeUserDataInput {
   background-color: var(--color3);
   border: 0;
-  width: 40%;
+  width: 60%;
   height: 50px;
   margin-bottom: 15px;
   margin-top: 15px;
@@ -845,6 +845,11 @@
     font-size: 24px;
   }
 
+  .userDataLogosContainer {
+    width:60vw;
+  }
+
+
 
 
   .nbGifts {
@@ -871,9 +876,35 @@
     min-width: 50vw;
   }
 
+  .changeUserDataInput, .changeUserDataTextarea {
+    width:80vw;
+  }
+
+  .changeUserDataTextarea {
+    min-height:150px;
+
+  }
+
 }
 
 @media (max-width: 480px) {
+
+  .changeUserDataTextarea {
+    min-height:250px;
+
+  }
+
+  .changeUserDataInput, .changeUserDataTextarea {
+    width:90vw;
+  }
+
+  .userDataLogosContainer {
+    width:80vw;
+  }
+
+  .changeUserData h2 {
+    font-size:26px;
+  }
 
   .chatSection {
     font-size: 22px;
