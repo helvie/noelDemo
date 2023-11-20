@@ -28,6 +28,9 @@ require('moment/locale/fr');
 
 function HomePage() {
 
+    const date = new Date();
+    const timestampInSeconds = Math.floor(date.getTime() / 1000);
+
     let idConnectedUserList = 0;
 
     const router = useRouter();
@@ -91,6 +94,12 @@ function HomePage() {
     const [dataUserIcons, setDataUserIcons] = useState(false);
     const [openedSecretMessage, setOpenedSecretMessage] = useState("");
     console.log(openedSecretMessage)
+
+    useEffect(() => {
+        // Mise à jour de l'interface utilisateur en réponse à tchatData
+        console.log('tchatData a changé :', tchatData);
+        // Vous pouvez mettre à jour votre interface utilisateur ici
+      }, [tchatData]);
 
 
 
@@ -171,7 +180,7 @@ function HomePage() {
 
                     // Step 3: Get chat data
                     const chatService = ChatService();
-                    const chatResponse = await chatService.getChatData(name, token);
+                    const chatResponse = await chatService.getChatData(name, token)
 
                     if (chatResponse.success) {
                         // Set chat data state
@@ -210,9 +219,22 @@ function HomePage() {
 
         const result = await chatService.saveMessage(tchatInput, giftsConnectedUserList, user)
         if(result){
-            setTchatInput("")
-            setTopTchatOpen(false);
-            setBottomTchatOpen(false);
+
+            const date = new Date();
+            const timestampInSeconds = Math.floor(date.getTime() / 1000);
+            const newMessage = {
+                date:timestampInSeconds,
+                contenu:tchatInput,
+                login: user.name
+             }
+             const updatedTchatData = [...tchatData];
+             updatedTchatData.unshift(newMessage);
+             setTchatData(updatedTchatData);
+
+            //  console.log(tchatData);
+            // setTchatInput("")
+            // setTopTchatOpen(false);
+            // setBottomTchatOpen(false);
         }
     }
 
