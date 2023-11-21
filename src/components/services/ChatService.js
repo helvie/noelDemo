@@ -46,7 +46,6 @@ const ChatService = () => {
       if (!response.ok) {
         throw new Error(`Erreur HTTP! Statut: ${response.status}`);
       }
-    //   const result = await response.text();
 
       return { success: true, message: 'message enregistré', result: response.ok };
 

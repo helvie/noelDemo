@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import styles from '../styles/Home.module.css';
-import { useRouter } from 'next/router';
-import Header from '../components/smallElements/Header'
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -20,7 +17,6 @@ function ConnectionUser(props) {
     const validationErrors = {};
 
     const validateName = (name) => {
-      // Vérification de l'adresse e-mail à l'aide d'une expression régulière
       const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ\s-]+$/;
       return nameRegex.test(name);
     };
@@ -45,7 +41,6 @@ function ConnectionUser(props) {
       signinName,
       signinPassword
     });
-    // resetForm();
   };
 
   //ooooooooooooooooooo Mise à vide des champs de formulaire oooooooooooooooooooo
@@ -62,7 +57,6 @@ function ConnectionUser(props) {
 
   return (
     <main className={styles.orgContent}>
-            {/* <Header /> */}
 
       <div className={styles.formContainer}>
 
@@ -71,13 +65,11 @@ function ConnectionUser(props) {
 
           <h1 className={styles.formTitle}>Connecte-toi !</h1>
 
-          {/* <form className="w-full"> */}
 
           {/* --------------------------- Input name -------------------------- */}
 
           {props.errorLoginPass && <div style={{color:"#e6bc14", marginBottom:"20px"}}>N&apos;importe nawak ce que tu as mis comme login ou mot de passe !</div>}
 
-          {/* <div className={styles.inputRegistrationContainer}> */}
             <p className={styles.connectionInputTitle}>Prénom</p>
             <input
               className={styles.inputRegistration}
@@ -89,11 +81,9 @@ function ConnectionUser(props) {
               value={signinName}
             />
             {errors.name && <p className={styles.error}>{errors.name}</p>}
-          {/* </div> */}
 
           {/* ------------------------ Input mot de passe ----------------------- */}
 
-          {/* <div className={styles.inputRegistrationContainer}> */}
             <p style={{marginTop:"30px"}} className={styles.connectionInputTitle}>Mot de passe</p>
 
             <input
@@ -107,7 +97,6 @@ function ConnectionUser(props) {
             />
             {errors.password && <p className={styles.error}>{errors.password}</p>}
 
-          {/* </div> */}
 
           {/* ------------------ Bouton de validation du formulaire ------------- */}
 
@@ -116,11 +105,9 @@ function ConnectionUser(props) {
             className={styles.validButton}
             type="button"
             onClick={handleSignin}
-          // disabled={!!error} // Désactiver le bouton si une erreur est présente
           >
             En avant pour Noël !!!
           </button>
-          {/* </form> */}
         </div>
       </div>
     </main>

@@ -23,9 +23,6 @@ const SendMail = (props) => {
 
     } = props;
 
-    // console.log(user.id)
-    // console.log(name)
-
     const mailRoute = mailRecipient === "santaClaus" ?
         "envoiMessagePereNoel" :
         "envoiMessageCible"
@@ -41,11 +38,6 @@ const SendMail = (props) => {
             corps: "<p>TEST !!!</p>"
         }
 
-
-
-        // }
-
-        // closeNameSection();
 
         try {
 

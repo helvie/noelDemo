@@ -39,6 +39,9 @@ const UserEmailNameOrMDPChange = (props) => {
         updateName,
     } = props;
 
+    console.log("modale "+successModalVisible)
+    console.log("type "+type)
+
 
 
 
@@ -58,7 +61,7 @@ const UserEmailNameOrMDPChange = (props) => {
     };
 
     const validatePassword = () => {
-        const minLength = 6; // Exemple : longueur minimale du mot de passe
+        const minLength = 6; 
         const isValid = userPasswordInput.length >= minLength;
         
         setPasswordValid(isValid);
@@ -71,14 +74,12 @@ const UserEmailNameOrMDPChange = (props) => {
     };
 
     const handleSaveData = async () => {
-        // Validation avant de sauvegarder les données
         validatePseudo();
         validateEmail();
         validatePseudo();
         validatePassword();
         validateRepeatPassword();
 
-        // Si toutes les validations sont réussies, procédez à la sauvegarde des données
         if (emailValid && pseudoValid && passwordValid && repeatPasswordValid) {
             const dataToSave = {
                 id: user.id,
@@ -89,9 +90,6 @@ const UserEmailNameOrMDPChange = (props) => {
             };
 
             try {
-                // console.log(user.name)
-                // console.log(user.token)
-                // console.log(dataToSave)
                 const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {
                     method: 'POST',
                     headers: {
@@ -108,22 +106,17 @@ const UserEmailNameOrMDPChange = (props) => {
                 }
 
                 const data = await response.text();
-                // console.log("Réussi", data);
                 {props.updateChatName && props.updateChatName(user.name, userPseudoInput);}
-                {props.updateName && props.updateName(userPseudoInput);}
 
                 dispatch(updateUserData({
                     name: userPseudoInput,
                     email: userEmailInput,
                     enfant: isChecked,
-                }));                
+                }));                 
                 setSuccessModalVisible(true);
-                
-                // closeSection();
-                // Vous pouvez également ajouter des logiques supplémentaires après la sauvegarde si nécessaire
+               
             } catch (error) {
                 console.error("Erreur maj statut cadeau", error);
-                // Gérer les erreurs de sauvegarde ici si nécessaire
             }
         }
     };
@@ -227,164 +220,3 @@ const UserEmailNameOrMDPChange = (props) => {
 
 export default UserEmailNameOrMDPChange;
 
-// import styles from '../../styles/Home.module.css';
-// import { faFloppyDisk, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import React, { useState } from 'react';
-// import { useEffect } from 'react';
-// import Switch from '@mui/material/Switch';
-// import { useSelector, useDispatch } from 'react-redux';
-
-
-// ////////////////////////////////////////////////////////////////////////////////
-
-// const UserEmailNameOrMDPChange = (props) => {
-
-//     const [userEmailInput, setUserEmailInput] = useState("")
-//     const [userPseudoInput, setUserPseudoInput] = useState("")
-//     const [isChecked, setIsChecked] = useState(0);
-//     const user = useSelector((state) => state.user);
-//     const [userPasswordInput, setUserPasswordInput] = useState("")
-//     const [userRepeatPasswordInput, setUserRepeatPasswordInput] = useState("")
-
-//     const {
-//         closeSection,
-//         type
-//     } = props;
-
-//     useEffect(() => {
-//         setUserEmailInput(user.email)
-//         setUserPseudoInput(user.name)
-//         { user.enfant == 1 ? setIsChecked(true) : setIsChecked(false) }
-//     }, [user.email, user.name])
-
-//     const handleSaveData = async () => {
-//         const dataToSave = {
-//             id: user.id,
-//             email: userEmailInput,
-//             login: userPseudoInput,
-//             enfant: isChecked,
-//             mdp:userPasswordInput
-//         }
-
-//         closeSection();
-
-//         try {
-
-//             const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {
-//                 method: 'POST',
-//                 headers: {
-//                     "Noel-Token": user.token,
-//                     "User-Name": encodeURIComponent(user.name),
-//                     "App-Name": "NoelTan",
-//                     "content-type": 'application/json'
-//                 },
-//                 body: JSON.stringify(dataToSave)
-//             });
-
-//             if (!response.ok) {
-//                 throw new Error(`Erreur HTTP! Statut: ${response.status}`);
-//             }
-
-//             const data = await response.text();
-//             console.log("Réussi", data);
-//             return data;
-//         } catch (error) {
-//             console.error("Erreur maj statut cadeau", error);
-//             throw error;
-
-//         };
-
-
-//     }
-
-//     const handleToggle = () => {
-//         setIsChecked(!isChecked);
-
-//     };
-
-
-//     return (
-        
-
-// <div className={styles.changeUserDataContainer}>
-
-//             {type === "email" && <div className={styles.changeUserData}>
-//                 <h2>Entre ton nouvel email !</h2>
-//                 {user.email &&
-//                     <input
-//                         className={styles.changeUserDataInput}
-//                         type="text"
-//                         name="email"
-//                         onChange={(e) => setUserEmailInput(e.target.value)}
-//                         value={userEmailInput || ''}
-//                     />
-//                 }
-//             </div>}
-
-//             {type === "name" && <div className={styles.changeUserData}>
-//                 <h2>Entre ton nouveau pseudo !</h2>
-//                 <input
-//                     className={styles.changeUserDataInput}
-//                     type="text"
-//                     name="pseudo"
-//                     onChange={(e) => setUserPseudoInput(e.target.value)}
-//                     value={userPseudoInput || ''}
-//                 />
-
-//                 <div className={styles.toggleSwitchContainer}>
-//                     <Switch
-//                         checked={isChecked}
-//                         onChange={handleToggle}
-//                         style={{ color: "#f5363f" }}
-//                     />
-//                     <span style={{ fontSize: "25px" }}>{isChecked ? 'Enfant' : 'Adulte'}</span>
-//                 </div>
-//             </div>
-//             }
-
-//             {type === "password" && <div className={styles.changeUserData}>
-//             <h2>Entre ton nouveau mot de passe !</h2>
-//             <input
-//                 className={styles.changeUserDataInput}
-//                 type="password"                
-//                 name="password"
-//                 onChange={(e) => setUserPasswordInput(e.target.value)}
-//                 value={userPasswordInput}
-//             />
-//             <input
-//                 className={styles.changeUserDataInput}
-//                 type="password"
-//                 name="repeatpassword"
-//                 onChange={(e) => setUserRepeatPasswordInput(e.target.value)}
-//                 value={userRepeatPasswordInput}
-//             />
-
-//             </div>
-//             }
-
-
-//             <div className={styles.userDataSaveLogosContainer}>
-
-
-//                 <FontAwesomeIcon
-//                     className={styles.returnUserDataIcon}
-//                     icon={faRotateLeft}
-//                     onClick={() => closeSection()}
-//                 />
-
-//                 <FontAwesomeIcon
-//                     className={styles.saveUserDataIcon}
-//                     icon={faFloppyDisk}
-//                     onClick={handleSaveData}
-//                 />
-
-//             </div>
-//             </div>
-
-
-
-//     )
-// }
-
-// export default UserEmailNameOrMDPChange;

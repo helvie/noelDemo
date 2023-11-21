@@ -11,7 +11,7 @@
   height: 100px;
   width: 100%;
   /* background-color:burlywood; */
-  font-size: 30px;
+  font-size: 32px;
   width: 50vw;
   display: flex;
   flex-direction: row;
@@ -20,7 +20,7 @@
 }
 
 .userDataSaveLogosContainer {
-  font-size: 26px;
+  font-size: 32px;
 
 }
 
@@ -110,24 +110,28 @@
 
 }
 
-/* .changeUserOneData {
-  height:100px;
-  width:100%;
-  background-color:burlywood;
-  font-size:30px;  
+.messageIcon {
+  cursor: pointer;
+}
 
-} */
 .secretMessageIcon {
   color: var(--color1);
   font-size: 35px;
+  cursor: pointer;
+
 }
 
 .returnUserDataIcon {
   cursor: pointer;
+  margin-right:10px;
+  margin-left:10px;
 }
 
 .saveUserDataIcon {
   cursor: pointer;
+  margin-right:10px;
+  margin-left:10px;
+
 }
 
 .userDataIcon {
@@ -335,20 +339,19 @@
 }
 
 .giftLinkUserConnected {
-  font-size: 20px;
+  font-size: 28px;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-bottom: 20px;
-}
-
-.giftLinkUserConnected {
+  margin-bottom: 60px;
   color: white;
 }
 
+
+
 .giftLinkUserConnectedOffered {
-  font-size: 20px;
+  font-size: 28px;
   margin-bottom: 20px;
   margin-top: 10px;
 }
@@ -373,8 +376,8 @@
 }
 
 .giftIcon {
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: 15px;
+  margin-left: 15px;
   cursor: pointer;
 }
 
@@ -424,7 +427,7 @@
 .giftUrlInput {
   background-color: var(--color5);
   padding: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   color: var(--color1);
   border: 0;
   outline: 8px dotted var(--color4);
@@ -592,7 +595,7 @@
   padding-left: 10vw;
   text-align: center;
   color: var(--color4);
-  font-size: 26px;
+  font-size: 28px;
 }
 
 .firstChatDate {
@@ -608,14 +611,14 @@
 }
 
 .firstChatTitle {
-  font-size: 26px;
+  font-size: 28px;
 }
 
 
 .giftChatIcon {
   color: white;
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: 15px;
+  margin-left: 15px;
   cursor: pointer;
 }
 
@@ -680,7 +683,7 @@
 
 .chatContainer .giftChatIcon {
   color: var(--color4);
-  font-size: 26px;
+  font-size: 32px;
   margin-top: 0;
   margin-bottom: 30px;
 }
@@ -707,10 +710,12 @@
 
 .chatContent {
   color: var(--color4);
+  font-size:30px;
 }
 
 .chatLogoContainer {
   margin-top: 10px;
+  font-size:32px;
 }
 
 /* .chatName {
@@ -718,7 +723,7 @@
 } */
 
 .giftChatIconBottom {
-  font-size: 30px;
+  font-size: 32px;
 }
 
 .pseudo {

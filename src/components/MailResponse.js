@@ -1,6 +1,5 @@
 import styles from '../styles/Home.module.css';
 import React from 'react';
-import Header from '../components/smallElements/Header';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +8,6 @@ import TokenForUserService from './services/TokenForUserService';
 import UserInfosService from './services/UserInfosService';
 import { login } from '@/reducers/user';
 import { updateUserData } from '@/reducers/user';
-import { useEffect } from 'react';
 import ConnectionUser from './ConnectionUser';
 
 const MailResponse = (props) => {
@@ -22,14 +20,12 @@ const MailResponse = (props) => {
 
     const dispatch = useDispatch();
 
-    // console.log(props.mailNumber)
 
     const idmessage = props.mailNumber;
 
 
     const handleUserLogin = async (logs) => {
         try {
-            // Step 1: Get token for user
             const tokenService = TokenForUserService();
             const tokenResponse = await tokenService.getTokenForUser(logs, setErrorLoginPass);
 
@@ -42,15 +38,11 @@ const MailResponse = (props) => {
                 }));
                 setSigninName(name);
 
-                // Step 2: Get user information
                 const userInfoService = UserInfosService();
                 const userInfoResponse = await userInfoService.getUserInfos(name, token);
 
                 if (userInfoResponse.success) {
                     const userData = userInfoResponse.userData;
-                    // console.log(userData)
-
-                    // Dispatch user data update
                     dispatch(updateUserData({
                         id: userData.id,
                         name: userData.login,
@@ -60,7 +52,6 @@ const MailResponse = (props) => {
                         intro: userData.intro
                     }));
 
-                    // Appel de fetchData ici
                     fetchData(idmessage);
                 } else {
                     console.log("Erreur lors de la récupération des informations utilisateur");
@@ -86,8 +77,6 @@ const MailResponse = (props) => {
 
             if (response.status === 200) {
                 const chatMessage = await response.json();
-                // console.log("essai");
-                // Faites quelque chose avec chatMessage si nécessaire
             } else {
                 throw new Error("Failed to get user data. Status: " + response.status);
             }
@@ -96,7 +85,6 @@ const MailResponse = (props) => {
         }
     };
 
-    // console.log("coucou")
     return (
         <>
             {signinName ? (

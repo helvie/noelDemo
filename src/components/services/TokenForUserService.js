@@ -1,10 +1,4 @@
-// services/loginService.js
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { login } from '@/reducers/user';
-// import envVariables from '../../utils/envVariables';
 const TokenForUserService = () => {
-    // const dispatch = useDispatch();
 
 
     const getTokenForUser = async (logs, setErrorLoginPass) => {
@@ -26,11 +20,6 @@ const TokenForUserService = () => {
                 setErrorLoginPass(false);
                 const tokenData = await response.text();
 
-                // setSigninName(logs.signinName);
-                // dispatch(login({
-                //     token: tokenData
-                // }));
-                // console.log(tokenData);
                 return { success: true, message: 'Authentification réussie', token: tokenData, name:logs.signinName };
             } else {
                 setErrorLoginPass(true);

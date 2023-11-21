@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
 import UserConnectedGiftDetailOffered from './UserConnectedGiftDetailOffered';
 import UserConnectedGiftDetail from './UserConnectedGiftDetail';
-import StartSeparationSection from './smallElements/StartSeparationSection';
 import EndSeparationSection from './smallElements/EndSeparationSection';
-import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SectionNameSeparation from './smallElements/SectionNameSeparation';
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 //______________________________________________________________________________
@@ -46,7 +42,8 @@ function UserConnectedGiftsContainer(props) {
         giftUp,
         giftDown,
         orderChange,
-        lowestOrderGift
+        lowestOrderGift,
+        userDataChange
        
 
     } = props;
@@ -54,8 +51,7 @@ function UserConnectedGiftsContainer(props) {
     const noOfferedGifts = props.noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
     const offeredGifts = props.offeredGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
 
-    console.log(noOfferedGifts)
-    console.log(offeredGifts)
+    console.log(userDataChange)
 
 
     //______________________________________________________________________________
@@ -80,21 +76,12 @@ function UserConnectedGiftsContainer(props) {
         addNewGift(newEmptyGift, idListe);
     };
 
-    //______________________________________________________________________________
-
-    //....Gestion de la modification des input. Envoi des données dans le parent au fur et à mesure
-    // const handleInputChange = (modifiedDataFromChildren) => {
-    //     inputChangeInParent(modifiedDataFromChildren)
-    // }
-
     
     //______________________________________________________________________________
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     const offeredGiftsListSection = offeredGifts
         //....récupérés du tableau de données tableau de données
         ? offeredGifts
-            // .sort((a, b) => b.Ordre - a.Ordre)
-            // .filter(gift => gift.offered === true)
 
             .map((data, index) => (
                 //....un composant par cadeau
@@ -136,17 +123,16 @@ function UserConnectedGiftsContainer(props) {
             inputDisabled={inputDisabled}
             //....fonction d'enregistrement
             openModalInHome={openModalInHome}
+            
             idListe={idListe}
 
             handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+            
             giftUp={(id) => giftUp(id)}
+            
             giftDown={(id) => giftDown(id)}
 
-
-
         />
-
-    // const dataGiftsNoOffered = data.gifts.filter(gift => gift.offered === false);
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     const giftsListSection = noOfferedGifts
@@ -172,12 +158,17 @@ function UserConnectedGiftsContainer(props) {
                     inputDisabled={inputDisabled}
                     //....fonction d'enregistrement
                     openModalInHome={openModalInHome}
+                    
                     idListe={idListe}
+                    
                     resetGift={resetGift === data.id}
+                    
                     editingGiftToFalse={editingGiftToFalse}
 
                     handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+                    
                     giftUp={(id) => giftUp(id)}
+                    
                     giftDown={(id) => giftDown(id)}
 
                     position={index === noOfferedGifts.length - 1 ? "dernier" :
@@ -206,11 +197,6 @@ function UserConnectedGiftsContainer(props) {
                         onClick={handleAddNewGift}
 
                     />
-                    {/* <FontAwesomeIcon
-                        className={styles.addGiftIcon}
-                        icon={faFileCirclePlus}
-                        onClick={handleAddNewGift}
-                    /> */}
                 </div>
             );
         }
@@ -231,9 +217,9 @@ function UserConnectedGiftsContainer(props) {
             >
                 <SectionNameSeparation />
 
-                <p className={styles.userConnectedPseudo}>Moi {user.name}<span className={styles.nbGifts}> {nbGifts} &copy;
+                {user.name &&<p className={styles.userConnectedPseudo}>Moi {user.name}<span className={styles.nbGifts}> {nbGifts} &copy;
                 </span>
-                </p>
+                </p>}
                 <div className={isExpanded ? styles.separationHide : styles.separationDisplay}>
                     <SectionNameSeparation />
                 </div>
@@ -242,9 +228,6 @@ function UserConnectedGiftsContainer(props) {
             <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
                 <div className={styles.giftsSection}>
                     <div className={styles.absoluteContainer}>
-
-                        {/*...Affichage du composant */}
-                        {/* <StartSeparationSection /> */}
 
                         {renderAddGiftIcon()}
 

@@ -1,9 +1,5 @@
-// services/getlistesetcadeaux.js
-import { useDispatch } from 'react-redux';
-// import { updateGiftsList2, updateGiftsConnectedUserList } from 'chemin-vers-vos-actions';
 
 const ListesEtCadeauxService = () => {
-    // const dispatch = useDispatch();
 
     const getListesEtCadeaux = async (logs, tokenData) => {
         try {
@@ -16,15 +12,10 @@ const ListesEtCadeauxService = () => {
             });
 
             if (response.status === 200) {
-                // setErrorLoginPass(false);
                 const giftsData = await response.json();
-
-                // dispatch(updateGiftsList2(giftsData.filter((data) => data.pseudo.toLowerCase() !== logs.signinName.toLowerCase())));
-                // dispatch(updateGiftsConnectedUserList(giftsData.filter((data) => data.pseudo.toLowerCase() === logs.signinName.toLowerCase())));
 
                 return { success: true, message: 'Cadeaux récupérés', gifts: giftsData };
             } else {
-                // setErrorLoginPass(true);
                 throw new Error("Failed to get listes et cadeaux. Status: " + response.status);
             }
         } catch (error) {

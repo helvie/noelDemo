@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faLink, faMessage } from '@fortawesome/free-solid-svg-icons';
-import { formatDate } from '../utils/formatDate';
 import GiftDetail from './GiftDetail';
 import StartSeparationSection from './smallElements/StartSeparationSection';
 import EndSeparationSection from './smallElements/EndSeparationSection';
@@ -70,8 +69,8 @@ function GiftsContainer(props) {
         recipient === "santaClaus" ?
             (setOpenedPersonSecretMessage(false), setOpenedSantaClausSecretMessage(true)) :
             recipient === "person" ?
-            (setOpenedPersonSecretMessage(true), setOpenedSantaClausSecretMessage(false)):
-            null
+                (setOpenedPersonSecretMessage(true), setOpenedSantaClausSecretMessage(false)) :
+                null
     }
 
     const closeMailSend = () => {
@@ -79,13 +78,7 @@ function GiftsContainer(props) {
         setOpenedPersonSecretMessage(false)
     }
 
-    //______________________________________________________________________________
 
-    // //....Fonction de vol de cadeau
-    // const handleCartPlusClick = (data) => {
-    //     //....Envoyer les données au parent (GiftsContainer)
-    //     onClickCartPlus(data);
-    // };
     //______________________________________________________________________________
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
@@ -157,7 +150,6 @@ function GiftsContainer(props) {
 
 
                     <div className={styles.absoluteContainer}>
-                        {/*...Affichage du composant */}
                         <StartSeparationSection />
                         <div className={styles.secretMessageLogos}>
                             {!openedSecretMessage &&
@@ -171,16 +163,18 @@ function GiftsContainer(props) {
                             {openedSecretMessage &&
                                 <div className={styles.sendMailContainer}>
                                     <div>
-                                        <img className={styles.orgImg2}
+                                        <img
+                                            className={styles.messageIcon}
                                             src={"images/handGift.png"}
-                                            alt="Organism Image"
+                                            alt="Image"
                                             height="40px"
                                             onClick={() => openSecretMessage("person")}
 
                                         />
-                                        <img className={styles.orgImg2}
+                                        <img
+                                            className={styles.messageIcon}
                                             src={"images/santaClaus.png"}
-                                            alt="Organism Image"
+                                            alt=" Image"
                                             height="40px"
                                             onClick={() => openSecretMessage("santaClaus")}
 
@@ -191,7 +185,7 @@ function GiftsContainer(props) {
                                         <SendMail
                                             name={data.pseudo}
                                             mailRecipient="santaClaus"
-                                            closeMailSend={()=>closeMailSend()}
+                                            closeMailSend={() => closeMailSend()}
 
                                         />
                                     }
@@ -200,7 +194,7 @@ function GiftsContainer(props) {
                                         <SendMail
                                             name={data.pseudo}
                                             mailRecipient="person"
-                                            closeMailSend={()=>closeMailSend()}
+                                            closeMailSend={() => closeMailSend()}
                                         />
                                     }
                                 </div>

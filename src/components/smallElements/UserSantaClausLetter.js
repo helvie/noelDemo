@@ -3,6 +3,7 @@ import { faFloppyDisk, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
+import { updateUserData } from '@/reducers/user';
 import { useSelector, useDispatch } from 'react-redux';
 
 
@@ -12,9 +13,12 @@ import { useSelector, useDispatch } from 'react-redux';
 const UserSantaClausLetter = (props) => {
     
     const [userLetterInput, setUserLetterInput] = useState("")
-    // const [userInitialEmailInput, setInitialUserEmailInput] = useState("")
+    const [successModalVisible, setSuccessModalVisible] = useState(false);
 
     const user = useSelector((state) => state.user);
+
+    const dispatch = useDispatch();
+
 
     const {
         closeLetterSection
@@ -32,7 +36,6 @@ const UserSantaClausLetter = (props) => {
             lettre: userLetterInput
         }
 
-        closeLetterSection();
 
         try {
 
@@ -53,13 +56,17 @@ const UserSantaClausLetter = (props) => {
 
             const data = await response.text();
             console.log("Réussi", data);
+            dispatch(updateUserData({
+                intro: userLetterInput
+            }));                 
+            setSuccessModalVisible(true);
+
             return data;
         } catch (error) {
             console.error("Erreur maj statut cadeau", error);
             throw error;
 
         };
-
 
     }
 
@@ -89,10 +96,19 @@ const UserSantaClausLetter = (props) => {
                 <FontAwesomeIcon
                     className={styles.saveUserDataIcon}
                     icon={faFloppyDisk}
-                    onClick={handleSaveData}
+                    onClick={()=>handleSaveData()}
                 />
 
             </div>
+
+            {successModalVisible && 
+            <div className={styles.successModal}>
+            <p>Ta lettre a été enregistrée avec succès !</p>
+            <button 
+            className={styles.userDataBtn} 
+            onClick={() => {setSuccessModalVisible(false), closeLetterSection()}}>Fermer</button>
+        </div>
+            }
 
 
         </div>

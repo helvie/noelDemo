@@ -1,6 +1,5 @@
 
 const UserInfosService = () => {
-    // const dispatch = useDispatch();
 
     const getUserInfos = async (userName, token) => {
         try {

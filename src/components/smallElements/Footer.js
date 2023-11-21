@@ -1,6 +1,4 @@
 import stylesHeader from '../../styles/HeaderFooter.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { noelLogosJsx } from '@/utils/noelLogosJsx';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -28,13 +26,10 @@ const Footer = () => {
       }));
     }
 
-    // Écouter les événements de redimensionnement de la fenêtre
     window.addEventListener('resize', handleResize);
 
-    // Mettre à jour la taille de la fenêtre initialement
     handleResize();
 
-    // Nettoyer l'écouteur d'événements lorsque le composant est démonté
     return () => {
       window.removeEventListener('resize', handleResize);
     };

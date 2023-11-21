@@ -32,13 +32,10 @@ const Header = (props) => {
       }));
     }
 
-    // Écouter les événements de redimensionnement de la fenêtre
     window.addEventListener('resize', handleResize);
 
-    // Mettre à jour la taille de la fenêtre initialement
     handleResize();
 
-    // Nettoyer l'écouteur d'événements lorsque le composant est démonté
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -57,7 +54,6 @@ const Header = (props) => {
         <FontAwesomeIcon
           icon={faBars}
           className={stylesHeader.miniMenu}
-          // style={{ fontSize: "30px", color: "darkred" }}
           onClick={openUserDataChange}
         />
       </div>

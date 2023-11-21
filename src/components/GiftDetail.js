@@ -1,14 +1,12 @@
 import styles from '../styles/Home.module.css'
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
-import { faLink, faHandBackFist, faCartPlus, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faLink, faCartPlus, faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { formatDate } from '../utils/formatDate';
 //______________________________________________________________________________
 
 function GiftDetail(props) {
 
-    //....Récupération des données contenues dans les propriétés de composants
     const {
         data,
         isExpanded,
@@ -22,16 +20,10 @@ function GiftDetail(props) {
         = props;
 
 
-        // console.log("ceci est le lowestOrderGift "+lowestOrderGift)
-
-
-
-
 
     //______________________________________________________________________________
 
     const handleCartPlusClick = () => {
-        // Copier l'objet data et apporter les modifications nécessaires
         const modifiedData = {
             ...data,
             id: 999998,
@@ -40,7 +32,6 @@ function GiftDetail(props) {
             giftKey: 999998
         };
 
-        // Envoyer les données modifiées au parent (GiftsContainer)
         onClickCartPlus(modifiedData);
     };
     //______________________________________________________________________________

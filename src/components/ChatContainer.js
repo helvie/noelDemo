@@ -1,9 +1,4 @@
 import styles from '../styles/Home.module.css';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faCommentDots } from '@fortawesome/free-solid-svg-icons';
-import { noelLogos } from '@/utils/noelLogosJsx';
 const moment = require('moment');
 require('moment/locale/fr');
 
@@ -13,10 +8,6 @@ require('moment/locale/fr');
 ////////////////////////////////////////////////////////////////////////////////
 
 const ChatContainer = (props) => {
-
-  const [bottomTchatData, setBottomTchatData] = useState('');
-  const [bottomTchatInput, setBottomTchatInput] = useState('');
-  const [bottomTchatOpen, setBottomTchatOpen] = useState(false);
 
   const messages = props.messages
   .filter(message => moment().subtract(2, 'years').isBefore(moment.unix(message.date)))  .map((data, index) => (
