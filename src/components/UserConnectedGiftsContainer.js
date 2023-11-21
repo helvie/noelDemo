@@ -8,6 +8,8 @@ import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SectionNameSeparation from './smallElements/SectionNameSeparation';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 //______________________________________________________________________________
 
 
@@ -16,6 +18,8 @@ function UserConnectedGiftsContainer(props) {
 
 
     const [addedNewGift, setAddedNewGift] = useState(null);
+
+    const user = useSelector((state) => state.user);
 
 
     const myDate = new Date();
@@ -43,10 +47,15 @@ function UserConnectedGiftsContainer(props) {
         giftDown,
         orderChange,
         lowestOrderGift
+       
 
     } = props;
 
-    console.log(lowestOrderGift)
+    const noOfferedGifts = props.noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
+    const offeredGifts = props.offeredGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
+
+    console.log(noOfferedGifts)
+    console.log(offeredGifts)
 
 
     //______________________________________________________________________________
@@ -60,10 +69,12 @@ function UserConnectedGiftsContainer(props) {
             detail: "",
             url: "",
             id: 999999,
-            Ordre: lowestOrderGift-1,
+            Ordre: lowestOrderGift - 1,
             date: formattedDate,
             offered: false
         };
+
+        console.log(newEmptyGift)
 
         // Appel de la fonction pour ajouter le nouveau cadeau chez le parent
         addNewGift(newEmptyGift, idListe);
@@ -76,13 +87,14 @@ function UserConnectedGiftsContainer(props) {
     //     inputChangeInParent(modifiedDataFromChildren)
     // }
 
+    
     //______________________________________________________________________________
     //....Création de la variable contenant les div d'affichage des différents cadeaux
-    const offeredGiftsList = data.gifts
+    const offeredGiftsListSection = offeredGifts
         //....récupérés du tableau de données tableau de données
-        ? data.gifts
-            .sort((a, b) => b.Ordre - a.Ordre)
-            .filter(gift => gift.offered === true)
+        ? offeredGifts
+            // .sort((a, b) => b.Ordre - a.Ordre)
+            // .filter(gift => gift.offered === true)
 
             .map((data, index) => (
                 //....un composant par cadeau
@@ -105,7 +117,7 @@ function UserConnectedGiftsContainer(props) {
 
 
 
-    const newEmptyGift =
+    const newEmptyGiftSection =
 
         <UserConnectedGiftDetail
             //....clé unique obligatoire
@@ -134,17 +146,14 @@ function UserConnectedGiftsContainer(props) {
 
         />
 
-    const dataGiftsNoOffered = data.gifts.filter(gift => gift.offered === false);
+    // const dataGiftsNoOffered = data.gifts.filter(gift => gift.offered === false);
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
-    const giftsList = data.gifts
+    const giftsListSection = noOfferedGifts
         //....récupérés du tableau de données tableau de données
-        ? data.gifts.filter(gift => gift.offered === false)
-            .sort((a, b) => a.Ordre - b.Ordre)
+        ? noOfferedGifts
             .map((data, index) => (
                 //....un composant par cadeau
-
-
 
                 <UserConnectedGiftDetail
                     //....clé unique obligatoire
@@ -171,9 +180,9 @@ function UserConnectedGiftsContainer(props) {
                     giftUp={(id) => giftUp(id)}
                     giftDown={(id) => giftDown(id)}
 
-                    position={index === dataGiftsNoOffered.length - 1 ? "dernier" :
-                    index === 0 ? "premier" : "milieu"}
-   
+                    position={index === noOfferedGifts.length - 1 ? "dernier" :
+                        index === 0 ? "premier" : "milieu"}
+
                 />
 
             ))
@@ -181,19 +190,27 @@ function UserConnectedGiftsContainer(props) {
         //....S'il n'y a pas de données aucun renvoi
         null;
 
-    { nbGifts = data.gifts ? data.gifts.filter(gift => !gift.offered).length : 0 }
+    { nbGifts = noOfferedGifts ? noOfferedGifts.length : 0 }
 
     // Fonction qui retourne le contenu JSX conditionnel
     const renderAddGiftIcon = () => {
 
-        if (!data.gifts.find(item => item.id === 999999)) {
+        if (!noOfferedGifts.find(item => item.id === 999999)) {
             return (
                 <div className={styles.addGiftIconContainer}>
-                    <FontAwesomeIcon
+
+                    <img className={styles.addGiftIcon}
+                        src={"images/add.png"}
+                        alt="Image"
+                        height="40px"
+                        onClick={handleAddNewGift}
+
+                    />
+                    {/* <FontAwesomeIcon
                         className={styles.addGiftIcon}
                         icon={faFileCirclePlus}
                         onClick={handleAddNewGift}
-                    />
+                    /> */}
                 </div>
             );
         }
@@ -214,7 +231,7 @@ function UserConnectedGiftsContainer(props) {
             >
                 <SectionNameSeparation />
 
-                <p className={styles.userConnectedPseudo}>Moi {props.data.pseudo}<span className={styles.nbGifts}> {nbGifts} &copy;
+                <p className={styles.userConnectedPseudo}>Moi {user.name}<span className={styles.nbGifts}> {nbGifts} &copy;
                 </span>
                 </p>
                 <div className={isExpanded ? styles.separationHide : styles.separationDisplay}>
@@ -231,12 +248,12 @@ function UserConnectedGiftsContainer(props) {
 
                         {renderAddGiftIcon()}
 
-                        {addedNewGift && newEmptyGift}
+                        {addedNewGift && newEmptyGiftSection}
                         <div className={styles.giftInputContainer}>
                             {orderChange &&
                                 <div className={styles.giftsList}>
                                     {/*...Affichage du JSX stocké dans la variable giftsList */}
-                                    {giftsList}
+                                    {noOfferedGifts && giftsListSection}
                                 </div>
                             }
                         </div>
@@ -246,7 +263,7 @@ function UserConnectedGiftsContainer(props) {
                                 &#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
                             </p>
                             {/*...Affichage du JSX stocké dans la variable giftsList */}
-                            {offeredGiftsList}
+                            {offeredGiftsListSection}
                             <p className={styles.startSeparationOfferedGift}>
                                 &#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;&#062;
                             </p>

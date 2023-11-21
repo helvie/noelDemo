@@ -30,7 +30,7 @@ const TokenForUserService = () => {
                 // dispatch(login({
                 //     token: tokenData
                 // }));
-                console.log(tokenData);
+                // console.log(tokenData);
                 return { success: true, message: 'Authentification réussie', token: tokenData, name:logs.signinName };
             } else {
                 setErrorLoginPass(true);

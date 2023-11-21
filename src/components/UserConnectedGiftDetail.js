@@ -21,6 +21,9 @@ function UserConnectedGiftDetail(props) {
         position,
     } = props;
 
+    console.log(data.Ordre)
+
+
     const [titleInput, setTitleInput] = useState(data.title);
     const [detailInput, setDetailInput] = useState(data.detail);
     const [urlInput, setUrlInput] = useState(data.url);
@@ -29,7 +32,7 @@ function UserConnectedGiftDetail(props) {
 
     const openModal = () => {
 
-        console.log(urlError)
+        // console.log(urlError)
         const isValid = validateInputs();
     
         if (isValid) {
@@ -39,12 +42,15 @@ function UserConnectedGiftDetail(props) {
 
     const validateInputs = () => {
         // Effectuez toutes les vérifications nécessaires et mettez à jour les erreurs
-        setTitleError(prevTitleError => (titleInput.trim() === "" ? "Le titre ne peut pas être vide." : ""));
-        
-        // Ajout de la validation regex pour l'URL (par exemple, permet une URL valide)
-        setUrlError(prevUrlError => (urlInput.trim() === "" || /^https?:\/\/\S*$/.test(urlInput) ? "" : "L'URL doit être valide."));            
-        // Retournez true si toutes les validations réussissent, sinon false
-        return !titleError && !urlError;
+        const newTitleError = titleInput.trim() === "" ? "Le titre ne peut pas être vide." : "";
+        const newUrlError = urlInput.trim() === "" || /^https?:\/\/\S*$/.test(urlInput) ? "" : "L'URL doit être valide.";
+    
+        // Mettez à jour les états d'erreur
+        setTitleError(newTitleError);
+        setUrlError(newUrlError);
+    
+        // Retournez true si toutes les validations réussissent (les erreurs sont vides), sinon false
+        return !newTitleError && !newUrlError;
     }
 
     const resetInputs = () => {
@@ -91,7 +97,8 @@ function UserConnectedGiftDetail(props) {
             detailInput: name === 'text' ? value : detailInput,
             urlInput: name === 'url' ? value : urlInput,
             giftKey: props.index,
-            idListe: props.idListe
+            idListe: props.idListe,
+            ordre: data.Ordre
         });
     };
 
@@ -106,6 +113,8 @@ function UserConnectedGiftDetail(props) {
                     value={titleInput}
                     disabled={inputDisabled}
                     onClick={() => onClickInput(index)}
+                    placeholder="Titre"
+
                 />
                 <textarea
                     className={styles.giftTextInput}
@@ -114,6 +123,7 @@ function UserConnectedGiftDetail(props) {
                     name="text"
                     disabled={inputDisabled}
                     onClick={() => onClickInput(index)}
+                    placeholder="Texte (facultatif)"
                 />
                 <input
                     className={styles.giftUrlInput}
@@ -123,6 +133,7 @@ function UserConnectedGiftDetail(props) {
                     value={urlInput}
                     disabled={inputDisabled}
                     onClick={() => onClickInput(index)}
+                    placeholder="Url (facultatif)"
                 />
 
                 {titleError && <p className={styles.errorMessage}>{titleError}</p>}

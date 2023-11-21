@@ -23,8 +23,8 @@ const SendMail = (props) => {
 
     } = props;
 
-    console.log(user.id)
-    console.log(name)
+    // console.log(user.id)
+    // console.log(name)
 
     const mailRoute = mailRecipient === "santaClaus" ?
         "envoiMessagePereNoel" :

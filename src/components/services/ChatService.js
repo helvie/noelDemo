@@ -25,10 +25,9 @@ const ChatService = () => {
     }
   };
 
-  const saveMessage = async (tchatInput, giftsConnectedUserList, user) => {
+  const saveMessage = async (tchatInput, user) => {
 
     try {
-      const idUser = giftsConnectedUserList.find(person => person.pseudo === user.name)?.idUser;
 
       const response = await fetch("https://noel.helvie.fr/api/insertChat", {
         method: 'POST',
@@ -39,7 +38,7 @@ const ChatService = () => {
           "content-type": 'application/json'
         },
         body: JSON.stringify({
-          idUtilisateur: idUser,
+          idUtilisateur: user.id,
           contenu: tchatInput,
         })
       });

@@ -11,7 +11,7 @@ import UserSantaClausLetter from "../components/smallElements/UserSantaClausLett
 import UserGiftTarget from "../components/smallElements/UserGiftTarget";
 import ConnectionUser from './ConnectionUser';
 import { useSelector, useDispatch } from 'react-redux';
-import { login, logout, updateUserData } from '../reducers/user'
+import { login, logout, updateUserData, updateIdListe } from '../reducers/user'
 import { useRouter } from 'next/router';
 import { faAt, faUser, faUnlock, faFileLines, faBullseye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -73,6 +73,9 @@ function HomePage() {
     // const [isLoading, setIsLoading] = useState(false);
     const [giftsConnectedUserList, setGiftsConnectedUserList] = useState(null)
     const [giftsList2, setGiftsList2] = useState(null)
+    const [noOfferedGifts, setNoOfferedGifts] = useState(null)
+    const [offeredGifts, setOfferedGifts] = useState(null)
+
     const [connectedUserSection, setConnectedUserSection] = useState(null)
     const [personsSections, setPersonsSections] = useState(null)
 
@@ -93,13 +96,13 @@ function HomePage() {
     const [userDataChange, setUserDataChange] = useState('');
     const [dataUserIcons, setDataUserIcons] = useState(false);
     const [openedSecretMessage, setOpenedSecretMessage] = useState("");
-    console.log(openedSecretMessage)
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         // Mise à jour de l'interface utilisateur en réponse à tchatData
-        console.log('tchatData a changé :', tchatData);
+        // console.log('tchatData a changé :', tchatData);
         // Vous pouvez mettre à jour votre interface utilisateur ici
-      }, [tchatData]);
+    }, [tchatData]);
 
 
 
@@ -117,26 +120,27 @@ function HomePage() {
                 }
                 return message;
             });
-    
+
             // Retournez la nouvelle liste mise à jour
             return newData;
         });
     };
 
-    const updateConnectedUserName = (name) => {
-        setGiftsConnectedUserList((prevList) => {
-            // Créez une nouvelle copie en utilisant map pour éviter la mutation directe
-            const newList = prevList.map((gift) => {
-                // Mettez à jour le pseudo du premier élément avec le nouveau nom
-                if (gift.pseudo === user.name) {
-                    return { ...gift, pseudo: name };
-                }
-                return gift;
-            });
-    
-            // Retournez la nouvelle liste mise à jour
-            return newList;
-        });    }
+    // const updateConnectedUserName = (name) => {
+    //     setGiftsConnectedUserList((prevList) => {
+    //         // Créez une nouvelle copie en utilisant map pour éviter la mutation directe
+    //         const newList = prevList.map((gift) => {
+    //             // Mettez à jour le pseudo du premier élément avec le nouveau nom
+    //             if (gift.pseudo === user.name) {
+    //                 return { ...gift, pseudo: name };
+    //             }
+    //             return gift;
+    //         });
+
+    //         // Retournez la nouvelle liste mise à jour
+    //         return newList;
+    //     });
+    // }
 
     const handleUrlClick = (url) => {
         console.log("Navigating to:", url);
@@ -160,6 +164,8 @@ function HomePage() {
                     name: name
                 }));
                 setSigninName(name)
+
+                console.log(token)
 
                 // Step 2: Get user information
                 const userInfoService = UserInfosService();
@@ -185,17 +191,33 @@ function HomePage() {
                     if (chatResponse.success) {
                         // Set chat data state
                         setTchatData(chatResponse.chat);
-                        console.log(chatResponse.chat)
+                        // console.log(chatResponse.chat)
 
                         // Step 4: Get gifts data
                         const listesEtCadeauxService = ListesEtCadeauxService();
                         const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(logs, token);
 
                         if (giftsResponse.success) {
+                            // console.log(giftsResponse.gifts)
+                            const idListe = giftsResponse.gifts.filter((liste) => liste.pseudo === userData.login)[0].idListe
+                            // {console.log(userData.login)}
+                            // {console.log(idListe)}
+
+                            // console.log(idListe)
+                            dispatch(updateIdListe({
+                                idListe: idListe
+                            }));
                             // Set gifts data states
                             setGiftsList2(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() !== name.toLowerCase()));
                             setGiftsConnectedUserList(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase()));
-                        
+                            setNoOfferedGifts(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase())[0].gifts
+                                // .sort((a, b) => a.Ordre - b.Ordre)
+                                .filter((data) => data.offered === false));
+                            setOfferedGifts(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase())[0].gifts
+                                // .sort((a, b) => a.Ordre - b.Ordre)
+                                .filter((data) => data.offered === true));
+                            console.log(giftsResponse.gifts)
+
                         } else {
                             console.log("Erreur lors de la récupération des listes");
                         }
@@ -217,31 +239,27 @@ function HomePage() {
     const saveMessage = async () => {
         const chatService = ChatService();
 
-        const result = await chatService.saveMessage(tchatInput, giftsConnectedUserList, user)
-        if(result){
+        const result = await chatService.saveMessage(tchatInput, user)
+        if (result) {
 
             const date = new Date();
             const timestampInSeconds = Math.floor(date.getTime() / 1000);
             const newMessage = {
-                date:timestampInSeconds,
-                contenu:tchatInput,
+                date: timestampInSeconds,
+                contenu: tchatInput,
                 login: user.name
-             }
-             const updatedTchatData = [...tchatData];
-             updatedTchatData.unshift(newMessage);
-             setTchatData(updatedTchatData);
+            }
+            const updatedTchatData = [...tchatData];
+            updatedTchatData.unshift(newMessage);
+            setTchatData(updatedTchatData);
 
-            //  console.log(tchatData);
-            // setTchatInput("")
-            // setTopTchatOpen(false);
-            // setBottomTchatOpen(false);
         }
     }
 
 
     const swapOrderInBdd = async (idRemplacant, idRemplace) => {
-        console.log(idRemplacant);
-        console.log(idRemplace);
+        console.log("idRemplacant " + idRemplacant);
+        console.log("idRemplace " + idRemplace);
 
         try {
             const response = await fetch("https://noel.helvie.fr/api/changeOrdreCadeau", {
@@ -262,9 +280,6 @@ function HomePage() {
                 throw new Error(`Erreur HTTP! Statut: ${response.status}`);
             }
 
-            // const data = await response;
-            console.log(response);
-
             return response.ok;
         } catch (error) {
             console.error("Erreur maj statut cadeau", error);
@@ -273,15 +288,16 @@ function HomePage() {
     };
 
 
-    const swapOrderWithBelow = async (giftsConnectedUserList, targetId) => {
-        const targetIndex = giftsConnectedUserList[0].gifts
+    const swapOrderWithAbove = async (targetId) => {
+        const sortNoOfferedGifts = noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre))
+        const targetIndex = sortNoOfferedGifts
             .findIndex(gift => gift.id === targetId);
 
         if (targetIndex > 0) {
-            const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
-            const aboveOrder = giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre;
-            const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
-            const aboveId = giftsConnectedUserList[0].gifts[targetIndex - 1].id;
+            const currentOrder = sortNoOfferedGifts[targetIndex].Ordre;
+            const aboveOrder = sortNoOfferedGifts[targetIndex - 1].Ordre;
+            const currentId = sortNoOfferedGifts[targetIndex].id;
+            const aboveId = sortNoOfferedGifts[targetIndex - 1].id;
 
             try {
                 const result = await swapOrderInBdd(aboveId, currentId);
@@ -289,8 +305,9 @@ function HomePage() {
 
                 // Vérifier si le résultat est conforme à ce que tu attends
                 if (result) {
-                    giftsConnectedUserList[0].gifts[targetIndex].Ordre = aboveOrder;
-                    giftsConnectedUserList[0].gifts[targetIndex - 1].Ordre = currentOrder;
+                    sortNoOfferedGifts[targetIndex].Ordre = aboveOrder;
+                    sortNoOfferedGifts[targetIndex - 1].Ordre = currentOrder;
+                    setNoOfferedGifts(sortNoOfferedGifts)
                     setOrderChange(orderChange + 1);
                     // Autres opérations...
                 } else {
@@ -304,16 +321,16 @@ function HomePage() {
         }
     };
 
-    const swapOrderWithAbove = async (giftsConnectedUserList, targetId) => {
-        const targetIndex = giftsConnectedUserList[0].gifts
+    const swapOrderWithBelow = async (targetId) => {
+        const sortNoOfferedGifts = noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre))
+        const targetIndex = sortNoOfferedGifts
             .findIndex(gift => gift.id === targetId);
 
-        if (targetIndex !== -1 && targetIndex < giftsConnectedUserList[0].gifts.length - 1) {
-            const currentOrder = giftsConnectedUserList[0].gifts[targetIndex].Ordre;
-            const belowOrder = giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre;
-            const currentId = giftsConnectedUserList[0].gifts[targetIndex].id;
-            const belowId = giftsConnectedUserList[0].gifts[targetIndex + 1].id;
-
+        if (targetIndex !== -1 && targetIndex < sortNoOfferedGifts.length - 1) {
+            const currentOrder = sortNoOfferedGifts[targetIndex].Ordre;
+            const belowOrder = sortNoOfferedGifts[targetIndex + 1].Ordre;
+            const currentId = sortNoOfferedGifts[targetIndex].id;
+            const belowId = sortNoOfferedGifts[targetIndex + 1].id;
 
             try {
                 const result = await swapOrderInBdd(currentId, belowId);
@@ -321,8 +338,9 @@ function HomePage() {
 
                 // Vérifier si le résultat est conforme à ce que tu attends
                 if (result) {
-                    giftsConnectedUserList[0].gifts[targetIndex].Ordre = belowOrder;
-                    giftsConnectedUserList[0].gifts[targetIndex + 1].Ordre = currentOrder;
+                    sortNoOfferedGifts[targetIndex].Ordre = belowOrder;
+                    sortNoOfferedGifts[targetIndex + 1].Ordre = currentOrder;
+                    setNoOfferedGifts(sortNoOfferedGifts)
                     setOrderChange(orderChange + 1);
                     // Autres opérations...
                 } else {
@@ -337,14 +355,9 @@ function HomePage() {
     };
 
     const removeGiftById = (idToRemove) => {
-        setGiftsConnectedUserList((prevList) => {
-            // Vérifiez si prevList est non vide et si gifts est défini
-            if (prevList.length > 0 && prevList[0].gifts) {
-                const updatedGifts = prevList[0].gifts.filter((gift) => gift.id !== idToRemove);
-                return [{ ...prevList[0], gifts: updatedGifts }];
-            }
-
-            return prevList;
+        setNoOfferedGifts((prevNoOfferedGifts) => {
+            const updatedNoOfferedGifts = prevNoOfferedGifts.filter((gift) => gift.id !== idToRemove);
+            return updatedNoOfferedGifts;
         });
     };
 
@@ -356,36 +369,23 @@ function HomePage() {
         setEditingGift(-1)
     }
 
-    const updateGiftsUserConnectedList = (giftListId, giftId, offeredStatus) => {
+    const updateGiftsUserConnectedList = (giftId, offeredStatus) => {
+        if (offeredStatus === false) {
+            // Déplacer le cadeau de noOfferedGifts vers offeredGifts avec offered à true
+            const movedGift = noOfferedGifts.find(gift => gift.id === giftId);
+            const updatedNoOfferedGifts = noOfferedGifts.filter(gift => gift.id !== giftId);
+            setNoOfferedGifts(updatedNoOfferedGifts);
 
-        // Utilisez map pour créer une nouvelle copie avec les modifications nécessaires
-        const updatedGiftsUserConnectedList = giftsConnectedUserList.map(giftList => {
-            // Vérifiez d'abord si listId correspond
-            if (giftList.idListe === giftListId) {
-                // Ensuite, mappez sur les cadeaux de cette liste
-                const updatedGifts = giftList.gifts.map(gift => {
-                    // Ensuite, vérifiez si giftId correspond
-                    if (gift.id === giftId) {
-                        // Mettez à jour le statut uniquement si giftId est égal à 200
-                        return { ...gift, offered: offeredStatus };
-                    }
-                    // Si ce n'est pas le cadeau avec giftId 200, retournez-le tel quel
-                    return gift;
-                });
+            setOfferedGifts(prevOfferedGifts => [...prevOfferedGifts, { ...movedGift, offered: true }]);
+        } else {
+            // Déplacer le cadeau de offeredGifts vers noOfferedGifts avec offered à false
+            const movedGift = offeredGifts.find(gift => gift.id === giftId);
+            const updatedOfferedGifts = offeredGifts.filter(gift => gift.id !== giftId);
+            setOfferedGifts(updatedOfferedGifts);
 
-                // Retournez la liste mise à jour avec les cadeaux modifiés
-                return { ...giftList, gifts: updatedGifts };
-            }
-
-            // Si ce n'est pas la liste avec listId correspondant, retournez-la telle quelle
-            return giftList;
-        });
-
-        // Mettez à jour l'état avec la nouvelle copie
-        setGiftsConnectedUserList(updatedGiftsUserConnectedList);
+            setNoOfferedGifts(prevNoOfferedGifts => [...prevNoOfferedGifts, { ...movedGift, offered: false }]);
+        }
     };
-
-
 
     const handleOfferedClick = (index, idListe, offered) => {
 
@@ -405,7 +405,7 @@ function HomePage() {
         })
             .then(response => response.text())
             .then(data => {
-                updateGiftsUserConnectedList(idListe, index, !offered)
+                updateGiftsUserConnectedList(index, offered)
 
             })
             .catch(error => {
@@ -425,59 +425,61 @@ function HomePage() {
         //....modification d'un état utilisé par le composant, celui ci se mettra à jour
         let connectedUserSectionMapping;
 
-        if (giftsConnectedUserList) {
+        if (offeredGifts) {
 
-            const lowestOrderGift = giftsConnectedUserList[0].gifts
-            .filter(gift=>gift.offered===false)
-            .reduce((minGift, currentGift) => {
+            const allGifts = [...noOfferedGifts, ...offeredGifts];
+
+            const lowestOrderGift = allGifts.reduce((minGift, currentGift) => {
                 return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
-              }, null);
-              
-              console.log(lowestOrderGift.Ordre);
+            }, null);
 
-            connectedUserSectionMapping = giftsConnectedUserList
-                .map((data, i) => {
-                    idConnectedUserList = data.idListe;
-                    const color = colors[0];
-                    return (
-                        //....composant user
-                        <UserConnectedGiftsContainer
-                            //....clé unique obligatoire
-                            key={999997}
-                            //....background color
-                            color={color}
-                            //....statut depliage de la section
-                            isExpanded={openedSectionUser}
-                            //....fonction de dépliage de la section
-                            onClick={() => handleUserSectionClick(i)}
-                            //....fonction de dépliage de la section
-                            onClickInput={(giftId) => handleInputClick(giftId)}
-                            //....données
-                            data={data}
-                            //....fonction de gestion de changement des inputs
-                            inputChangeInParent={(objectChange) => handleInputChange(objectChange)}
-                            //....booléen cadeau en cours de modification
-                            editingGift={editingGift}
-                            //....statut de l'édition des inputs
-                            inputDisabled={inputDisabled}
-                            //....fonction d'enregistrement
-                            openModalInHome={openSaveModal}
-                            //....fonction d'ajout de nouveau cadeau
-                            addNewGift={(newGift) => addNewGift(newGift)}
+            // const lowestOrderGift = noOfferedGifts
+            //     .reduce((minGift, currentGift) => {
+            //         return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
+            //     }, null);
 
-                            idListe={data.idListe}
 
-                            handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
-                            resetGift={resetGift}
-                            editingGiftToFalse={editingGiftToFalse}
-                            giftUp={(id) => swapOrderWithAbove(giftsConnectedUserList, id)}
-                            giftDown={(id) => swapOrderWithBelow(giftsConnectedUserList, id)}
-                            orderChange={orderChange}
+            connectedUserSectionMapping =
+                // giftsConnectedUserList
+                //....composant user
+                <UserConnectedGiftsContainer
+                    //....clé unique obligatoire
+                    key={999997}
+                    //....background color
+                    color={colors[0]}
+                    //....statut depliage de la section
+                    isExpanded={openedSectionUser}
+                    //....fonction de dépliage de la section
+                    onClick={() => handleUserSectionClick(999997)}
+                    //....fonction de dépliage de la section
+                    onClickInput={(giftId) => handleInputClick(giftId)}
+                    //....données
+                    // data={data}
+                    offeredGifts={offeredGifts}
+                    noOfferedGifts={noOfferedGifts}
+                    //....fonction de gestion de changement des inputs
+                    inputChangeInParent={(objectChange) => handleInputChange(objectChange)}
+                    //....booléen cadeau en cours de modification
+                    editingGift={editingGift}
+                    //....statut de l'édition des inputs
+                    inputDisabled={inputDisabled}
+                    //....fonction d'enregistrement
+                    openModalInHome={openSaveModal}
+                    //....fonction d'ajout de nouveau cadeau
+                    addNewGift={(newGift) => addNewGift(newGift)}
 
-                            lowestOrderGift={lowestOrderGift.Ordre}
-                        />
-                    )
-                })
+                    idListe={user.idListe}
+
+                    handleOfferedClick={(index, idListe, offered) => handleOfferedClick(index, idListe, offered)}
+                    resetGift={resetGift}
+                    editingGiftToFalse={editingGiftToFalse}
+                    giftUp={(id) => swapOrderWithAbove(id)}
+                    giftDown={(id) => swapOrderWithBelow(id)}
+                    orderChange={orderChange}
+
+                    lowestOrderGift={lowestOrderGift.Ordre}
+                />
+
         }
 
         setConnectedUserSection(connectedUserSectionMapping)
@@ -490,6 +492,12 @@ function HomePage() {
         let personsSectionsMapping;
 
         if (giftsList2) {
+
+            const lowestOrderGift = noOfferedGifts
+                .reduce((minGift, currentGift) => {
+                    return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
+                }, null);
+
             personsSectionsMapping = giftsList2
                 // .filter((data) => data.pseudo.toLowerCase() !== signinName.toLowerCase())
                 .map((data, i) => {
@@ -519,8 +527,9 @@ function HomePage() {
                             // openedSantaClausSecretMessage={openedSantaClausSecretMessage===data.id}
                             // openedPersonSecretMessage={openedPersonSecretMessage===data.id}
                             setOpenedSecretMessage={(value) => setOpenedSecretMessage(value)}
-                        // setOpenedSantaClausSecretMessage={(value)=>setOpenedSantaClausSecretMessage(value)}
-                        // setOpenedPersonSecretMessage={(value)=>setOpenedPersonSecretMessage(value)}
+                            // setOpenedSantaClausSecretMessage={(value)=>setOpenedSantaClausSecretMessage(value)}
+                            // setOpenedPersonSecretMessage={(value)=>setOpenedPersonSecretMessage(value)}
+                            lowestOrderGift={lowestOrderGift.Ordre}
 
 
                         />
@@ -532,7 +541,7 @@ function HomePage() {
         setResetGift(-1)
 
 
-    }, [giftsList2, giftsConnectedUserList, openedSectionUser,
+    }, [giftsList2, offeredGifts, noOfferedGifts, openedSectionUser,
         openedSectionIndex, editingGift, user, orderChange, openedSecretMessage]);
 
 
@@ -540,33 +549,46 @@ function HomePage() {
 
     //############################ FONCTIONS #################################
 
-
-
     const addNewGift = (newGift) => {
-
         console.log(newGift)
-
-
-
-        setGiftsConnectedUserList((prevState) => {
-
-
-            // Vérifiez si le tableau de cadeaux existe dans l'objet
-            const giftsArray = prevState.length > 0 ? prevState[0].gifts : [];
-
-            // Mettez à jour le tableau de cadeaux de cet utilisateur
-            const updatedGifts = [newGift, ...giftsArray];
+        setNoOfferedGifts((prevNoOfferedGifts) => {
+            // Mettez à jour le tableau de cadeaux
+            const updatedNoOfferedGifts = [newGift, ...prevNoOfferedGifts];
 
             // Retournez une nouvelle liste avec le tableau de cadeaux mis à jour
-            return [{ ...prevState[0], gifts: updatedGifts }];
+            return updatedNoOfferedGifts;
         });
 
         if (newGift.id === 999999) {
-
-            setEditingGift(999999)
-
+            setEditingGift(999999);
         }
     };
+
+    // const addNewGift = (newGift) => {
+
+    //     // console.log(newGift)
+
+
+
+    //     setGiftsConnectedUserList((prevState) => {
+
+
+    //         // Vérifiez si le tableau de cadeaux existe dans l'objet
+    //         const giftsArray = prevState.length > 0 ? prevState[0].gifts : [];
+
+    //         // Mettez à jour le tableau de cadeaux de cet utilisateur
+    //         const updatedGifts = [newGift, ...giftsArray];
+
+    //         // Retournez une nouvelle liste avec le tableau de cadeaux mis à jour
+    //         return [{ ...prevState[0], gifts: updatedGifts }];
+    //     });
+
+    //     if (newGift.id === 999999) {
+
+    //         setEditingGift(999999)
+
+    //     }
+    // };
 
     //....Dépliage de la section personne si plié, pliage si déplié
     const openCloseSectionIndex = (index) => {
@@ -700,38 +722,44 @@ function HomePage() {
     };
 
     const localUpdateGift = (giftData) => {
-        setGiftsConnectedUserList(prevGiftsList => {
-
-            const filteredOrdreGifts = prevGiftsList[0].gifts.filter(gift => gift.Ordre !== 999999 && gift.Ordre !== 999998);
-            const maxOrdre = Math.max(...filteredOrdreGifts.map(gift => gift.Ordre), 0);
-
-            const filteredIdGifts = prevGiftsList[0].gifts.filter(gift => gift.Ordre !== 999999 && gift.Ordre !== 999998);
-            const maxId = Math.max(...filteredIdGifts.map(gift => gift.id), 0);
-
-            const updatedGifts = prevGiftsList[0].gifts.map(gift => {
+        setNoOfferedGifts((prevGiftsList) => {
+            const filteredOrdreGifts = prevGiftsList.filter(
+                (gift) => gift.Ordre !== 999999 && gift.Ordre !== 999998
+            );
+            const maxOrdre = Math.max(...filteredOrdreGifts.map((gift) => gift.Ordre), 0);
+    
+            const filteredIdGifts = prevGiftsList.filter(
+                (gift) => gift.Ordre !== 999999 && gift.Ordre !== 999998
+            );
+            const maxId = Math.max(...filteredIdGifts.map((gift) => gift.id), 0);
+    
+            const updatedGifts = prevGiftsList.map((gift) => {
                 if (gift.id === giftData.giftKey) {
                     return {
                         ...gift,
                         id: giftData.giftKey === 999999 || giftData.giftKey === 999998 ? maxId + 1 : gift.id,
-                        Ordre: giftData.giftKey === 999999 || giftData.giftKey === 999998 ? maxOrdre + 1 : gift.ordre,
                         title: giftData.titleInput || giftData.title || gift.title,
                         detail: giftData.detailInput || giftData.detail || gift.detail,
-                        url: giftData.urlInput || giftData.url || gift.url
+                        url: giftData.urlInput || giftData.url || gift.url,
+                        Ordre: giftData.ordre
                     };
                 }
                 return gift;
             });
+    
+            // Trier le tableau mis à jour en fonction de la propriété Ordre
+            updatedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
 
-            return [{ ...prevGiftsList[0], gifts: updatedGifts }];
+            setOrderChange(orderChange+1)
+    
+            return updatedGifts;
         });
-    }
-
+    };
     //______________________________________________________________________________
 
     //....Gestion de l'enregistrement des modifications depuis la modale
     const handleSaveChanges = (giftDatas) => {
-        console.log(giftDatas)
-
+        const giftOrdre = giftDatas.ordre ? giftDatas.ordre : "";
         if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
 
             fetch("https://noel.helvie.fr/api/insertCadeau", {
@@ -742,38 +770,38 @@ function HomePage() {
                     "App-Name": "NoelTan",
                     "content-type": 'application/json'
                 },
+
                 body: JSON.stringify({
                     idListe: giftDatas.idListe,
                     title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
                     detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
                     url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+                    ordre: giftOrdre
                 })
             })
                 .then(response => {
                     if (response.status === 200) {
                         setErrorLoginPass(false)
+                        setEditingGift("")
                         if (giftDatas.giftKey === 999998) {
                             setGiftSavedModalVisible(true);
                             addNewGift(giftDatas)
                         }
+                        localUpdateGift(giftDatas);
+
                         return response.text();
 
                     } else {
+
                         setErrorLoginPass(true)
                         throw new Error("Failed save the gift. Status: " + response.status);
-                    }
+}
+
                 })
-                .then(data => {
-                    localUpdateGift(giftDatas);
-                })
-                .catch(error => {
-                    console.log("Erreur dans l'enregistrement", error);
-                })
+
         }
         else {
 
-
-            console.log(giftDatas.urlInput)
             fetch("https://noel.helvie.fr/api/updateCadeau", {
                 method: 'POST',
                 headers: {
@@ -870,15 +898,6 @@ function HomePage() {
     //______________________________________________________________________________
 
 
-    // //....Enregistrement du cadeau volé
-    // const stolenGiftRegistered = (giftData) => {
-    //     setGiftsConnectedUserList(prevList => {
-    //       const updatedList = [...prevList]; // Copie de la liste existante
-    //       updatedList[0].gifts = [...prevList[0].gifts, giftData]; // Mise à jour du tableau gifts
-    //       return updatedList;
-    //     });        
-    //   }
-
     const closeGiftSavedModal = () => {
         setGiftSavedModalVisible(false);
     };
@@ -936,8 +955,8 @@ function HomePage() {
                     </div>
 
                     {userDataChange === "email" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")} type={"email"} />}
-                    {userDataChange === "name" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")}  type={"name"} updateName={(name) => updateConnectedUserName(name)}   updateChatName={(oldName, newName) => updateChatName(oldName, newName)}/>}
-                    {userDataChange === "password" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")}  type={"password"} />}
+                    {userDataChange === "name" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")} type={"name"} updateName={(name) => updateConnectedUserName(name)} updateChatName={(oldName, newName) => updateChatName(oldName, newName)} />}
+                    {userDataChange === "password" && <UserEmailNameOrMDPChange closeSection={() => setUserDataChange("")} type={"password"} />}
                     {userDataChange === "request" && <UserPasswordRequest closeRequestSection={() => setUserDataChange("")} />}
                     {userDataChange === "letter" && <UserSantaClausLetter closeLetterSection={() => setUserDataChange("")} />}
                     {userDataChange === "target" && <UserGiftTarget closeTargetSection={() => setUserDataChange("")} />}

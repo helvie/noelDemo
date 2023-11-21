@@ -16,9 +16,13 @@ function GiftDetail(props) {
         onClickCartPlus,
         index,
         idListe,
-        onUrlClick
+        onUrlClick,
+        lowestOrderGift
     }
         = props;
+
+
+        // console.log("ceci est le lowestOrderGift "+lowestOrderGift)
 
 
 
@@ -31,7 +35,7 @@ function GiftDetail(props) {
         const modifiedData = {
             ...data,
             id: 999998,
-            Ordre: 999998,
+            Ordre: lowestOrderGift-1,
             idListe: idListe,
             giftKey: 999998
         };

@@ -418,6 +418,7 @@
   outline: 8px dotted var(--color4);
   width: 100%;
   font-family: 'goodbye-crewel-world-nf.regular';
+  height:auto;
 }
 
 .giftUrlInput {

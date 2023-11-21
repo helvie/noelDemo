@@ -41,6 +41,7 @@ function GiftsContainer(props) {
         onUrlClick,
         openedSecretMessage,
         setOpenedSecretMessage,
+        lowestOrderGift
     } = props;
 
     console.log("openedSecret " + openedSecretMessage)
@@ -116,6 +117,8 @@ function GiftsContainer(props) {
                     onClickCartPlus={(giftData) => onClickCartPlus(giftData)}
 
                     onUrlClick={(url) => onUrlClick(url)}
+                    lowestOrderGift={lowestOrderGift}
+
                 />
             </div>
         ))

@@ -22,7 +22,7 @@ const MailResponse = (props) => {
 
     const dispatch = useDispatch();
 
-    console.log(props.mailNumber)
+    // console.log(props.mailNumber)
 
     const idmessage = props.mailNumber;
 
@@ -48,7 +48,7 @@ const MailResponse = (props) => {
 
                 if (userInfoResponse.success) {
                     const userData = userInfoResponse.userData;
-                    console.log(userData)
+                    // console.log(userData)
 
                     // Dispatch user data update
                     dispatch(updateUserData({
@@ -86,7 +86,7 @@ const MailResponse = (props) => {
 
             if (response.status === 200) {
                 const chatMessage = await response.json();
-                console.log("essai");
+                // console.log("essai");
                 // Faites quelque chose avec chatMessage si nécessaire
             } else {
                 throw new Error("Failed to get user data. Status: " + response.status);
@@ -96,7 +96,7 @@ const MailResponse = (props) => {
         }
     };
 
-    console.log("coucou")
+    // console.log("coucou")
     return (
         <>
             {signinName ? (

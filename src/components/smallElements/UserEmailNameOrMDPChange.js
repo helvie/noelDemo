@@ -89,9 +89,9 @@ const UserEmailNameOrMDPChange = (props) => {
             };
 
             try {
-                console.log(user.name)
-                console.log(user.token)
-                console.log(dataToSave)
+                // console.log(user.name)
+                // console.log(user.token)
+                // console.log(dataToSave)
                 const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {
                     method: 'POST',
                     headers: {

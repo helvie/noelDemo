@@ -9,7 +9,8 @@ const initialState = {
 	cible: null,
 	enfant:null,
 	id:null,
-	intro:null
+	intro:null,
+	idCible:null
 
 };
 
@@ -20,6 +21,9 @@ export const userSlice = createSlice({
 
 		login: (state, action) => {
 			state.token = action.payload.token;
+		},
+		updateIdListe: (state, action) => {
+			state.idListe = action.payload.idListe;
 		},
 		updateUserData: (state, action) => {
 			state.name = action.payload.name !== undefined ? action.payload.name : state.name;
@@ -35,6 +39,6 @@ export const userSlice = createSlice({
 	},
 });
 
-export const {login, logout, updateUserData} = userSlice.actions;
+export const {login, logout, updateUserData, updateIdListe} = userSlice.actions;
 
 export default userSlice.reducer;
