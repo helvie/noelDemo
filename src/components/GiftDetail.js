@@ -69,7 +69,7 @@ function GiftDetail(props) {
 
                 <div className={styles.stolenModal}>
                     <div className={styles.modalDialog}>
-                        <p>Confirmez-vous l'ajout de ce cadeau ?</p>
+                        <p>Confirmez-vous l&apos;ajout de ce cadeau ?</p>
                         <button onClick={handleValidation}>Valider</button>
                         <button onClick={() => setIsModalVisible(false)}>Annuler</button>
                     </div>

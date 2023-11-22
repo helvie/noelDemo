@@ -86,7 +86,7 @@ const UserPasswordRequest = (props) => {
           ) : (
             <>
               {passwordRequestStatus && (
-                <p className={styles.requestPasswordInformation}>Tu as dû recevoir un mail avec ton nouveau mot de passe ! - N'oublie pas de regarder dans tes spams !</p>
+                <p className={styles.requestPasswordInformation}>Tu as dû recevoir un mail avec ton nouveau mot de passe ! - N&apos;oublie pas de regarder dans tes spams !</p>
               )}
             </>
           )}

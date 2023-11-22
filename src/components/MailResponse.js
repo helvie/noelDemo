@@ -172,7 +172,7 @@ const MailResponse = (props) => {
                         )}
                         {!message && sendOk === false &&
                             <div className={styles.infoLostRoute}>
-                                <p>Tu t'es perdu ? Demande ton chemin à l'accueil !</p>
+                                <p>Tu t&apos;es perdu ? Demande ton chemin à l&apos;accueil !</p>
                                 <FontAwesomeIcon
                                     className={styles.giftMessageResponseIcon}
                                     icon={faHome}
