@@ -1,7 +1,7 @@
 import styles from '../styles/Home.module.css';
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk, faGift, faRotateLeft, faCircleChevronUp, faCircleChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faFloppyDisk, faGift, faRotateLeft, faCircleChevronUp, faCircleChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 function UserConnectedGiftDetail(props) {
     const {
@@ -19,9 +19,10 @@ function UserConnectedGiftDetail(props) {
         giftUp,
         giftDown,
         position,
+        setEditingGift
     } = props;
 
-    console.log(data.Ordre)
+    console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"+editingGift)
 
 
     const [titleInput, setTitleInput] = useState(data.title);
@@ -30,11 +31,17 @@ function UserConnectedGiftDetail(props) {
     const [titleError, setTitleError] = useState("");
     const [urlError, setUrlError] = useState("");
 
-    const openModal = () => {
 
-        // console.log(urlError)
+    const changeEditingGift = () => {
+            console.log("editinggift " + editingGift)
+
+        {editingGift===data.id || editingGift===-1 ? setEditingGift(data.id) : openModal() }
+            
+    }
+
+    const openModal = () => {
         const isValid = validateInputs();
-    
+
         if (isValid) {
             openModalInHome();
         }
@@ -44,11 +51,11 @@ function UserConnectedGiftDetail(props) {
         // Effectuez toutes les vérifications nécessaires et mettez à jour les erreurs
         const newTitleError = titleInput.trim() === "" ? "Le titre ne peut pas être vide." : "";
         const newUrlError = urlInput.trim() === "" || /^https?:\/\/\S*$/.test(urlInput) ? "" : "L'URL doit être valide.";
-    
+
         // Mettez à jour les états d'erreur
         setTitleError(newTitleError);
         setUrlError(newUrlError);
-    
+
         // Retournez true si toutes les validations réussissent (les erreurs sont vides), sinon false
         return !newTitleError && !newUrlError;
     }
@@ -102,7 +109,7 @@ function UserConnectedGiftDetail(props) {
 
     return (
         <div className={styles.gift}>
-            <div className={editingGift || index === 999999 ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
+            <div className={editingGift===data.id || index === 999999 ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
                 <input
                     className={styles.giftTitleInput}
                     type="text"
@@ -138,15 +145,22 @@ function UserConnectedGiftDetail(props) {
                 {urlError && <p className={styles.errorMessage}>{urlError}</p>}
 
                 <div className={styles.giftLinkUserConnected}>
+                    
                     <FontAwesomeIcon
                         className={`${styles.saveIcon} ${styles.giftIcon}`}
-                        style={editingGift ? null : { display: "none" }}
+                        style={editingGift!==data.id ? null : { display: "none" }}
+                        icon={faEdit}
+                        onClick={()=>changeEditingGift()}
+                    />
+                    <FontAwesomeIcon
+                        className={`${styles.saveIcon} ${styles.giftIcon}`}
+                        style={editingGift===data.id ? null : { display: "none" }}
                         icon={faFloppyDisk}
                         onClick={openModal}
                     />
                     <FontAwesomeIcon
                         className={`${styles.returnIcon} ${styles.giftIcon}`}
-                        style={editingGift ? null : { display: "none" }}
+                        style={editingGift===data.id ? null : { display: "none" }}
                         icon={faRotateLeft}
                         onClick={returnChanges}
                     />

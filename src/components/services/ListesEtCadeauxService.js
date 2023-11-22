@@ -1,11 +1,11 @@
 
 const ListesEtCadeauxService = () => {
 
-    const getListesEtCadeaux = async (logs, tokenData) => {
+    const getListesEtCadeaux = async (name, tokenData) => {
         try {
             const response = await fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
                 headers: {
-                    "user-name": encodeURIComponent(logs.signinName),
+                    "user-name": encodeURIComponent(name),
                     "app-name": "NoelTan",
                     "noel-token": tokenData
                 }

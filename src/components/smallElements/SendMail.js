@@ -35,7 +35,7 @@ const SendMail = (props) => {
             loginCible: name,
             message: mailMessageInput,
             objet: mailObjectInput || "",
-            corps: "<p>TEST !!!</p>"
+            corps: ""
         }
 
 

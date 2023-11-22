@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
+import UserPasswordRequest from "../components/smallElements/UserPasswordRequest";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -109,6 +110,8 @@ function ConnectionUser(props) {
             En avant pour Noël !!!
           </button>
         </div>
+
+        <UserPasswordRequest/>
       </div>
     </main>
   );

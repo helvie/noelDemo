@@ -7,10 +7,13 @@ import StartSeparationSection from './smallElements/StartSeparationSection';
 import EndSeparationSection from './smallElements/EndSeparationSection';
 import SectionNameSeparation from './smallElements/SectionNameSeparation';
 import SendMail from './smallElements/SendMail';
-
+import { useSelector } from 'react-redux';
 //______________________________________________________________________________
 
 function GiftsContainer(props) {
+
+    const user = useSelector((state) => state.user);
+
 
     function decodeCaracteresSpeciaux(chaine) {
         return chaine.replace(/&eacute;/g, "é")
@@ -36,12 +39,15 @@ function GiftsContainer(props) {
         isExpanded,
         onClickCartPlus,
         color,
-        idListe,
         onUrlClick,
         openedSecretMessage,
         setOpenedSecretMessage,
         lowestOrderGift
     } = props;
+
+    const idListe = user.idListe;
+
+    console.log(idListe)
 
     console.log("openedSecret " + openedSecretMessage)
 
@@ -110,6 +116,7 @@ function GiftsContainer(props) {
                     onClickCartPlus={(giftData) => onClickCartPlus(giftData)}
 
                     onUrlClick={(url) => onUrlClick(url)}
+
                     lowestOrderGift={lowestOrderGift}
 
                 />

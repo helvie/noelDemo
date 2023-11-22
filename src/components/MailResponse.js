@@ -9,6 +9,7 @@ import UserInfosService from './services/UserInfosService';
 import { login } from '@/reducers/user';
 import { updateUserData } from '@/reducers/user';
 import ConnectionUser from './ConnectionUser';
+import { useRouter } from 'next/router';
 
 const MailResponse = (props) => {
 
@@ -16,6 +17,12 @@ const MailResponse = (props) => {
     const [signinName, setSigninName] = useState("");
     const [errorLoginPass, setErrorLoginPass] = useState(false);
     const user = useSelector((state) => state.user);
+    const [message, setMessage] = useState("");
+    const [sendOk, setSendOk] = useState(false);
+
+    const token = user.token;
+    const name = user.name;
+    const router = useRouter();
 
 
     const dispatch = useDispatch();
@@ -37,6 +44,7 @@ const MailResponse = (props) => {
                     name: name
                 }));
                 setSigninName(name);
+                console.log(token)
 
                 const userInfoService = UserInfosService();
                 const userInfoResponse = await userInfoService.getUserInfos(name, token);
@@ -52,7 +60,7 @@ const MailResponse = (props) => {
                         intro: userData.intro
                     }));
 
-                    fetchData(idmessage);
+                    fetchData(idmessage, token, name);
                 } else {
                     console.log("Erreur lors de la récupération des informations utilisateur");
                 }
@@ -65,18 +73,57 @@ const MailResponse = (props) => {
         }
     };
 
-    const fetchData = async (idmessage) => {
+    const saveMessage = async () => {
+        try {
+
+            console.log(idmessage)
+            console.log(token)
+            console.log(name)
+
+            const response = await fetch("https://noel.helvie.fr/api/envoiReponseMessage", {
+                method: 'POST',
+
+                headers: {
+                    "user-name": encodeURIComponent(name),
+                    "app-name": "NoelTan",
+                    "noel-token": token,
+                    "content-type": 'application/json'
+
+                },
+                body: JSON.stringify({
+                    "idMessageOrigine": idmessage,
+                    "reponseUtilisateur": responseInput,
+                    "objet": "Voici la réponse à ton message !",
+                    "corps": ""
+                })
+            });
+
+            if (response.status === 200) {
+                const data = await response.json();
+                setSendOk(true)
+                setMessage("")
+
+            } else {
+                throw new Error("Failed to get user data. Status: " + response.status);
+            }
+        } catch (error) {
+            console.error("Une erreur s'est produite lors de l'envoi du message : ", error);
+        }
+    };
+
+    const fetchData = async (idmessage, token, name) => {
         try {
             const response = await fetch(`https://noel.helvie.fr/api/getmessage.php?idmessage=${idmessage}`, {
                 headers: {
-                    "user-name": encodeURIComponent(user.name),
+                    "user-name": encodeURIComponent(name),
                     "app-name": "NoelTan",
-                    "noel-token": user.token
+                    "noel-token": token
                 }
             });
 
             if (response.status === 200) {
-                const chatMessage = await response.json();
+                const receveidMessage = await response.json();
+                setMessage(receveidMessage.message)
             } else {
                 throw new Error("Failed to get user data. Status: " + response.status);
             }
@@ -85,35 +132,70 @@ const MailResponse = (props) => {
         }
     };
 
+
+
     return (
-        <>
-            {signinName ? (
+        <div className={styles.mailResponseContainer}>
+            {name ? (
                 <>
-                    <textarea
-                        className={styles.chatInput}
-                        type="text"
-                        name="title"
-                        onChange={(e) => setResponseInput(e.target.value)}
-                        value={responseInput}
-                        rows={2}
-                    />
+                    <div className={styles.mailResponseContent}>
+                        {message && (
+                            <>
+                                <h2>Voici le message que tu as reçu :</h2>
+                                <div className={styles.receveidMessage}>{message}</div>
 
-                    <FontAwesomeIcon
-                        className={styles.giftChatIcon}
-                        icon={faHome}
-                        onClick={() => setTchatOpen(false)}
-                    />
+                                <h2 className={styles.mailResponseTitle}>Tu peux répondre ci-dessous :</h2>
 
-                    <FontAwesomeIcon
-                        className={styles.giftChatIcon}
-                        icon={faPaperPlane}
-                        onClick={() => saveMessage()}
-                    />
+                                <textarea
+                                    className={styles.mailResponseInput}
+                                    type="text"
+                                    name="title"
+                                    onChange={(e) => setResponseInput(e.target.value)}
+                                    value={responseInput}
+                                    rows={2}
+                                />
+                                <div>
+
+                                    <FontAwesomeIcon
+                                        className={styles.giftMessageResponseIcon}
+                                        icon={faHome}
+                                        onClick={() => setTchatOpen(false)}
+                                    />
+
+                                    <FontAwesomeIcon
+                                        className={styles.giftMessageResponseIcon}
+                                        icon={faPaperPlane}
+                                        onClick={() => saveMessage()}
+                                    />
+                                </div>
+                            </>
+                        )}
+                        {!message && sendOk === false &&
+                            <div className={styles.infoLostRoute}>
+                                <p>Tu t'es perdu ? Demande ton chemin à l'accueil !</p>
+                                <FontAwesomeIcon
+                                    className={styles.giftMessageResponseIcon}
+                                    icon={faHome}
+                                    onClick={() => router.push('/')}
+                                />
+                                {/* <div style={{cursor:"pointer"}} onClick={()=>router.push('/')} className={stylesHeader.headerLogo}></div> */}
+                            </div>}
+                            {!message && sendOk === true &&
+                            <div className={styles.infoLostRoute}>
+                                <p>Ton message a bien été envoyé !</p>
+                                <FontAwesomeIcon
+                                    className={styles.giftMessageResponseIcon}
+                                    icon={faHome}
+                                    onClick={() => router.push('/')}
+                                />
+                                {/* <div style={{cursor:"pointer"}} onClick={()=>router.push('/')} className={stylesHeader.headerLogo}></div> */}
+                            </div>}
+                    </div>
                 </>
             ) : (
                 <ConnectionUser onValidation={handleUserLogin} errorLoginPass={errorLoginPass} />
             )}
-        </>
+        </div>
     );
 }
 export default MailResponse;

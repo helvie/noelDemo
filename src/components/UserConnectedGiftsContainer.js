@@ -13,6 +13,7 @@ function UserConnectedGiftsContainer(props) {
 
 
 
+
     const [addedNewGift, setAddedNewGift] = useState(null);
 
     const user = useSelector((state) => state.user);
@@ -43,15 +44,15 @@ function UserConnectedGiftsContainer(props) {
         giftDown,
         orderChange,
         lowestOrderGift,
-        userDataChange
-       
+        userDataChange,
+        setEditingGift
 
     } = props;
 
     const noOfferedGifts = props.noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
     const offeredGifts = props.offeredGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
 
-    console.log(userDataChange)
+    console.log(noOfferedGifts)
 
 
     //______________________________________________________________________________
@@ -79,6 +80,8 @@ function UserConnectedGiftsContainer(props) {
     
     //______________________________________________________________________________
     //....Création de la variable contenant les div d'affichage des différents cadeaux
+    
+    
     const offeredGiftsListSection = offeredGifts
         //....récupérés du tableau de données tableau de données
         ? offeredGifts
@@ -153,7 +156,7 @@ function UserConnectedGiftsContainer(props) {
                     //....fonction de gestion de changement des inputs
                     onInputChange={(changeObject) => inputChangeInParent(changeObject)}
                     //....booléen cadeau en cours de modification
-                    editingGift={editingGift === data.id}
+                    editingGift={editingGift}
                     //....statut de l'édition des inputs
                     inputDisabled={inputDisabled}
                     //....fonction d'enregistrement
@@ -173,6 +176,9 @@ function UserConnectedGiftsContainer(props) {
 
                     position={index === noOfferedGifts.length - 1 ? "dernier" :
                         index === 0 ? "premier" : "milieu"}
+
+                    setEditingGift={(idNumber)=>setEditingGift(idNumber)}
+
 
                 />
 

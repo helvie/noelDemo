@@ -120,7 +120,6 @@ function HomePage() {
     const [lowestOrderGift, setLowestOrderGift] = useState(null);
 
 
-    let idConnectedUserList = 0;
     const user = useSelector((state) => state.user);
     const sizeOfWindow = useSelector((state) => state.windowSize);
     const dispatch = useDispatch();
@@ -189,6 +188,8 @@ function HomePage() {
                     lowestOrderGift={lowestOrderGift}
                     //....indication de la modale en cours d'édition pour les user data
                     userDataChange={userDataChange}
+                    //....mise en édition d'un cadau au clic sur édit
+                    setEditingGift={(idNumber)=>setEditingGift(idNumber)}
                 />
 
         }
@@ -225,8 +226,8 @@ function HomePage() {
                             data={data}
                             //....fonction de vol de cadeau
                             onClickCartPlus={(dataGift) => handleSaveChanges(dataGift)}
-                            //....id de la liste de l'utilisateur connecté
-                            idListe={idConnectedUserList}
+                            // //....id de la liste de l'utilisateur connecté
+                            // idListe={idConnectedUserList}
                             //....fonction de rerouting vers url
                             onUrlClick={(url) => handleUrlClick(url)}
                             //....indication pour ouverture de la modale de saisie d'un message secret
@@ -331,7 +332,7 @@ function HomePage() {
 
                         // Récupération et stockage des listes et cadeaux
                         const listesEtCadeauxService = ListesEtCadeauxService();
-                        const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(logs, token);
+                        const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(name, token);
 
                         if (giftsResponse.success) {
                             const idListe = giftsResponse.gifts.filter((liste) => liste.pseudo === userData.login)[0].idListe
@@ -389,6 +390,9 @@ function HomePage() {
             const updatedTchatData = [...tchatData];
             updatedTchatData.unshift(newMessage);
             setTchatData(updatedTchatData);
+            setTopTchatOpen(false);
+            setBottomTchatOpen(false);
+            setTchatInput("");
 
         }
     }
@@ -562,8 +566,11 @@ function HomePage() {
 
             const updatedNoOfferedGifts = [newGift, ...prevNoOfferedGifts];
 
+            updatedNoOfferedGifts.sort((a, b) => a.Ordre - b.Ordre);
+
             return updatedNoOfferedGifts;
         });
+
 
         if (newGift.id === 999999) {
             setEditingGift(999999);
@@ -724,7 +731,7 @@ function HomePage() {
             // const filteredIdGifts = prevGiftsList.filter(
             //     (gift) => gift.Ordre !== 999999 && gift.Ordre !== 999998
             // );
-            // const maxId = Math.max(...filteredIdGifts.map((gift) => gift.id), 0);
+            const maxId = Math.max(...prevGiftsList.map((gift) => gift.id), 0);
 
             const updatedGifts = prevGiftsList.map((gift) => {
                 if (gift.id === giftData.giftKey) {
@@ -734,7 +741,7 @@ function HomePage() {
                         title: giftData.titleInput || giftData.title || gift.title,
                         detail: giftData.detailInput || giftData.detail || gift.detail,
                         url: giftData.urlInput || giftData.url || gift.url,
-                        Ordre: giftData.ordre
+                        Ordre: giftData.ordre || giftData.Ordre
                     };
                 }
                 return gift;
@@ -751,89 +758,197 @@ function HomePage() {
 
     //....Gestion de l'enregistrement des modifications depuis la modale
     //---------------------------------------------------------------------------------
+    const handleSaveChanges = async (giftDatas) => {
+        try {
+            console.log(giftDatas);
 
-    const handleSaveChanges = (giftDatas) => {
-        const giftOrdre = giftDatas.ordre ? giftDatas.ordre : "";
+            if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
+                const response = await fetch("https://noel.helvie.fr/api/insertCadeau", {
+                    method: 'POST',
+                    headers: {
+                        "Noel-Token": user.token,
+                        "User-Name": encodeURIComponent(user.name),
+                        "App-Name": "NoelTan",
+                        "content-type": 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idListe: giftDatas.idListe,
+                        title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
+                        detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
+                        url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+                    })
+                });
 
-        // Si le cadeau est un nouveau cadeau
-        if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
+                if (response.status === 200) {
+                    setErrorLoginPass(false);
 
-            fetch("https://noel.helvie.fr/api/insertCadeau", {
-                method: 'POST',
-                headers: {
-                    "Noel-Token": user.token,
-                    "User-Name": encodeURIComponent(user.name),
-                    "App-Name": "NoelTan",
-                    "content-type": 'application/json'
-                },
+                    // Récupération et stockage des listes et cadeaux
+                    const listesEtCadeauxService = ListesEtCadeauxService();
+                    const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(user.name, user.token);
 
-                body: JSON.stringify({
-                    idListe: giftDatas.idListe,
-                    title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
-                    detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-                    url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
-                    ordre: giftOrdre
-                })
-            })
-                .then(response => {
-                    if (response.status === 200) {
-                        setErrorLoginPass(false)
-                        setEditingGift("")
-                        if (giftDatas.giftKey === 999998) {
-                            setGiftSavedModalVisible(true);
-                            addNewGift(giftDatas)
-                        }
-                        localUpdateGift(giftDatas);
+                    if (giftsResponse.success) {
+                        const allConnectedUserGifts = giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === user.name.toLowerCase())[0].gifts;
 
-                        return response.text();
+                        const lowestOrder = allConnectedUserGifts.reduce((minGift, currentGift) => {
+                            return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
+                        }, null);
 
+                        // Stockage du plus petit ordre de cadeau
+                        setLowestOrderGift(lowestOrder);
+                        // Stockage des cadeaux non offerts de l'utilisateur connecté
+                        setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
+
+                        setEditingGift(-1);
                     } else {
-
-                        setErrorLoginPass(true)
-                        throw new Error("Failed save the gift. Status: " + response.status);
+                        console.log("Erreur lors de la récupération des listes");
                     }
+                } else {
+                    setErrorLoginPass(true);
+                    throw new Error("Failed to save the gift. Status: " + response.status);
+                }
+            } else {
+                const response = await fetch("https://noel.helvie.fr/api/updateCadeau", {
+                    method: 'POST',
+                    headers: {
+                        "Noel-Token": user.token,
+                        "User-Name": encodeURIComponent(user.name),
+                        "App-Name": "NoelTan",
+                        "content-type": 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: giftDatas.giftKey,
+                        title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
+                        detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
+                        url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+                    })
+                });
 
-                })
+                if (response.status === 200) {
+                    console.log("Reussi");
+                } else {
+                    setErrorLoginPass(true);
+                    throw new Error("Failed to save the gift. Status: " + response.status);
+                }
+            }
 
+            closeModal();
+        } catch (error) {
+            console.error("Erreur dans l'enregistrement", error);
         }
-        else {
-
-            fetch("https://noel.helvie.fr/api/updateCadeau", {
-                method: 'POST',
-                headers: {
-                    "Noel-Token": user.token,
-                    "User-Name": encodeURIComponent(user.name),
-                    "App-Name": "NoelTan",
-                    "content-type": 'application/json'
-                },
-                body: JSON.stringify({
-                    id: giftDatas.giftKey,
-                    title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
-                    detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-                    url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
-                })
-            })
-                .then(response => {
-                    console.log(response.status);
-                    if (response.status === 200) {
-                        return response.text();
-                    } else {
-                        setErrorLoginPass(true)
-                        throw new Error("Failed save the gift. Status: " + response.status);
-                    }
-                })
-                .then(data => {
-                    console.log("reussi")
-                })
-                .catch(error => {
-                    console.log("Erreur dans l'enregistrement", error);
-                })
-        }
-
-
-
-        closeModal();
     };
+    // const handleSaveChanges = (giftDatas) => {
+    //     console.log(giftDatas)
+    //     // const giftOrdre = giftDatas.ordre ? giftDatas.ordre : lowestOrderGift-1;
+    //     // if(!giftDatas.ordre){setLowestOrderGift(lowestOrderGift-1)}
+    //     // console.log(giftDatas)
+    //     // console.log(giftOrdre)
+
+    //     // // Si le cadeau est un nouveau cadeau
+    //     if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
+
+    //         fetch("https://noel.helvie.fr/api/insertCadeau", {
+    //             method: 'POST',
+    //             headers: {
+    //                 "Noel-Token": user.token,
+    //                 "User-Name": encodeURIComponent(user.name),
+    //                 "App-Name": "NoelTan",
+    //                 "content-type": 'application/json'
+    //             },
+
+    //             body: JSON.stringify({
+    //                 idListe: giftDatas.idListe,
+    //                 title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
+    //                 detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
+    //                 url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+    //                 ordre: giftDatas.Ordre
+    //             })
+    //         })
+    //             .then(response => {
+    //                 if (response.status === 200) {
+    //                     setErrorLoginPass(false)
+
+    //                     // Récupération et stockage des listes et cadeaux
+    //                     const listesEtCadeauxService = ListesEtCadeauxService();
+    //                     const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(logs, token);
+
+    //                     if (giftsResponse.success) {
+    //                         const idListe = giftsResponse.gifts.filter((liste) => liste.pseudo === userData.login)[0].idListe
+
+    //                         dispatch(updateIdListe({
+    //                             idListe: idListe
+    //                         }));
+    //                         const allConnectedUserGifts = giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase())[0].gifts;
+
+    //                         const lowestOrder = allConnectedUserGifts.reduce((minGift, currentGift) => {
+    //                             return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
+    //                         }, null);
+
+    //                         //Stockage du plus petit ordre de cadeau
+    //                         setLowestOrderGift(lowestOrder)
+    //                         //Stockage des cadeaux non offerts de l'utilisateur connecté
+    //                         setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
+
+    //                         setEditingGift(-1)
+
+    //                     } else { console.log("Erreur lors de la récupération des listes"); }
+
+
+    //                     // setEditingGift(-1)
+    //                     // if (giftDatas.giftKey === 999998) {
+    //                     //     setGiftSavedModalVisible(true);
+    //                     //     addNewGift(giftDatas)
+    //                     // }
+    //                     // // localUpdateGift(giftDatas);
+
+    //                     // return response.text();
+
+    //                 } else {
+
+    //                     setErrorLoginPass(true)
+    //                     throw new Error("Failed save the gift. Status: " + response.status);
+    //                 }
+
+    //             })
+
+    //     }
+    //     else {
+
+    //         fetch("https://noel.helvie.fr/api/updateCadeau", {
+    //             method: 'POST',
+    //             headers: {
+    //                 "Noel-Token": user.token,
+    //                 "User-Name": encodeURIComponent(user.name),
+    //                 "App-Name": "NoelTan",
+    //                 "content-type": 'application/json'
+    //             },
+    //             body: JSON.stringify({
+    //                 id: giftDatas.giftKey,
+    //                 title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
+    //                 detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
+    //                 url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+    //             })
+    //         })
+    //             .then(response => {
+    //                 console.log(response.status);
+    //                 if (response.status === 200) {
+    //                     return response.text();
+    //                 } else {
+    //                     setErrorLoginPass(true)
+    //                     throw new Error("Failed save the gift. Status: " + response.status);
+    //                 }
+    //             })
+    //             .then(data => {
+    //                 console.log("reussi")
+    //             })
+    //             .catch(error => {
+    //                 console.log("Erreur dans l'enregistrement", error);
+    //             })
+    //     }
+
+
+
+    //     closeModal();
+    // };
 
 
     //....Réinitialisation des données au clic sur annuler dans modale
@@ -907,7 +1022,7 @@ function HomePage() {
     return (
         <main>
             <Header
-                openUserDataChange={() => setDataUserIcons(!dataUserIcons)} />
+                openUserDataChange={() => setDataUserIcons(!dataUserIcons)} displayMenu={true} />
 
 
             {signinName ? (<>

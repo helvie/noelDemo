@@ -1,5 +1,5 @@
 import styles from '../../styles/Home.module.css';
-import { faFloppyDisk, faRotateLeft, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk, faRotateLeft, faKey, faSave } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,26 +8,20 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const UserPasswordRequest = (props) => {
 
-    const user = useSelector((state) => state.user);
-
-    const {
-        closeRequestSection
-    } = props;
+    const [passwordRequestStatus, setPasswordRequestStatus] = useState("noRequested");
+    const [signinName, setSigninName] = useState("");
 
     const handleSaveData = async () => {
         const dataToSave = {
-            login: user.name,
+            login: signinName,
         }
-
-        closePasswordSection();
 
         try {
 
             const response = await fetch("https://noel.helvie.fr/api/resetMDP", {
                 method: 'POST',
                 headers: {
-                    "Noel-Token": user.token,
-                    "User-Name": encodeURIComponent(user.name),
+                    "User-Name": encodeURIComponent(signinName),
                     "App-Name": "NoelTan",
                     "content-type": 'application/json'
                 },
@@ -39,7 +33,9 @@ const UserPasswordRequest = (props) => {
             }
 
             const data = await response.text();
+            setPasswordRequestStatus("connexionSuccess")
             console.log("Réussi", data);
+
             return data;
         } catch (error) {
             console.error("Erreur maj statut cadeau", error);
@@ -50,35 +46,52 @@ const UserPasswordRequest = (props) => {
     }
 
     return (
-
-        <div className={styles.changeUserData}>
-            <h2>Clique la clé pour recevoir un nouveau mot de passe !</h2>
-
-
-            <div className={styles.userDataSaveLogosContainer}>
-
+        <div className={styles.passwordRequestContainer}>
+          {passwordRequestStatus === "noRequested" ? (
+            <>
+              <p>Mot de passe oublié ? Clique sur la clé !</p>
+              <div className={styles.userDataSaveLogosContainer}>
                 <FontAwesomeIcon
-                    className={styles.keyIcon}
-                    icon={faKey}
-                    onClick={() => handleSaveData()}
+                  className={styles.keyIcon}
+                  icon={faKey}
+                  onClick={() => setPasswordRequestStatus("requested")}
                 />
-
-            </div>
-
-            <div className={styles.userDataSaveLogosContainer}>
-
-
+              </div>
+            </>
+          ) : passwordRequestStatus === "requested" ? (
+            <>
+              <p>Indique ton login de connexion</p>
+              <input
+                className={styles.inputNewPassRequest}
+                type="text"
+                placeholder="nom"
+                aria-label="signinName"
+                id="signinName"
+                onChange={(e) => setSigninName(e.target.value)}
+                value={signinName}
+              />
+              <div className={styles.userDataSaveLogosContainer}>
                 <FontAwesomeIcon
-                    className={styles.returnUserDataIcon}
-                    icon={faRotateLeft}
-                    onClick={() => closeRequestSection()}
+                  className={styles.requestPasswordSaveIcon}
+                  icon={faSave}
+                  onClick={() => handleSaveData()}
                 />
-
-            </div>
-
+                <FontAwesomeIcon
+                  className={styles.returnUserDataIcon}
+                  icon={faRotateLeft}
+                  onClick={() => setPasswordRequestStatus("noRequested")}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              {passwordRequestStatus && (
+                <p className={styles.requestPasswordInformation}>Tu as dû recevoir un mail avec ton nouveau mot de passe ! - N'oublie pas de regarder dans tes spams !</p>
+              )}
+            </>
+          )}
         </div>
-
-    )
+      );
 }
 
 

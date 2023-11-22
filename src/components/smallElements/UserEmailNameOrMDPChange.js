@@ -18,7 +18,7 @@ const UserEmailNameOrMDPChange = (props) => {
     const [pseudoValid, setPseudoValid] = useState(true);
     const [pseudoError, setPseudoError] = useState("");
     const [passwordValid, setPasswordValid] = useState(true);
-    const [passwordError, setPasswordError] = useState(null);
+    const [passwordError, setPasswordError] = useState("");
     const [repeatPasswordValid, setRepeatPasswordValid] = useState(true);
     const [repeatPasswordError, setRepeatPasswordError] = useState("");
     const [successModalVisible, setSuccessModalVisible] = useState(false);
@@ -39,48 +39,69 @@ const UserEmailNameOrMDPChange = (props) => {
         updateName,
     } = props;
 
-    console.log("modale "+successModalVisible)
-    console.log("type "+type)
 
-
-
-
-
-    const validateEmail = () => {
+    const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        setEmailValid(emailRegex.test(userEmailInput));
-        setEmailError(emailRegex.test(userEmailInput) ? "" : "Adresse e-mail invalide");
+        const isValid = emailRegex.test(email);
+        const errorMessage = isValid ? "" : "Adresse e-mail invalide";
+        return { isValid, errorMessage };
     };
-
-    const validatePseudo = () => {
+    
+    const validatePseudo = (pseudo) => {
         const pseudoRegex = /^[a-zA-Z0-9\s]{3,}$/;
-        const isValid = pseudoRegex.test(userPseudoInput);
-        
-        setPseudoValid(isValid);
-        setPseudoError(isValid ? "" : "Le pseudo doit contenir au moins 3 caractères et ne peut contenir que des lettres (minuscules ou majuscules), des espaces et des chiffres.");
+        const isValid = pseudoRegex.test(pseudo);
+        const errorMessage = isValid ? "" : "Le pseudo doit contenir au moins 3 caractères et ne peut contenir que des lettres (minuscules ou majuscules), des espaces et des chiffres.";
+        return { isValid, errorMessage };
+    };
+    
+    const validatePassword = (password) => {
+        const minLength = 6;
+        const isValid = password.length >= minLength;
+        const errorMessage = isValid ? "" : `Le mot de passe doit avoir au moins ${minLength} caractères.`;
+        return { isValid, errorMessage };
+    };
+    
+    const validateRepeatPassword = (password, repeatPassword) => {
+        const isValid = password === repeatPassword;
+        const errorMessage = isValid ? "" : "Les mots de passe ne correspondent pas";
+        return { isValid, errorMessage };
     };
 
-    const validatePassword = () => {
-        const minLength = 6; 
-        const isValid = userPasswordInput.length >= minLength;
-        
-        setPasswordValid(isValid);
-        setPasswordError(isValid ? "" : `Le mot de passe doit avoir au moins ${minLength} caractères.`);
-    };    
-
-    const validateRepeatPassword = () => {
-        setRepeatPasswordValid(userPasswordInput === userRepeatPasswordInput);
-        setRepeatPasswordError(userPasswordInput === userRepeatPasswordInput ? "" : "Les mots de passe ne correspondent pas");
+    const validateForm = () => {
+        let isFormValid = true;
+    
+        if (type === "email") {
+            const { isValid: isEmailValid, errorMessage: emailError } = validateEmail(userEmailInput);
+            setEmailError(emailError);
+            isFormValid = isFormValid && isEmailValid;
+        }
+    
+        if (type === "name") {
+            const { isValid: isPseudoValid, errorMessage: pseudoError } = validatePseudo(userPseudoInput);
+            setPseudoError(pseudoError);
+            isFormValid = isFormValid && isPseudoValid;
+        }
+    
+        if (type === "password") {
+            const { isValid: isPasswordValid, errorMessage: passwordError } = validatePassword(userPasswordInput);
+            const { isValid: isRepeatPasswordValid, errorMessage: repeatPasswordError } = validateRepeatPassword(userPasswordInput, userRepeatPasswordInput);
+    
+            setPasswordError(passwordError);
+            setRepeatPasswordError(repeatPasswordError);
+    
+            isFormValid = isFormValid && isPasswordValid && isRepeatPasswordValid;
+        }
+    
+        return isFormValid;
     };
 
     const handleSaveData = async () => {
-        validatePseudo();
-        validateEmail();
-        validatePseudo();
-        validatePassword();
-        validateRepeatPassword();
+        // Appel de la fonction de validation globale
+        const isFormValid = validateForm();
+        console.log("isformvalid "+isFormValid)
+        console.log("handlesavedata déclenché")
 
-        if (emailValid && pseudoValid && passwordValid && repeatPasswordValid) {
+        if (isFormValid) {
             const dataToSave = {
                 id: user.id,
                 email: userEmailInput,
@@ -89,6 +110,8 @@ const UserEmailNameOrMDPChange = (props) => {
                 mdp: userPasswordInput,
             };
 
+            console.log(dataToSave)
+    
             try {
                 const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {
                     method: 'POST',
@@ -100,14 +123,14 @@ const UserEmailNameOrMDPChange = (props) => {
                     },
                     body: JSON.stringify(dataToSave)
                 });
-
+    
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP! Statut: ${response.status}`);
                 }
-
+    
                 const data = await response.text();
                 {props.updateChatName && props.updateChatName(user.name, userPseudoInput);}
-
+    
                 dispatch(updateUserData({
                     name: userPseudoInput,
                     email: userEmailInput,
@@ -141,7 +164,7 @@ const UserEmailNameOrMDPChange = (props) => {
                                 onChange={(e) => setUserEmailInput(e.target.value)}
                                 value={userEmailInput || ''}
                             />
-                            {!emailValid && <p className={styles.errorMessage}>{emailError}</p>}
+                            {emailError && <p className={styles.errorMessage}>{emailError}</p>}
                     </>
                     )}
                 </div>
@@ -157,7 +180,7 @@ const UserEmailNameOrMDPChange = (props) => {
                             onChange={(e) => setUserPseudoInput(e.target.value)}
                             value={userPseudoInput || ''}
                         />
-                        {!pseudoValid && <p className={styles.errorMessage}>{pseudoError}</p>}
+                        {pseudoError && <p className={styles.errorMessage}>{pseudoError}</p>}
 
                     <div className={styles.toggleSwitchContainer}>
                         <Switch
@@ -180,7 +203,7 @@ const UserEmailNameOrMDPChange = (props) => {
                             onChange={(e) => setUserPasswordInput(e.target.value)}
                             value={userPasswordInput}
                         />
-                        {!passwordValid && <p className={styles.errorMessage}>{passwordError}</p>}
+                        {passwordError && <p className={styles.errorMessage}>{passwordError}</p>}
                         <input
                             className={`${styles.changeUserDataInput} ${!repeatPasswordValid ? styles.invalidInput : ""}`}
                             type="password"
@@ -188,7 +211,7 @@ const UserEmailNameOrMDPChange = (props) => {
                             onChange={(e) => setUserRepeatPasswordInput(e.target.value)}
                             value={userRepeatPasswordInput}
                         />
-                        {!repeatPasswordValid && <p className={styles.errorMessage}>{repeatPasswordError}</p>}
+                        {repeatPasswordError &&<p className={styles.errorMessage}>{repeatPasswordError}</p>}
                 </div>
             )}
 

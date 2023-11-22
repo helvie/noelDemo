@@ -10,9 +10,7 @@ function MailNumberPage() {
 
     return (
         <main>
-            <Header
-                openUserDataChange={() => setDataUserIcons(!dataUserIcons)} 
-                />
+            <Header displayMenu={false}/>
 
                 <MailResponse mailNumber={mailNumber} />
         </main>

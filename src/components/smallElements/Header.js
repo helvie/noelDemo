@@ -51,11 +51,11 @@ const Header = (props) => {
             noelLogosJsx.slice(0, 10) :
             noelLogosJsx
         }
-        <FontAwesomeIcon
+        {props.displayMenu && <FontAwesomeIcon
           icon={faBars}
           className={stylesHeader.miniMenu}
           onClick={openUserDataChange}
-        />
+        />}
       </div>
     </>
   );

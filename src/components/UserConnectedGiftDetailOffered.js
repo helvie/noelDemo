@@ -19,6 +19,8 @@ function UserConnectedGiftDetailOffered(props) {
     }
         = props;
 
+        console.log(data.Ordre)
+
 
     //______________________________________________________________________________
 
