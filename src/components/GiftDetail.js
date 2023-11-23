@@ -18,7 +18,7 @@ function GiftDetail(props) {
         lowestOrderGift,
     } = props;
 
-    console.log(lowestOrderGift.Ordre)
+    console.log(data)
 
     const handleCartPlusClick = () => {
         setIsModalVisible(true);
@@ -52,9 +52,9 @@ function GiftDetail(props) {
                 <div className={isExpanded ? styles.detailDisplay : styles.detailHide}>
                     <p className={styles.giftText}>
                         {data.detail}
-                        <a className={styles.linkIcon} onClick={() => onUrlClick(data.url)}>
+                        {data.url && <a className={styles.linkIcon} onClick={() => onUrlClick(data.url)}>
                             <FontAwesomeIcon className={styles.giftIcon} icon={faLink} />
-                        </a>
+                        </a>}
                     </p>
                     <p className={styles.updateDate}>Modifié le : {formatDate(data.date)}</p>
                 </div>
