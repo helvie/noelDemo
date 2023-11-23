@@ -28,7 +28,7 @@ const SendMail = (props) => {
         "envoiMessageCible";
 
     const messageContent = mailRecipient === "santaClaus" ?
-        `<p style='font-size:18px;'>Bonjour père-noël de ${name} !</p><p style='font-size:18px;'>Quelqu'un voudrait te poser une question... La voici :</p style='font-size:18px;color:darkred'>{message} <p style='font-size:18px;'><a href='http://localhost:3000'>Clique ici pour répondre !</a></p>` :
+        `<p style='font-size:18px;'>Bonjour père-noël de ${name} !</p><p style='font-size:18px;'>Quelqu'un voudrait te poser une question... La voici :</p style='font-size:18px;color:darkred'>{message} <p style='font-size:18px;'><a href='https://noel-guillemot.vercel.app/mailResponse/{msgId}'>Clique ici pour répondre !</a></p>` :
         `Bonjour ${name}, voici un message qui t'est destiné : ${mailMessageInput}`;
 
     const messageObject = mailRecipient === "santaClaus" ?
@@ -44,7 +44,7 @@ const SendMail = (props) => {
             idExpediteur: user.id,
             loginCible: name,
             message: htmlMessage,
-            objet: mailObjectInput || messageObject,
+            objet: messageObject,
             corps: messageContent,
         };
 

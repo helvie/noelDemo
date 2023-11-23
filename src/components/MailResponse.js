@@ -30,6 +30,21 @@ const MailResponse = (props) => {
 
     const idmessage = props.mailNumber;
 
+    const convertHTMLToText = (html) => {
+        // Créer un div temporaire pour parser le HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+    
+        // Récupérer le contenu textuel de chaque paragraphe
+        const paragraphs = Array.from(tempDiv.querySelectorAll('p')).map((paragraph) => (
+            paragraph.textContent || paragraph.innerText
+        ));
+    
+        // Joindre les paragraphes en un seul texte avec des retours à la ligne
+        return paragraphs.join('\n\n');
+    };
+    
+    
 
     const handleUserLogin = async (logs) => {
         try {
@@ -123,7 +138,8 @@ const MailResponse = (props) => {
 
             if (response.status === 200) {
                 const receveidMessage = await response.json();
-                setMessage(receveidMessage.message)
+                const htmlMessage = convertHTMLToText(receveidMessage.message)
+                setMessage(htmlMessage)
             } else {
                 throw new Error("Failed to get user data. Status: " + response.status);
             }
@@ -142,8 +158,7 @@ const MailResponse = (props) => {
                         {message && (
                             <>
                                 <h2>Voici le message que tu as reçu :</h2>
-                                <div className={styles.receveidMessage}>{message}</div>
-
+                                <div className={styles.receveidMessage} dangerouslySetInnerHTML={{ __html: message }}></div>
                                 <h2 className={styles.mailResponseTitle}>Tu peux répondre ci-dessous :</h2>
 
                                 <textarea
