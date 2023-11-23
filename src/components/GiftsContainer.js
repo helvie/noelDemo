@@ -47,7 +47,7 @@ function GiftsContainer(props) {
 
     const idListe = user.idListe;
 
-    console.log(idListe)
+    console.log(data.isAdult)
 
     console.log("openedSecret " + openedSecretMessage)
 
@@ -178,14 +178,16 @@ function GiftsContainer(props) {
                                             onClick={() => openSecretMessage("person")}
 
                                         />
-                                        <img
-                                            className={styles.messageIcon}
-                                            src={"images/santaClaus.png"}
-                                            alt=" Image"
-                                            height="40px"
-                                            onClick={() => openSecretMessage("santaClaus")}
+                                        {data.isAdult &&
+                                            <img
+                                                className={styles.messageIcon}
+                                                src={"images/santaClaus.png"}
+                                                alt=" Image"
+                                                height="40px"
+                                                onClick={() => openSecretMessage("santaClaus")}
 
-                                        />
+                                            />
+                                        }
                                     </div>
                                     {openedSantaClausSecretMessage &&
 
