@@ -1112,3 +1112,8 @@
   font-size:18px;
 
 }
+
+.sendMailOk {
+  color:var(--color2);
+  font-size:32px;
+}

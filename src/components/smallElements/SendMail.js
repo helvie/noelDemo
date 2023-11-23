@@ -1,5 +1,5 @@
 import styles from '../../styles/Home.module.css';
-import { faFloppyDisk, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { faFloppyDisk, faRotateLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
@@ -13,6 +13,7 @@ const SendMail = (props) => {
 
     const [mailMessageInput, setMailMessageInput] = useState("")
     const [mailObjectInput, setMailObjectInput] = useState("")
+    const [sendMailOk, setSendMailOk] = useState(false)
 
     const user = useSelector((state) => state.user);
 
@@ -57,6 +58,9 @@ const SendMail = (props) => {
             }
 
             const data = await response.text();
+            setSendMailOk(true);
+            setMailMessageInput("");
+            setMailObjectInput("");
             console.log("Réussi", data);
             return data;
         } catch (error) {
@@ -85,7 +89,7 @@ const SendMail = (props) => {
                     className={styles.sendMailInput}
                     type="text"
                     name="mailObject"
-                    onChange={(e) => setMailObjectInput(e.target.value)}
+                    onChange={(e) => {setMailObjectInput(e.target.value); setSendMailOk(false)}}
                     value={mailObjectInput || ''}
                 />}
 
@@ -93,7 +97,7 @@ const SendMail = (props) => {
                 className={styles.sendMailTextarea}
                 type="text"
                 name="mailMessage"
-                onChange={(e) => setMailMessageInput(e.target.value)}
+                onChange={(e) => {setMailMessageInput(e.target.value); setSendMailOk(false)}}
                 value={mailMessageInput || ''}
                 rows={4}
             />
@@ -109,10 +113,13 @@ const SendMail = (props) => {
 
                 <FontAwesomeIcon
                     className={styles.saveUserDataIcon}
-                    icon={faFloppyDisk}
+                    icon={faPaperPlane}
                     onClick={handleSaveData}
                 />
             </div>
+
+            {sendMailOk && <p className={styles.sendMailOk}>Ton message a bien été envoyé !</p>}
+
 
 
         </div>
