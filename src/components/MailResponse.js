@@ -159,8 +159,8 @@ const MailResponse = (props) => {
                                     <FontAwesomeIcon
                                         className={styles.giftMessageResponseIcon}
                                         icon={faHome}
-                                        onClick={() => setTchatOpen(false)}
-                                    />
+                                        onClick={() => router.push('/')}
+                                        />
 
                                     <FontAwesomeIcon
                                         className={styles.giftMessageResponseIcon}
