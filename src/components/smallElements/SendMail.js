@@ -28,8 +28,8 @@ const SendMail = (props) => {
         "envoiMessageCible";
 
     const messageContent = mailRecipient === "santaClaus" ?
-        `<p style='font-size:18px;'>Bonjour père-noël de ${name} !</p><p style='font-size:18px;'>Quelqu'un voudrait te poser une question... La voici :</p style='font-size:18px;color:darkred'>{message} <p style='font-size:18px;'><a href='https://noel-guillemot.vercel.app/mailResponse/{msgId}'>Clique ici pour répondre !</a></p>` :
-        `Bonjour ${name}, voici un message qui t'est destiné : ${mailMessageInput}`;
+        `<p style='font-size:18px;'>Bonjour père-noël de ${name} !</p><p style='font-size:18px;'>Quelqu'un voudrait te poser une question... La voici :</p><p style='font-size:18px;color:darkred'>{message} </p><p style='font-size:18px;'><a href='https://noel-guillemot.vercel.app/mailResponse/{msgId}'>Clique ici pour répondre !</a></p>` :
+        `<p style='font-size:18px;'>Bonjour ${name}, </p><p style='font-size:18px;'>Voici un message qui t'est destiné : </p style='font-size:18px;color:darkred'>{message}</p><p style='font-size:18px;'><a href='https://noel-guillemot.vercel.app/mailResponse/{msgId}'>Clique ici pour répondre !</a></p>`;
 
     const messageObject = mailRecipient === "santaClaus" ?
         "Coucou père Noël, quelqu'un voudrait te poser une question :" :
@@ -67,7 +67,6 @@ const SendMail = (props) => {
             const data = await response.text();
             setSendMailOk(true);
             setMailMessageInput("");
-            setMailObjectInput("");
             console.log("Réussi", data);
             return data;
         } catch (error) {
