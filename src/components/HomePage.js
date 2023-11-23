@@ -306,6 +306,7 @@ function HomePage() {
                     name: name
                 }));
                 setSigninName(name)
+                console.log(token)
 
                 // Récupération et stockage des informations personnelles de l'utilisateur
                 const userInfoService = UserInfosService();

@@ -1,56 +1,63 @@
 import styles from '../../styles/Home.module.css';
 import { faFloppyDisk, faRotateLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import Switch from '@mui/material/Switch';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-
-////////////////////////////////////////////////////////////////////////////////
-
 const SendMail = (props) => {
-
-    const [mailMessageInput, setMailMessageInput] = useState("")
-    const [mailObjectInput, setMailObjectInput] = useState("")
-    const [sendMailOk, setSendMailOk] = useState(false)
+    const [mailMessageInput, setMailMessageInput] = useState("");
+    const [sendMailOk, setSendMailOk] = useState(false);
 
     const user = useSelector((state) => state.user);
 
+    const convertTextToHTML = (text) => {
+        // Convertir les retours à la ligne en balises <p>
+        const paragraphs = text.split('\n').map((paragraph, index) => (
+            `<p style='font-size:18px;color:darkred' key=${index}>${paragraph}</p>`
+        ));
+        return paragraphs.join('');
+    };
     const {
         name,
         mailRecipient,
         closeMailSend,
-
     } = props;
 
     const mailRoute = mailRecipient === "santaClaus" ?
         "envoiMessagePereNoel" :
-        "envoiMessageCible"
+        "envoiMessageCible";
 
+    const messageContent = mailRecipient === "santaClaus" ?
+        `<p style='font-size:18px;'>Bonjour père-noël de ${name} !</p><p style='font-size:18px;'>Quelqu'un voudrait te poser une question... La voici :</p style='font-size:18px;color:darkred'>{message} <p style='font-size:18px;'><a href='http://localhost:3000'>Clique ici pour répondre !</a></p>` :
+        `Bonjour ${name}, voici un message qui t'est destiné : ${mailMessageInput}`;
+
+    const messageObject = mailRecipient === "santaClaus" ?
+        "Coucou père Noël, quelqu'un voudrait te poser une question :" :
+        `Bonjour ${name}, quelqu'un voudrait te poser une question :`;
 
     const handleSaveData = async () => {
-        const dataToSave =
-        {
+
+        const htmlMessage = convertTextToHTML(mailMessageInput);
+        console.log(htmlMessage)
+        
+        const dataToSave = {
             idExpediteur: user.id,
             loginCible: name,
-            message: mailMessageInput,
-            objet: mailObjectInput || "",
-            corps: ""
-        }
-
+            message: htmlMessage,
+            objet: mailObjectInput || messageObject,
+            corps: messageContent,
+        };
 
         try {
-
             const response = await fetch(`https://noel.helvie.fr/api/${mailRoute}`, {
                 method: 'POST',
                 headers: {
                     "Noel-Token": user.token,
                     "User-Name": encodeURIComponent(user.name),
                     "App-Name": "NoelTan",
-                    "content-type": 'application/json'
+                    "content-type": 'application/json',
                 },
-                body: JSON.stringify(dataToSave)
+                body: JSON.stringify(dataToSave),
             });
 
             if (!response.ok) {
@@ -66,51 +73,35 @@ const SendMail = (props) => {
         } catch (error) {
             console.error("Erreur maj user", error);
             throw error;
-
-        };
-
-    }
-
-
+        }
+    };
 
     return (
-
         <div className={styles.writeMailSection}>
-            {mailRecipient === "person" ?
-                <h2>Envoie ton message à {name} </h2> :
-                mailRecipient === "santaClaus" ?
-                    <h2>Envoie ton message au père-noël de {name}</h2> :
-                    null
-
-            }
-
-            {mailRecipient === "person" &&
-                <input
-                    className={styles.sendMailInput}
-                    type="text"
-                    name="mailObject"
-                    onChange={(e) => {setMailObjectInput(e.target.value); setSendMailOk(false)}}
-                    value={mailObjectInput || ''}
-                />}
+            {mailRecipient === "person" ? (
+                <h2>Envoie ton message à {name} </h2>
+            ) : mailRecipient === "santaClaus" ? (
+                <h2>Envoie ton message au père-noël de {name}</h2>
+            ) : null}
 
             <textarea
                 className={styles.sendMailTextarea}
                 type="text"
                 name="mailMessage"
-                onChange={(e) => {setMailMessageInput(e.target.value); setSendMailOk(false)}}
+                onChange={(e) => {
+                    setMailMessageInput(e.target.value);
+                    setSendMailOk(false);
+                }}
                 value={mailMessageInput || ''}
                 rows={4}
             />
 
-
             <div className={styles.userDataSaveLogosContainer}>
-
                 <FontAwesomeIcon
                     className={styles.returnUserDataIcon}
                     icon={faRotateLeft}
                     onClick={closeMailSend}
                 />
-
                 <FontAwesomeIcon
                     className={styles.saveUserDataIcon}
                     icon={faPaperPlane}
@@ -119,12 +110,8 @@ const SendMail = (props) => {
             </div>
 
             {sendMailOk && <p className={styles.sendMailOk}>Ton message a bien été envoyé !</p>}
-
-
-
         </div>
-
-    )
-}
+    );
+};
 
 export default SendMail;
