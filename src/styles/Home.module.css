@@ -86,6 +86,7 @@
   padding: 20px;
   margin-top: 20px;
   margin-bottom: 20px;
+  text-align:center;
 }
 
 .sendMailTextarea {
@@ -811,174 +812,6 @@
   flex-direction:row;
 } */
 
-
-@media (max-width: 1024px) {
-
-
-
-  .nameSection {
-    font-size: 55px;
-  }
-
-  .nbGifts {
-    font-size: 40px;
-  }
-
-  .intro {
-    font-size: 26px;
-  }
-
-  .giftTitle,
-  .giftTitleInput {
-    font-size: 22px;
-  }
-
-  .giftText,
-  .giftTextInput {
-    font-size: 18px;
-  }
-
-  .chatContainer {
-    padding-right: 10vw;
-    padding-left: 10vw;
-  }
-}
-
-@media (max-width: 768px) {
-
-  .firstChatTitle {
-    font-size: 20px;
-  }
-
-  .chatSection {
-    font-size: 24px;
-  }
-
-  .userDataLogosContainer {
-    width:60vw;
-  }
-
-
-
-
-  .nbGifts {
-    font-size: 40px;
-  }
-
-  .intro {
-    font-size: 24px;
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-
-  .giftTitle,
-  .giftTitleInput {
-    font-size: 20px;
-  }
-
-  .giftText,
-  .giftTextInput {
-    font-size: 16px;
-  }
-
-  .loginForm input {
-    min-width: 50vw;
-  }
-
-  .changeUserDataInput, .changeUserDataTextarea {
-    width:80vw;
-  }
-
-  .changeUserDataTextarea {
-    min-height:150px;
-
-  }
-
-}
-
-@media (max-width: 480px) {
-
-  .changeUserDataTextarea {
-    min-height:250px;
-
-  }
-
-  .changeUserDataInput, .changeUserDataTextarea {
-    width:90vw;
-  }
-
-  .userDataLogosContainer {
-    width:80vw;
-  }
-
-  .changeUserData h2 {
-    font-size:26px;
-  }
-
-  .chatSection {
-    font-size: 22px;
-  }
-
-  .intro {
-    font-size: 24px;
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-
-  .updateDate {
-    font-size: 12px;
-  }
-
-  .giftsList {
-    padding: 20px 10px 0 10px;
-    color: var(--color1);
-  }
-
-  .gift {
-    justify-content: left;
-
-    flex-direction: column;
-    align-items: left;
-  }
-
-  .giftLink {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    color: var(--color5);
-  }
-
-  .updateDate {
-    margin-bottom: 10px;
-  }
-
-  .chatContainer {
-    padding-right: 5vw;
-    padding-left: 5vw;
-    font-size: 18px;
-
-  }
-
-  .giftTextInput {
-    min-height: 150px;
-  }
-
-  .giftUrlInput {
-    min-height: 80px;
-  }
-
-  .chatInput {
-    min-height: 150px;
-  }
-
-
-
-
-
-
-}
-
 .mailResponseContainer {
   background-color: var(--color1);
   height: 100%;
@@ -1035,7 +868,8 @@
   margin-top:10vh;
   display:flex;
   flex-direction:column;
-  align-items:center
+  align-items:center;
+  text-align:center;
 }
 
 .mailResponseContent h2 {
@@ -1117,3 +951,201 @@
   color:var(--color2);
   font-size:32px;
 }
+
+
+@media (max-width: 1024px) {
+
+  .writeMailSection {
+    width: 90vw;
+  }
+
+
+  .sendMailTextarea {
+    width:90%;
+  }
+
+
+  .nameSection {
+    font-size: 55px;
+  }
+
+  .nbGifts {
+    font-size: 40px;
+  }
+
+  .intro {
+    font-size: 26px;
+  }
+
+  .giftTitle,
+  .giftTitleInput {
+    font-size: 22px;
+  }
+
+  .giftText,
+  .giftTextInput {
+    font-size: 18px;
+  }
+
+  .chatContainer {
+    padding-right: 10vw;
+    padding-left: 10vw;
+  }
+
+  
+  .writeMailSection h2{
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .firstChatTitle {
+    font-size: 20px;
+  }
+
+  .chatSection {
+    font-size: 24px;
+  }
+
+  .userDataLogosContainer {
+    width:60vw;
+  }
+
+  .sendMailTextarea {
+    font-size:20px;
+  }
+
+
+  .nbGifts {
+    font-size: 40px;
+  }
+
+  .intro {
+    font-size: 24px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .giftTitle,
+  .giftTitleInput {
+    font-size: 20px;
+  }
+
+  .giftText,
+  .giftTextInput {
+    font-size: 16px;
+  }
+
+  .loginForm input {
+    min-width: 50vw;
+  }
+
+  .changeUserDataInput, .changeUserDataTextarea {
+    width:80vw;
+  }
+
+  .changeUserDataTextarea {
+    min-height:150px;
+
+  }
+
+  .mailResponseInput {
+    width:90vw;
+  }
+
+
+}
+
+@media (max-width: 480px) {
+
+  .changeUserDataTextarea {
+    min-height:250px;
+
+  }
+
+  .writeMailSection {
+    width: 95vw;
+  }
+
+
+  .sendMailTextarea {
+    width:95%;
+  }
+
+  .changeUserDataInput, .changeUserDataTextarea {
+    width:90vw;
+  }
+
+  .userDataLogosContainer {
+    width:80vw;
+  }
+
+  .changeUserData h2 {
+    font-size:26px;
+  }
+
+  .chatSection {
+    font-size: 22px;
+  }
+
+  .intro {
+    font-size: 24px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .updateDate {
+    font-size: 12px;
+  }
+
+  .giftsList {
+    padding: 20px 10px 0 10px;
+    color: var(--color1);
+  }
+
+  .gift {
+    justify-content: left;
+
+    flex-direction: column;
+    align-items: left;
+  }
+
+  .giftLink {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--color5);
+  }
+
+  .updateDate {
+    margin-bottom: 10px;
+  }
+
+  .chatContainer {
+    padding-right: 5vw;
+    padding-left: 5vw;
+    font-size: 18px;
+
+  }
+
+  .giftTextInput {
+    min-height: 150px;
+  }
+
+  .giftUrlInput {
+    min-height: 80px;
+  }
+
+  .chatInput {
+    min-height: 150px;
+  }
+
+
+
+
+
+
+}
+
