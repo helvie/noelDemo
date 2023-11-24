@@ -189,7 +189,7 @@ function HomePage() {
                     //....indication de la modale en cours d'édition pour les user data
                     userDataChange={userDataChange}
                     //....mise en édition d'un cadau au clic sur édit
-                    setEditingGift={(idNumber)=>setEditingGift(idNumber)}
+                    setEditingGift={(idNumber) => setEditingGift(idNumber)}
                 />
 
         }
@@ -207,7 +207,7 @@ function HomePage() {
         if (giftsList2) {
 
             personsSectionsMapping = giftsList2
-                // .filter((data) => data.pseudo.toLowerCase() !== signinName.toLowerCase())
+                .sort((a, b) => a.pseudo.localeCompare(b.login))
                 .map((data, i) => {
                     const color = colors[colorNumber];
                     colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
@@ -350,7 +350,9 @@ function HomePage() {
                             //Stockage du plus petit ordre de cadeau
                             setLowestOrderGift(lowestOrder)
                             //Stockage des données des utilisateurs autres que celui connecté
-                            setGiftsList2(giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() !== name.toLowerCase()));
+                            setGiftsList2(giftsResponse.gifts
+                                .sort((a, b) => a.pseudo.localeCompare(b.pseudo))
+                                .filter((data) => data.pseudo.toLowerCase() !== name.toLowerCase()));
                             //Stockage des cadeaux non offerts de l'utilisateur connecté
                             setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
                             //Stockage des cadeaux non offerts de l'utilisateur connecté

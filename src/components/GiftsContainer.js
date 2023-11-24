@@ -47,7 +47,7 @@ function GiftsContainer(props) {
 
     const idListe = user.idListe;
 
-    console.log(data.isAdult)
+    console.log(data)
 
     console.log("openedSecret " + openedSecretMessage)
 
