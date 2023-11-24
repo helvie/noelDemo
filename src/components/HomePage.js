@@ -191,7 +191,7 @@ function HomePage() {
                     //....mise en édition d'un cadau au clic sur édit
                     setEditingGift={(idNumber) => setEditingGift(idNumber)}
 
-                    editingMoveGift={editingMoveGift}
+                                editingMoveGift={editingMoveGift}
 
                 />
 
@@ -210,7 +210,6 @@ function HomePage() {
         if (giftsList2) {
 
             personsSectionsMapping = giftsList2
-                .sort((a, b) => a.pseudo.localeCompare(b.login))
                 .map((data, i) => {
                     const color = colors[colorNumber];
                     colorNumber = colorNumber === colors.length - 1 ? 0 : colorNumber + 1;
