@@ -18,7 +18,6 @@ function GiftDetail(props) {
         lowestOrderGift,
     } = props;
 
-    console.log(data)
 
     const handleCartPlusClick = () => {
         setIsModalVisible(true);

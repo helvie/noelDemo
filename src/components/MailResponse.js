@@ -59,7 +59,6 @@ const MailResponse = (props) => {
                     name: name
                 }));
                 setSigninName(name);
-                console.log(token)
 
                 const userInfoService = UserInfosService();
                 const userInfoResponse = await userInfoService.getUserInfos(name, token);
@@ -91,9 +90,6 @@ const MailResponse = (props) => {
     const saveMessage = async () => {
         try {
 
-            console.log(idmessage)
-            console.log(token)
-            console.log(name)
 
             const response = await fetch("https://noel.helvie.fr/api/envoiReponseMessage", {
                 method: 'POST',

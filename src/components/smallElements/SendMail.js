@@ -38,7 +38,6 @@ const SendMail = (props) => {
     const handleSaveData = async () => {
 
         const htmlMessage = convertTextToHTML(mailMessageInput);
-        console.log(htmlMessage)
         
         const dataToSave = {
             idExpediteur: user.id,

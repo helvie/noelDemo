@@ -98,8 +98,6 @@ const UserEmailNameOrMDPChange = (props) => {
     const handleSaveData = async () => {
         // Appel de la fonction de validation globale
         const isFormValid = validateForm();
-        console.log("isformvalid "+isFormValid)
-        console.log("handlesavedata déclenché")
 
         if (isFormValid) {
             const dataToSave = {
@@ -110,7 +108,6 @@ const UserEmailNameOrMDPChange = (props) => {
                 mdp: userPasswordInput,
             };
 
-            console.log(dataToSave)
     
             try {
                 const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {

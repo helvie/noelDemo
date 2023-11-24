@@ -19,10 +19,12 @@ function UserConnectedGiftDetail(props) {
         giftUp,
         giftDown,
         position,
-        setEditingGift
+        setEditingGift,
+        editingMoveGift
     } = props;
 
-    console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"+editingGift)
+    // console.log(data.id===editingMoveGift)
+    // console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
 
 
     const [titleInput, setTitleInput] = useState(data.title);
@@ -31,12 +33,25 @@ function UserConnectedGiftDetail(props) {
     const [titleError, setTitleError] = useState("");
     const [urlError, setUrlError] = useState("");
 
-
     const changeEditingGift = () => {
-            console.log("editinggift " + editingGift)
 
-        {editingGift===data.id || editingGift===-1 ? setEditingGift(data.id) : openModal() }
-            
+        { editingGift === data.id || editingGift === -1 ? setEditingGift(data.id) : openModal() }
+
+    }
+
+    // if(data.id===3745){
+    //     console.log("essai")
+    // }
+
+    const rewinGift = () => {
+        giftUp(data.id)
+        console.log(data.id)
+    }
+
+    const comeDownGift = () => {
+        giftDown(data.id)
+        // console.log(data.id===editingMoveGift)
+
     }
 
     const openModal = () => {
@@ -109,7 +124,7 @@ function UserConnectedGiftDetail(props) {
 
     return (
         <div className={styles.gift}>
-            <div className={editingGift===data.id || index === 999999 ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
+            <div className={editingGift === data.id || index === 999999 ? styles.editingGiftDetailToUpdate : styles.giftDetailToUpdate}>
                 <input
                     className={styles.giftTitleInput}
                     type="text"
@@ -145,22 +160,22 @@ function UserConnectedGiftDetail(props) {
                 {urlError && <p className={styles.errorMessage}>{urlError}</p>}
 
                 <div className={styles.giftLinkUserConnected}>
-                    
+
                     <FontAwesomeIcon
                         className={`${styles.saveIcon} ${styles.giftIcon}`}
-                        style={editingGift!==data.id ? null : { display: "none" }}
+                        style={editingGift !== data.id ? null : { display: "none" }}
                         icon={faEdit}
-                        onClick={()=>changeEditingGift()}
+                        onClick={() => changeEditingGift()}
                     />
                     <FontAwesomeIcon
                         className={`${styles.saveIcon} ${styles.giftIcon}`}
-                        style={editingGift===data.id ? null : { display: "none" }}
+                        style={editingGift === data.id ? null : { display: "none" }}
                         icon={faFloppyDisk}
                         onClick={openModal}
                     />
                     <FontAwesomeIcon
                         className={`${styles.returnIcon} ${styles.giftIcon}`}
-                        style={editingGift===data.id ? null : { display: "none" }}
+                        style={editingGift === data.id ? null : { display: "none" }}
                         icon={faRotateLeft}
                         onClick={returnChanges}
                     />
@@ -173,13 +188,18 @@ function UserConnectedGiftDetail(props) {
                     {position !== "premier" && <FontAwesomeIcon
                         className={`${styles.arrowIcon} ${styles.giftIcon}`}
                         icon={faCircleChevronUp}
-                        onClick={() => giftUp(data.id)}
+                        onClick={() => rewinGift(data.id)}
+                        disabled={editingMoveGift === data.id}
+                        style={editingMoveGift === data.id ? { color: "red" } : null}
                     />}
-                    {position !== "dernier" && <FontAwesomeIcon
-                        className={`${styles.arrowIcon} ${styles.giftIcon}`}
-                        icon={faCircleChevronDown}
-                        onClick={() => giftDown(data.id)}
-                    />}
+                    {position !== "dernier" && (
+                        <FontAwesomeIcon
+                            className={`${styles.arrowIcon} ${styles.giftIcon}`}
+                            icon={faCircleChevronDown}
+                            onClick={() => !editingMoveGift && comeDownGift(data.id)}
+                            style={editingMoveGift === data.id ? { color: "red" } : null}
+                        />
+                    )}
                 </div>
             </div>
         </div>

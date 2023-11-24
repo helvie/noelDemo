@@ -6,7 +6,6 @@ import Header from '../../components/smallElements/Header';
 function MailNumberPage() {
     const router = useRouter();
     const { mailNumber } = router.query;
-    // console.log(mailNumber);
 
     return (
         <main>

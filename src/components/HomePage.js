@@ -119,6 +119,7 @@ function HomePage() {
     //....Etat stockant le plus petit ordre de cadeau, utile pour la création de nouveaux cadeaux 
     const [lowestOrderGift, setLowestOrderGift] = useState(null);
 
+    const [editingMoveGift, setEditingMoveGift] = useState("");
 
     const user = useSelector((state) => state.user);
     const sizeOfWindow = useSelector((state) => state.windowSize);
@@ -127,7 +128,6 @@ function HomePage() {
 
     //....Couleurs des sections de personnes (blanc, jaune, rouge)
     const colors = ["#ffffff", "#e6bc14", "#f5363f"]
-
 
 
     useEffect(() => {
@@ -190,6 +190,9 @@ function HomePage() {
                     userDataChange={userDataChange}
                     //....mise en édition d'un cadau au clic sur édit
                     setEditingGift={(idNumber) => setEditingGift(idNumber)}
+
+                    editingMoveGift={editingMoveGift}
+
                 />
 
         }
@@ -248,7 +251,8 @@ function HomePage() {
 
 
     }, [giftsList2, offeredGifts, noOfferedGifts, user, openedSectionUser,
-        openedSectionIndex, editingGift, orderChange, openedSecretMessage]);
+        openedSectionIndex, editingGift, orderChange, openedSecretMessage,
+        editingMoveGift]);
 
     //############################ FONCTIONS #################################
 
@@ -306,7 +310,6 @@ function HomePage() {
                     name: name
                 }));
                 setSigninName(name)
-                console.log(token)
 
                 // Récupération et stockage des informations personnelles de l'utilisateur
                 const userInfoService = UserInfosService();
@@ -435,6 +438,7 @@ function HomePage() {
     // celui du dessus
     //----------------------------------------------------------------------------------
     const swapOrderWithAbove = async (targetId) => {
+        setEditingMoveGift(targetId)
         const sortNoOfferedGifts = noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre))
         const targetIndex = sortNoOfferedGifts
             .findIndex(gift => gift.id === targetId);
@@ -454,6 +458,8 @@ function HomePage() {
                     sortNoOfferedGifts[targetIndex - 1].Ordre = currentOrder;
                     setNoOfferedGifts(sortNoOfferedGifts)
                     setOrderChange(orderChange + 1);
+                    setEditingMoveGift("")
+
                 } else {
                     console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
                 }
@@ -468,6 +474,7 @@ function HomePage() {
     //----------------------------------------------------------------------------------
 
     const swapOrderWithBelow = async (targetId) => {
+        setEditingMoveGift(targetId)
         const sortNoOfferedGifts = noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre))
         const targetIndex = sortNoOfferedGifts
             .findIndex(gift => gift.id === targetId);
@@ -487,6 +494,7 @@ function HomePage() {
                     sortNoOfferedGifts[targetIndex + 1].Ordre = currentOrder;
                     setNoOfferedGifts(sortNoOfferedGifts)
                     setOrderChange(orderChange + 1);
+                    setEditingMoveGift("")
                 } else {
                     console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
                 }
@@ -564,7 +572,6 @@ function HomePage() {
     //------------------------------------------------------------------------------
 
     const addNewGift = (newGift) => {
-        console.log(newGift)
         setNoOfferedGifts((prevNoOfferedGifts) => {
 
             const updatedNoOfferedGifts = [newGift, ...prevNoOfferedGifts];
@@ -763,7 +770,6 @@ function HomePage() {
     //---------------------------------------------------------------------------------
     const handleSaveChanges = async (giftDatas) => {
         try {
-            console.log(giftDatas);
 
             if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
                 const response = await fetch("https://noel.helvie.fr/api/insertCadeau", {

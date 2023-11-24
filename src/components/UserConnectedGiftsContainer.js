@@ -45,14 +45,13 @@ function UserConnectedGiftsContainer(props) {
         orderChange,
         lowestOrderGift,
         userDataChange,
-        setEditingGift
-
+        setEditingGift,
+        editingMoveGift
     } = props;
 
     const noOfferedGifts = props.noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
     const offeredGifts = props.offeredGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
 
-    console.log(noOfferedGifts)
 
 
     //______________________________________________________________________________
@@ -71,7 +70,6 @@ function UserConnectedGiftsContainer(props) {
             offered: false
         };
 
-        console.log(newEmptyGift)
 
         // Appel de la fonction pour ajouter le nouveau cadeau chez le parent
         addNewGift(newEmptyGift, idListe);
@@ -135,6 +133,7 @@ function UserConnectedGiftsContainer(props) {
             
             giftDown={(id) => giftDown(id)}
 
+
         />
 
     //....Création de la variable contenant les div d'affichage des différents cadeaux
@@ -179,6 +178,7 @@ function UserConnectedGiftsContainer(props) {
 
                     setEditingGift={(idNumber)=>setEditingGift(idNumber)}
 
+                    editingMoveGift={editingMoveGift}
 
                 />
 
