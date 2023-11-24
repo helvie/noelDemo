@@ -36,6 +36,14 @@ export const userSlice = createSlice({
 		logout: (state) => {
 			state.token = null;
 			state.name = null;
+			state.name = null;
+			state.email = null;
+			state.cible = null;
+			state.enfant = null;
+			state.id = null;
+			state.intro = null;
+			state.idListe=null;
+
 		},
 	},
 });

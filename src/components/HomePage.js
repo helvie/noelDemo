@@ -5,7 +5,7 @@ import GiftsContainer from './GiftsContainer'
 import UserConnectedGiftsContainer from './UserConnectedGiftsContainer'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAt, faUser, faUnlock, faFileLines, faBullseye } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faUser, faUnlock, faFileLines, faBullseye, faPersonThroughWindow } from '@fortawesome/free-solid-svg-icons';
 
 import ConnectionUser from './ConnectionUser';
 import { useSelector, useDispatch } from 'react-redux';
@@ -128,6 +128,8 @@ function HomePage() {
 
     //....Couleurs des sections de personnes (blanc, jaune, rouge)
     const colors = ["#ffffff", "#e6bc14", "#f5363f"]
+
+    const router = useRouter();
 
 
     useEffect(() => {
@@ -1068,6 +1070,12 @@ function HomePage() {
                                 icon={faBullseye}
                                 onClick={() => setUserDataChange(userDataChange === "target" ? "" : "target")}
                             />
+
+                            <FontAwesomeIcon
+                                className={styles.userDataIcon}
+                                icon={faPersonThroughWindow}
+                                onClick={() => window.location.reload()}
+                                />
                         </div>}
 
 
