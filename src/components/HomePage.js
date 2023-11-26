@@ -323,7 +323,7 @@ function HomePage() {
 
     const handleUserLogin = async () => {
 
-        const logs = { name: "Testeur" };
+        const logs = { name: "(Testeur)" };
 
 
         dispatch(login({
