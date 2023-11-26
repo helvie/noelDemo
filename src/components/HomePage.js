@@ -1066,11 +1066,11 @@ function HomePage() {
                             icon={faAt}
                             onClick={() => setUserDataChange(userDataChange === "email" ? "" : "email")}
                         />
-                        <FontAwesomeIcon
+                        {/* <FontAwesomeIcon
                             className={styles.userDataIcon}
                             icon={faUser}
                             onClick={() => setUserDataChange(userDataChange === "name" ? "" : "name")}
-                        />
+                        /> */}
 
                         <FontAwesomeIcon
                             className={styles.userDataIcon}
