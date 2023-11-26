@@ -1,9 +1,10 @@
+import { BACKEND_URL } from '@/utils/urls';
 
 const ListesEtCadeauxService = () => {
 
     const getListesEtCadeaux = async (name, tokenData) => {
         try {
-            const response = await fetch("https://noel.helvie.fr/api/getlistesetcadeaux.php", {
+            const response = await fetch(`${BACKEND_URL}/api/getlistesetcadeaux.php`, {
                 headers: {
                     "user-name": encodeURIComponent(name),
                     "app-name": "NoelTan",

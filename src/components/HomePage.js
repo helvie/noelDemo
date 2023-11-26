@@ -11,6 +11,8 @@ import ConnectionUser from './ConnectionUser';
 import { useSelector, useDispatch } from 'react-redux';
 import { login, logout, updateUserData, updateIdListe } from '../reducers/user'
 import { useRouter } from 'next/router';
+import { BACKEND_URL } from '@/utils/urls';
+import { usersArray, chatArray } from '@/utils/datas';
 
 //COMPOSANTS
 import ChatContainer from "../components/ChatContainer";
@@ -22,14 +24,13 @@ import UserSantaClausLetter from "../components/smallElements/UserSantaClausLett
 import UserGiftTarget from "../components/smallElements/UserGiftTarget";
 
 //SERVICES
-import ChatService from './services/ChatService';
-import ListesEtCadeauxService from './services/ListesEtCadeauxService';
-import TokenForUserService from './services/TokenForUserService';
-import UserInfosService from './services/UserInfosService';
+import ChatService from '../services/ChatService';
+import ListesEtCadeauxService from '../services/ListesEtCadeauxService';
+import TokenForUserService from '../services/TokenForUserService';
+import UserInfosService from '../services/UserInfosService';
 
 const moment = require('moment');
 require('moment/locale/fr');
-
 
 function HomePage() {
 
@@ -119,6 +120,9 @@ function HomePage() {
     //....Etat stockant le plus petit ordre de cadeau, utile pour la création de nouveaux cadeaux 
     const [lowestOrderGift, setLowestOrderGift] = useState(null);
 
+    //....Etat stockant le cadeau ayant le plus grand id, utile pour la création de nouveaux cadeaux 
+    const [greaterIdGift, setGreaterIdGift] = useState(null);
+
     const [editingMoveGift, setEditingMoveGift] = useState("");
 
     const user = useSelector((state) => state.user);
@@ -126,11 +130,19 @@ function HomePage() {
     const dispatch = useDispatch();
     let colorNumber = 1;
 
+
+
     //....Couleurs des sections de personnes (blanc, jaune, rouge)
     const colors = ["#ffffff", "#e6bc14", "#f5363f"]
 
     const router = useRouter();
 
+    const allDatas = usersArray;
+
+    useEffect(() => {
+        console.log("lancé");
+        handleUserLogin();
+    }, []);
 
     useEffect(() => {
 
@@ -142,7 +154,7 @@ function HomePage() {
         //....modification d'un état utilisé par le composant, celui ci se mettra à jour
         let connectedUserSectionMapping;
 
-        if (offeredGifts) {
+        if (noOfferedGifts) {
 
             connectedUserSectionMapping =
                 // giftsConnectedUserList
@@ -171,7 +183,7 @@ function HomePage() {
                     //....fonction d'enregistrement
                     openModalInHome={openSaveModal}
                     //....fonction d'ajout de nouveau cadeau
-                    addNewGift={(newGift) => addNewGift(newGift)}
+                    addNewGift={(newGift) => { setEditingGift(newGift.id), addNewGift(newGift) }}
                     //....id de la liste de l'utilisateur connecté
                     idListe={user.idListe}
                     //....fonction de mise à jour d'un cadeau, offert à false ou true
@@ -193,7 +205,12 @@ function HomePage() {
                     //....mise en édition d'un cadau au clic sur édit
                     setEditingGift={(idNumber) => setEditingGift(idNumber)}
 
-                                editingMoveGift={editingMoveGift}
+                    editingMoveGift={editingMoveGift}
+
+                    greaterIdGift={greaterIdGift}
+
+                    deleteGift={(id) => deleteGift(id)}
+
 
                 />
 
@@ -240,6 +257,8 @@ function HomePage() {
                             setOpenedSecretMessage={(value) => setOpenedSecretMessage(value)}
                             //....plus petit ordre de cadeau dans les cadeaux de l'utilisateur connecté
                             lowestOrderGift={lowestOrderGift}
+
+                            greaterIdGift={greaterIdGift}
                         />
                     )
                 })
@@ -253,10 +272,14 @@ function HomePage() {
 
     }, [giftsList2, offeredGifts, noOfferedGifts, user, openedSectionUser,
         openedSectionIndex, editingGift, orderChange, openedSecretMessage,
-        editingMoveGift]);
+        editingMoveGift, user, lowestOrderGift, greaterIdGift]);
 
     //############################ FONCTIONS #################################
 
+
+    const deleteGift = (giftId) => {
+        setNoOfferedGifts((prevGifts) => prevGifts.filter((gift) => gift.id !== giftId));
+    }
 
     //....Remettre tous les cadeaux en non édition
     //--------------------------------------------------------------------------
@@ -297,84 +320,154 @@ function HomePage() {
     // Connection / Récupération des données utilisateur / du tchat / des cadeaux
     //----------------------------------------------------------------------------
 
-    const handleUserLogin = async (logs) => {
-        try {
-            // Récupération et stockage du token et name de l'utilisateur
-            const tokenService = TokenForUserService();
-            const tokenResponse = await tokenService.getTokenForUser(logs, setErrorLoginPass);
 
-            if (tokenResponse.success) {
-                setErrorLoginPass(false);
-                const { token, name } = tokenResponse;
-                dispatch(login({
-                    token: token,
-                    name: name
-                }));
-                setSigninName(name)
+    const handleUserLogin = async () => {
 
-                // Récupération et stockage des informations personnelles de l'utilisateur
-                const userInfoService = UserInfosService();
-                const userInfoResponse = await userInfoService.getUserInfos(name, token);
+        const logs = { name: "Testeur" };
 
-                if (userInfoResponse.success) {
-                    const userData = userInfoResponse.userData;
 
-                    dispatch(updateUserData({
-                        id: userData.id,
-                        name: userData.login,
-                        cible: userData.cible,
-                        email: userData.email,
-                        enfant: userData.enfant,
-                        intro: userData.intro
-                    }));
+        dispatch(login({
+            token: "XXX",
+        }));
+        setSigninName(logs.name)
 
-                    // Récupération et stockage des données du tchat
-                    const chatService = ChatService();
-                    const chatResponse = await chatService.getChatData(name, token)
+        const connectedUserInfos = (allDatas.filter((user) => user.pseudo === logs.name))[0]
 
-                    if (chatResponse.success) {
-                        setTchatData(chatResponse.chat);
-
-                        // Récupération et stockage des listes et cadeaux
-                        const listesEtCadeauxService = ListesEtCadeauxService();
-                        const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(name, token);
-
-                        if (giftsResponse.success) {
-                            const idListe = giftsResponse.gifts.filter((liste) => liste.pseudo === userData.login)[0].idListe
-
-                            dispatch(updateIdListe({
-                                idListe: idListe
-                            }));
-                            const allConnectedUserGifts = giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase())[0].gifts;
-
-                            const lowestOrder = allConnectedUserGifts.reduce((minGift, currentGift) => {
-                                return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
-                            }, null);
-
-                            //Stockage du plus petit ordre de cadeau
-                            setLowestOrderGift(lowestOrder)
-                            //Stockage des données des utilisateurs autres que celui connecté
-                            setGiftsList2(giftsResponse.gifts
-                                .sort((a, b) => a.pseudo.localeCompare(b.pseudo))
-                                .filter((data) => data.pseudo.toLowerCase() !== name.toLowerCase()));
-                            //Stockage des cadeaux non offerts de l'utilisateur connecté
-                            setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
-                            //Stockage des cadeaux non offerts de l'utilisateur connecté
-                            setOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === true));
-
-                        } else { console.log("Erreur lors de la récupération des listes"); }
-
-                    } else { console.log("Erreur lors de la récupération du tchat"); }
-
-                } else { console.log("Erreur lors de la récupération des informations utilisateur"); }
-
-            } else {
-                setErrorLoginPass(true);
-                console.log("Erreur lors de la récupération du token");
-            }
-        } catch (error) {
-            console.error("Une erreur s'est produite lors de la connexion : ", error);
+        if (connectedUserInfos) {
+            dispatch(updateUserData({
+                name: logs.name,
+                id: connectedUserInfos.idUser,
+                cible: connectedUserInfos.cible,
+                email: connectedUserInfos.email,
+                enfant: !connectedUserInfos.isAdult,
+                intro: connectedUserInfos.intro
+            }));
         }
+
+        dispatch(updateIdListe({
+            idListe: connectedUserInfos.idListe,
+        }));
+
+        setTchatData(chatArray.sort((a, b) => a.date - b.date));
+
+        const giftsResponse = usersArray;
+
+        const allConnectedUserGifts = giftsResponse.filter((data) => data.pseudo.toLowerCase() === logs.name.toLowerCase())[0].gifts;
+
+        const lowestOrder = allConnectedUserGifts.reduce((minOrder, currentGift) => {
+            const currentOrder = Number(currentGift.Ordre);
+
+            // Si minOrder est null ou le numéro d'ordre actuel est inférieur, mettez à jour minOrder
+            return minOrder === null || currentOrder < minOrder ? currentOrder : minOrder;
+        }, null);
+
+        console.log(lowestOrder)
+
+        const greaterId = allConnectedUserGifts.reduce((maxId, currentGift) => {
+            const currentId = Number(currentGift.id);
+
+            // Si maxId est null ou l'ID actuel est supérieur, mettez à jour maxId
+            return maxId === null || currentId > maxId ? currentId : maxId;
+        }, null);
+
+        //Stockage du plus petit ordre de cadeau
+        setLowestOrderGift(lowestOrder)
+        //Stockage du cadeau avec le plus grand id
+        setGreaterIdGift(greaterId)
+        //Stockage des données des utilisateurs autres que celui connecté
+        setGiftsList2(giftsResponse
+            .sort((a, b) => a.pseudo.localeCompare(b.pseudo))
+            .filter((data) => data.pseudo.toLowerCase() !== logs.name.toLowerCase()));
+        //Stockage des cadeaux non offerts de l'utilisateur connecté
+        setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
+        console.log(allConnectedUserGifts.filter((data) => data.offered === true))
+
+        //Stockage des cadeaux non offerts de l'utilisateur connecté
+        setOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === true));
+
+
+
+
+
+        // try {
+        //     // Récupération et stockage du token et name de l'utilisateur
+        //     const tokenService = TokenForUserService();
+        //     const tokenResponse = await tokenService.getTokenForUser(logs, setErrorLoginPass);
+
+        //     if (tokenResponse.success) {
+        //         setErrorLoginPass(false);
+        //         const { token, name } = tokenResponse;
+        //         dispatch(login({
+        //             token: token,
+        //             name: name
+        //         }));
+        //         setSigninName(name)
+
+        //         // Récupération et stockage des informations personnelles de l'utilisateur
+        //         const userInfoService = UserInfosService();
+        //         const userInfoResponse = await userInfoService.getUserInfos(name, token);
+
+        //         if (userInfoResponse.success) {
+        //             const userData = userInfoResponse.userData;
+
+        //             dispatch(updateUserData({
+        //                 id: userData.id,
+        //                 name: userData.login,
+        //                 cible: userData.cible,
+        //                 email: userData.email,
+        //                 enfant: userData.enfant,
+        //                 intro: userData.intro
+        //             }));
+
+        //             // Récupération et stockage des données du tchat
+        //             const chatService = ChatService();
+        //             const chatResponse = await chatService.getChatData(name, token)
+
+        //             if (chatResponse.success) {
+        //                 setTchatData(chatResponse.chat);
+
+        //                 // Récupération et stockage des listes et cadeaux
+        //                 const listesEtCadeauxService = ListesEtCadeauxService();
+        //                 const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(name, token);
+
+        //                 console.log(giftsResponse)
+
+        //                 if (giftsResponse.success) {
+        //                     const idListe = giftsResponse.gifts.filter((liste) => liste.pseudo === userData.login)[0].idListe
+
+        //                     dispatch(updateIdListe({
+        //                         idListe: idListe
+        //                     }));
+        //                     const allConnectedUserGifts = giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase())[0].gifts;
+
+        //                     const lowestOrder = allConnectedUserGifts.reduce((minGift, currentGift) => {
+        //                         return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
+        //                     }, null);
+
+        //                     //Stockage du plus petit ordre de cadeau
+        //                     setLowestOrderGift(lowestOrder)
+        //                     //Stockage des données des utilisateurs autres que celui connecté
+        //                     setGiftsList2(giftsResponse.gifts
+        //                         .sort((a, b) => a.pseudo.localeCompare(b.pseudo))
+        //                         .filter((data) => data.pseudo.toLowerCase() !== name.toLowerCase()));
+        //                     //Stockage des cadeaux non offerts de l'utilisateur connecté
+        //                     setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
+        //                     //Stockage des cadeaux non offerts de l'utilisateur connecté
+        //                     setOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === true));
+
+        //                 } else { console.log("Erreur lors de la récupération des listes"); }
+
+        //             } else { console.log("Erreur lors de la récupération du tchat"); }
+
+        //         } else { console.log("Erreur lors de la récupération des informations utilisateur"); }
+
+        //     } else {
+        //         setErrorLoginPass(true);
+        //         console.log("Erreur lors de la récupération du token");
+        //     }
+        // } catch (error) {
+        //     console.error("Une erreur s'est produite lors de la connexion : ", error);
+        // }
     };
 
 
@@ -382,26 +475,26 @@ function HomePage() {
     //----------------------------------------------------------------------------
 
     const saveMessage = async () => {
-        const chatService = ChatService();
+        // const chatService = ChatService();
 
-        const result = await chatService.saveMessage(tchatInput, user)
+        // const result = await chatService.saveMessage(tchatInput, user)
 
-        if (result) {
-            const date = new Date();
-            const timestampInSeconds = Math.floor(date.getTime() / 1000);
-            const newMessage = {
-                date: timestampInSeconds,
-                contenu: tchatInput,
-                login: user.name
-            }
-            const updatedTchatData = [...tchatData];
-            updatedTchatData.unshift(newMessage);
-            setTchatData(updatedTchatData);
-            setTopTchatOpen(false);
-            setBottomTchatOpen(false);
-            setTchatInput("");
-
+        // if (result) {
+        const date = new Date();
+        const timestampInSeconds = Math.floor(date.getTime() / 1000);
+        const newMessage = {
+            date: timestampInSeconds,
+            contenu: tchatInput,
+            login: user.name
         }
+        const updatedTchatData = [...tchatData];
+        updatedTchatData.unshift(newMessage);
+        setTchatData(updatedTchatData);
+        setTopTchatOpen(false);
+        setBottomTchatOpen(false);
+        setTchatInput("");
+
+        // }
     }
 
     // Fonction d'enregistrement en BDD du changement d'ordre de 2 cadeaux
@@ -410,7 +503,7 @@ function HomePage() {
     const swapOrderInBdd = async (idRemplacant, idRemplace) => {
 
         try {
-            const response = await fetch("https://noel.helvie.fr/api/changeOrdreCadeau", {
+            const response = await fetch(`${BACKEND_URL}/api/changeOrdreCadeau`, {
                 method: 'POST',
                 headers: {
                     "Noel-Token": user.token,
@@ -450,23 +543,23 @@ function HomePage() {
             const currentId = sortNoOfferedGifts[targetIndex].id;
             const aboveId = sortNoOfferedGifts[targetIndex - 1].id;
 
-            try {
-                const result = await swapOrderInBdd(aboveId, currentId);
-                console.log("swapOrderInBdd result:", result);
+            // try {
+            //     const result = await swapOrderInBdd(aboveId, currentId);
+            //     console.log("swapOrderInBdd result:", result);
 
-                if (result) {
-                    sortNoOfferedGifts[targetIndex].Ordre = aboveOrder;
-                    sortNoOfferedGifts[targetIndex - 1].Ordre = currentOrder;
-                    setNoOfferedGifts(sortNoOfferedGifts)
-                    setOrderChange(orderChange + 1);
-                    setEditingMoveGift("")
+            //     if (result) {
+            sortNoOfferedGifts[targetIndex].Ordre = aboveOrder;
+            sortNoOfferedGifts[targetIndex - 1].Ordre = currentOrder;
+            setNoOfferedGifts(sortNoOfferedGifts)
+            setOrderChange(orderChange + 1);
+            setEditingMoveGift("")
 
-                } else {
-                    console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
-                }
-            } catch (error) {
-                console.error("Erreur lors de swapOrderInBdd:", error);
-            }
+            //     } else {
+            //         console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
+            //     }
+            // } catch (error) {
+            //     console.error("Erreur lors de swapOrderInBdd:", error);
+            // }
         }
     };
 
@@ -486,22 +579,22 @@ function HomePage() {
             const currentId = sortNoOfferedGifts[targetIndex].id;
             const belowId = sortNoOfferedGifts[targetIndex + 1].id;
 
-            try {
-                const result = await swapOrderInBdd(currentId, belowId);
-                console.log("swapOrderInBdd result:", result);
+            // try {
+            //     const result = await swapOrderInBdd(currentId, belowId);
+            //     console.log("swapOrderInBdd result:", result);
 
-                if (result) {
-                    sortNoOfferedGifts[targetIndex].Ordre = belowOrder;
-                    sortNoOfferedGifts[targetIndex + 1].Ordre = currentOrder;
-                    setNoOfferedGifts(sortNoOfferedGifts)
-                    setOrderChange(orderChange + 1);
-                    setEditingMoveGift("")
-                } else {
-                    console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
-                }
-            } catch (error) {
-                console.error("Erreur lors de swapOrderInBdd:", error);
-            }
+            //     if (result) {
+            sortNoOfferedGifts[targetIndex].Ordre = belowOrder;
+            sortNoOfferedGifts[targetIndex + 1].Ordre = currentOrder;
+            setNoOfferedGifts(sortNoOfferedGifts)
+            setOrderChange(orderChange + 1);
+            setEditingMoveGift("")
+            //     } else {
+            //         console.error("Échec de swapOrderInBdd. Résultat inattendu:", result);
+            //     }
+            // } catch (error) {
+            //     console.error("Erreur lors de swapOrderInBdd:", error);
+            // }
         }
     };
 
@@ -544,35 +637,39 @@ function HomePage() {
 
     const handleOfferedClick = (index, idListe, offered) => {
 
-        fetch("https://noel.helvie.fr/api/euPasEuCadeau", {
-            method: 'PUT',
-            headers: {
-                "Noel-Token": user.token,
-                "User-Name": encodeURIComponent(user.name),
-                "App-Name": "NoelTan",
-                "content-type": 'application/json'
-            },
-            body: JSON.stringify({
-                id: index,
-                idListe: idListe,
-                eu: !offered
-            })
-        })
-            .then(response => response.text())
-            .then(data => {
-                // Mise à jour de l'affichage
-                updateGiftsUserConnectedList(index, offered)
+        // fetch(`${BACKEND_URL}/api/euPasEuCadeau`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         "Noel-Token": user.token,
+        //         "User-Name": encodeURIComponent(user.name),
+        //         "App-Name": "NoelTan",
+        //         "content-type": 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         id: index,
+        //         idListe: idListe,
+        //         eu: !offered
+        //     })
+        // })
+        //     .then(response => response.text())
+        //     .then(data => {
+        // Mise à jour de l'affichage
+        updateGiftsUserConnectedList(index, offered)
 
-            })
-            .catch(error => {
-                console.log("Erreur maj statut cadeau", error);
-            });
+        // })
+        // .catch(error => {
+        //     console.log("Erreur maj statut cadeau", error);
+        // });
     };
 
     // Ajout d'un nouveau cadeau dans le tableau local
     //------------------------------------------------------------------------------
 
     const addNewGift = (newGift) => {
+
+        console.log(newGift)
+
+        console.log(newGift)
         setNoOfferedGifts((prevNoOfferedGifts) => {
 
             const updatedNoOfferedGifts = [newGift, ...prevNoOfferedGifts];
@@ -732,233 +829,155 @@ function HomePage() {
     // Prise en compte pour l'affichage de la modification d'un cadeau
     //-----------------------------------------------------------------------------------
 
-    const localUpdateGift = (giftData) => {
-        setNoOfferedGifts((prevGiftsList) => {
-            // const filteredOrdreGifts = prevGiftsList.filter(
-            //     (gift) => gift.Ordre !== 999999 && gift.Ordre !== 999998
-            // );
-            // const maxOrdre = Math.max(...filteredOrdreGifts.map((gift) => gift.Ordre), 0);
+    // const localUpdateGift = (giftData) => {
+    //     setNoOfferedGifts((prevGiftsList) => {
+    //         // const filteredOrdreGifts = prevGiftsList.filter(
+    //         //     (gift) => gift.Ordre !== 999999 && gift.Ordre !== 999998
+    //         // );
+    //         // const maxOrdre = Math.max(...filteredOrdreGifts.map((gift) => gift.Ordre), 0);
 
-            // const filteredIdGifts = prevGiftsList.filter(
-            //     (gift) => gift.Ordre !== 999999 && gift.Ordre !== 999998
-            // );
-            const maxId = Math.max(...prevGiftsList.map((gift) => gift.id), 0);
+    //         // const filteredIdGifts = prevGiftsList.filter(
+    //         //     (gift) => gift.Ordre !== 999999 && gift.Ordre !== 999998
+    //         // );
+    //         const maxId = Math.max(...prevGiftsList.map((gift) => gift.id), 0);
 
-            const updatedGifts = prevGiftsList.map((gift) => {
-                if (gift.id === giftData.giftKey) {
-                    return {
-                        ...gift,
-                        id: giftData.giftKey === 999999 || giftData.giftKey === 999998 ? maxId + 1 : gift.id,
-                        title: giftData.titleInput || giftData.title || gift.title,
-                        detail: giftData.detailInput || giftData.detail || gift.detail,
-                        url: giftData.urlInput || giftData.url || gift.url,
-                        Ordre: giftData.ordre || giftData.Ordre
-                    };
-                }
-                return gift;
-            });
+    //         const updatedGifts = prevGiftsList.map((gift) => {
+    //             if (gift.id === giftData.giftKey) {
+    //                 return {
+    //                     ...gift,
+    //                     id: giftData.giftKey === 999999 || giftData.giftKey === 999998 ? maxId + 1 : gift.id,
+    //                     title: giftData.titleInput || giftData.title || gift.title,
+    //                     detail: giftData.detailInput || giftData.detail || gift.detail,
+    //                     url: giftData.urlInput || giftData.url || gift.url,
+    //                     Ordre: giftData.ordre || giftData.Ordre
+    //                 };
+    //             }
+    //             return gift;
+    //         });
 
-            updatedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
+    //         updatedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
 
-            setOrderChange(orderChange + 1)
+    //         setOrderChange(orderChange + 1)
 
-            return updatedGifts;
-        });
-    };
+    //         return updatedGifts;
+    //     });
+    // };
 
 
     //....Gestion de l'enregistrement des modifications depuis la modale
     //---------------------------------------------------------------------------------
     const handleSaveChanges = async (giftDatas) => {
-        try {
 
-            if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
-                const response = await fetch("https://noel.helvie.fr/api/insertCadeau", {
-                    method: 'POST',
-                    headers: {
-                        "Noel-Token": user.token,
-                        "User-Name": encodeURIComponent(user.name),
-                        "App-Name": "NoelTan",
-                        "content-type": 'application/json'
-                    },
-                    body: JSON.stringify({
-                        idListe: giftDatas.idListe,
-                        title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
-                        detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-                        url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
-                    })
-                });
-
-                if (response.status === 200) {
-                    setErrorLoginPass(false);
-
-                    // Récupération et stockage des listes et cadeaux
-                    const listesEtCadeauxService = ListesEtCadeauxService();
-                    const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(user.name, user.token);
-
-                    if (giftsResponse.success) {
-                        const allConnectedUserGifts = giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === user.name.toLowerCase())[0].gifts;
-
-                        const lowestOrder = allConnectedUserGifts.reduce((minGift, currentGift) => {
-                            return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
-                        }, null);
-
-                        // Stockage du plus petit ordre de cadeau
-                        setLowestOrderGift(lowestOrder);
-                        // Stockage des cadeaux non offerts de l'utilisateur connecté
-                        setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
-
-                        setEditingGift(-1);
-                    } else {
-                        console.log("Erreur lors de la récupération des listes");
-                    }
-                } else {
-                    setErrorLoginPass(true);
-                    throw new Error("Failed to save the gift. Status: " + response.status);
-                }
-            } else {
-                const response = await fetch("https://noel.helvie.fr/api/updateCadeau", {
-                    method: 'POST',
-                    headers: {
-                        "Noel-Token": user.token,
-                        "User-Name": encodeURIComponent(user.name),
-                        "App-Name": "NoelTan",
-                        "content-type": 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: giftDatas.giftKey,
-                        title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
-                        detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-                        url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
-                    })
-                });
-
-                if (response.status === 200) {
-                    console.log("Reussi");
-                } else {
-                    setErrorLoginPass(true);
-                    throw new Error("Failed to save the gift. Status: " + response.status);
-                }
-            }
-
-            closeModal();
-        } catch (error) {
-            console.error("Erreur dans l'enregistrement", error);
+        // try {
+        if (giftDatas.id > greaterIdGift) {
+            setNoOfferedGifts((prevGifts) => [...prevGifts, giftDatas]);
+            setEditingGift(-1);
+            setLowestOrderGift(giftDatas.Ordre);
+            setGreaterIdGift(giftDatas.id);
+            console.log(noOfferedGifts)
         }
+
+        else {
+            const updatedGifts = noOfferedGifts.map(gift => {
+                if (gift.id === giftDatas.id) {
+                    // Mise à jour individuelle des propriétés
+                    return {
+                        ...gift,
+                        title: giftDatas.title !== undefined ? giftDatas.title : gift.title,
+                        detail: giftDatas.detail !== undefined ? giftDatas.detail : gift.detail,
+                        url: giftDatas.url !== undefined ? giftDatas.url : gift.url,
+                    };
+                }
+                return gift;
+            });
+
+            console.log(updatedGifts)
+
+            setNoOfferedGifts(updatedGifts);
+            setModalOpen(false);
+            setEditingGift(-1);
+        }
+
+        closeModal();
+
+
+        // setLowestOrderGift(-1);
+        // setEditingGift(-1);
+
+        // if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
+        // const response = await fetch(`${BACKEND_URL}/api/insertCadeau`, {
+        //     method: 'POST',
+        //     headers: {
+        //         "Noel-Token": user.token,
+        //         "User-Name": encodeURIComponent(user.name),
+        //         "App-Name": "NoelTan",
+        //         "content-type": 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         idListe: giftDatas.idListe,
+        //         title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
+        //         detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
+        //         url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+        //     })
+        // });
+
+        // if (response.status === 200) {
+        //     setErrorLoginPass(false);
+
+        //     // Récupération et stockage des listes et cadeaux
+        //     const listesEtCadeauxService = ListesEtCadeauxService();
+        //     const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(user.name, user.token);
+
+        //     if (giftsResponse.success) {
+        // const allConnectedUserGifts = giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === user.name.toLowerCase())[0].gifts;
+
+        // const lowestOrder = allConnectedUserGifts.reduce((minGift, currentGift) => {
+        //     return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
+        // }, null);
+
+        // // Stockage du plus petit ordre de cadeau
+        // setLowestOrderGift(lowestOrder);
+        // // Stockage des cadeaux non offerts de l'utilisateur connecté
+        // setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
+
+        // setEditingGift(-1);
+        //     } else {
+        //         console.log("Erreur lors de la récupération des listes");
+        //     }
+        // } else {
+        //     setErrorLoginPass(true);
+        //     throw new Error("Failed to save the gift. Status: " + response.status);
+        // }
+        //         } else {
+        //             const response = await fetch(`${BACKEND_URL}/api/updateCadeau`, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     "Noel-Token": user.token,
+        //                     "User-Name": encodeURIComponent(user.name),
+        //                     "App-Name": "NoelTan",
+        //                     "content-type": 'application/json'
+        //                 },
+        //                 body: JSON.stringify({
+        //                     id: giftDatas.giftKey,
+        //                     title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
+        //                     detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
+        //                     url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
+        //                 })
+        //             });
+
+        //             if (response.status === 200) {
+        //                 console.log("Reussi");
+        //             } else {
+        //                 setErrorLoginPass(true);
+        //                 throw new Error("Failed to save the gift. Status: " + response.status);
+        //             }
+        //         }
+
+        //         closeModal();
+        //     } catch (error) {
+        //         console.error("Erreur dans l'enregistrement", error);
+        // }
     };
-    // const handleSaveChanges = (giftDatas) => {
-    //     console.log(giftDatas)
-    //     // const giftOrdre = giftDatas.ordre ? giftDatas.ordre : lowestOrderGift-1;
-    //     // if(!giftDatas.ordre){setLowestOrderGift(lowestOrderGift-1)}
-    //     // console.log(giftDatas)
-    //     // console.log(giftOrdre)
-
-    //     // // Si le cadeau est un nouveau cadeau
-    //     if (giftDatas.giftKey === 999999 || giftDatas.giftKey === 999998) {
-
-    //         fetch("https://noel.helvie.fr/api/insertCadeau", {
-    //             method: 'POST',
-    //             headers: {
-    //                 "Noel-Token": user.token,
-    //                 "User-Name": encodeURIComponent(user.name),
-    //                 "App-Name": "NoelTan",
-    //                 "content-type": 'application/json'
-    //             },
-
-    //             body: JSON.stringify({
-    //                 idListe: giftDatas.idListe,
-    //                 title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
-    //                 detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-    //                 url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
-    //                 ordre: giftDatas.Ordre
-    //             })
-    //         })
-    //             .then(response => {
-    //                 if (response.status === 200) {
-    //                     setErrorLoginPass(false)
-
-    //                     // Récupération et stockage des listes et cadeaux
-    //                     const listesEtCadeauxService = ListesEtCadeauxService();
-    //                     const giftsResponse = await listesEtCadeauxService.getListesEtCadeaux(logs, token);
-
-    //                     if (giftsResponse.success) {
-    //                         const idListe = giftsResponse.gifts.filter((liste) => liste.pseudo === userData.login)[0].idListe
-
-    //                         dispatch(updateIdListe({
-    //                             idListe: idListe
-    //                         }));
-    //                         const allConnectedUserGifts = giftsResponse.gifts.filter((data) => data.pseudo.toLowerCase() === name.toLowerCase())[0].gifts;
-
-    //                         const lowestOrder = allConnectedUserGifts.reduce((minGift, currentGift) => {
-    //                             return !minGift || Number(currentGift.Ordre) < Number(minGift.Ordre) ? currentGift : minGift;
-    //                         }, null);
-
-    //                         //Stockage du plus petit ordre de cadeau
-    //                         setLowestOrderGift(lowestOrder)
-    //                         //Stockage des cadeaux non offerts de l'utilisateur connecté
-    //                         setNoOfferedGifts(allConnectedUserGifts.filter((data) => data.offered === false));
-
-    //                         setEditingGift(-1)
-
-    //                     } else { console.log("Erreur lors de la récupération des listes"); }
-
-
-    //                     // setEditingGift(-1)
-    //                     // if (giftDatas.giftKey === 999998) {
-    //                     //     setGiftSavedModalVisible(true);
-    //                     //     addNewGift(giftDatas)
-    //                     // }
-    //                     // // localUpdateGift(giftDatas);
-
-    //                     // return response.text();
-
-    //                 } else {
-
-    //                     setErrorLoginPass(true)
-    //                     throw new Error("Failed save the gift. Status: " + response.status);
-    //                 }
-
-    //             })
-
-    //     }
-    //     else {
-
-    //         fetch("https://noel.helvie.fr/api/updateCadeau", {
-    //             method: 'POST',
-    //             headers: {
-    //                 "Noel-Token": user.token,
-    //                 "User-Name": encodeURIComponent(user.name),
-    //                 "App-Name": "NoelTan",
-    //                 "content-type": 'application/json'
-    //             },
-    //             body: JSON.stringify({
-    //                 id: giftDatas.giftKey,
-    //                 title: giftDatas.titleInput ? giftDatas.titleInput : giftDatas.title ? giftDatas.title : "",
-    //                 detail: giftDatas.detailInput ? giftDatas.detailInput : giftDatas.detail ? giftDatas.detail : "",
-    //                 url: giftDatas.urlInput ? giftDatas.urlInput : giftDatas.url ? giftDatas.url : "",
-    //             })
-    //         })
-    //             .then(response => {
-    //                 console.log(response.status);
-    //                 if (response.status === 200) {
-    //                     return response.text();
-    //                 } else {
-    //                     setErrorLoginPass(true)
-    //                     throw new Error("Failed save the gift. Status: " + response.status);
-    //                 }
-    //             })
-    //             .then(data => {
-    //                 console.log("reussi")
-    //             })
-    //             .catch(error => {
-    //                 console.log("Erreur dans l'enregistrement", error);
-    //             })
-    //     }
-
-
-
-    //     closeModal();
-    // };
 
 
     //....Réinitialisation des données au clic sur annuler dans modale
@@ -1035,161 +1054,162 @@ function HomePage() {
                 openUserDataChange={() => setDataUserIcons(!dataUserIcons)} displayMenu={true} />
 
 
-            {signinName ? (<>
-                <div className={styles.orgContent}>
+            {/* {signinName ? (<> */}
+            <div className={styles.orgContent}>
 
-                    <div className={styles.userDataChangeContainer}>
+                <div className={styles.userDataChangeContainer}>
 
-                        {dataUserIcons && <div className={styles.userDataLogosContainer}>
+                    {dataUserIcons && <div className={styles.userDataLogosContainer}>
 
-                            <FontAwesomeIcon
-                                className={styles.userDataIcon}
-                                icon={faAt}
-                                onClick={() => setUserDataChange(userDataChange === "email" ? "" : "email")}
-                            />
-                            <FontAwesomeIcon
-                                className={styles.userDataIcon}
-                                icon={faUser}
-                                onClick={() => setUserDataChange(userDataChange === "name" ? "" : "name")}
-                            />
+                        <FontAwesomeIcon
+                            className={styles.userDataIcon}
+                            icon={faAt}
+                            onClick={() => setUserDataChange(userDataChange === "email" ? "" : "email")}
+                        />
+                        <FontAwesomeIcon
+                            className={styles.userDataIcon}
+                            icon={faUser}
+                            onClick={() => setUserDataChange(userDataChange === "name" ? "" : "name")}
+                        />
 
-                            <FontAwesomeIcon
-                                className={styles.userDataIcon}
-                                icon={faUnlock}
-                                onClick={() => setUserDataChange(userDataChange === "password" ? "" : "password")}
-                            />
+                        <FontAwesomeIcon
+                            className={styles.userDataIcon}
+                            icon={faUnlock}
+                            onClick={() => setUserDataChange(userDataChange === "password" ? "" : "password")}
+                        />
 
-                            <FontAwesomeIcon
-                                className={styles.userDataIcon}
-                                icon={faFileLines}
-                                onClick={() => setUserDataChange(userDataChange === "letter" ? "" : "letter")}
-                            />
+                        <FontAwesomeIcon
+                            className={styles.userDataIcon}
+                            icon={faFileLines}
+                            onClick={() => setUserDataChange(userDataChange === "letter" ? "" : "letter")}
+                        />
 
-                            <FontAwesomeIcon
-                                className={styles.userDataIcon}
-                                icon={faBullseye}
-                                onClick={() => setUserDataChange(userDataChange === "target" ? "" : "target")}
-                            />
+                        <FontAwesomeIcon
+                            className={styles.userDataIcon}
+                            icon={faBullseye}
+                            onClick={() => setUserDataChange(userDataChange === "target" ? "" : "target")}
+                        />
 
-                            <FontAwesomeIcon
-                                className={styles.userDataIcon}
-                                icon={faPersonThroughWindow}
-                                onClick={() => window.location.reload()}
-                                />
-                        </div>}
-
-
-                    </div>
-
-                    {userDataChange === "email" &&
-                        <UserEmailNameOrMDPChange
-                            closeSection={() => setUserDataChange("")}
-                            type={"email"} />}
-
-                    {userDataChange === "name" &&
-                        <UserEmailNameOrMDPChange
-                            closeSection={() => setUserDataChange("")}
-                            type={"name"}
-                            updateChatName={(oldName, newName) => updateChatName(oldName, newName)} />}
-
-                    {userDataChange === "password" &&
-                        <UserEmailNameOrMDPChange
-                            closeSection={() => setUserDataChange("")}
-                            type={"password"} />
-                    }
-
-                    {userDataChange === "request" &&
-                        <UserPasswordRequest
-                            closeRequestSection={() => setUserDataChange("")} />
-                    }
-
-                    {userDataChange === "letter" &&
-                        <UserSantaClausLetter
-                            closeLetterSection={() => setUserDataChange("")} />
-                    }
-
-                    {userDataChange === "target" &&
-                        <UserGiftTarget
-                            closeTargetSection={() => setUserDataChange("")} />
-                    }
-
-                    {tchatData &&
-                        <div className={styles.chatSection}>
-                            {sizeOfWindow.width < 480
-                                ? <p className={styles.firstChatTitle}>DERNIER MESSAGE</p> :
-                                <p className={styles.firstChatTitle}>### DERNIER MESSAGE ###</p>
-                            }
+                        <FontAwesomeIcon
+                            className={styles.userDataIcon}
+                            icon={faPersonThroughWindow}
+                            onClick={() => window.location.reload()}
+                        />
+                    </div>}
 
 
-                            <p className={styles.firstChatContent}>De <span className={styles.firstChatName}>{tchatData[0].login}</span>  :
-                                <span className={styles.firstChatText}> {tchatData[0].contenu} </span>
-                            </p>
-                            <p className={styles.firstChatDate}>({moment(tchatData[0].date * 1000).format("ddd DD/MM/YYYY à HH[h]mm")})</p>
-
-                            <ChatMessage
-                                tchatInput={tchatInput}
-                                tchatOpen={topTchatOpen}
-                                changeTchatInput={setTchatInput}
-                                thisIsTop={true}
-                                setTchatOpen={setTopTchatOpen}
-                                saveMessage={saveMessage}
-                            />
-
-                        </div>
-
-                    }
-
-                    {/*...Affichage du jsx stocké dans la variable connectedUserSection */}
-                    {connectedUserSection}
-
-                    {/* Afficher la modale si elle est en statut ouverte */}
-                    {modalOpen && (
-                        <div className={styles.modal}>
-                            <div className={styles.modalDialog}>
-                                {/* <button className={styles.modalCloseButton} onClick={closeModal}></button> */}
-                                <button onClick={() => handleSaveChanges(modifiedData)}>Sûr.e de vouloir enregistrer !!!</button>
-                                <button onClick={resetData}>Bof, on remet comme avant</button>
-                            </div>
-                        </div>
-                    )}
-
-                    {giftSavedModalVisible && (
-                        <div className={styles.giftSavedModal}>
-                            <p style={{ color: "red" }}>Votre cadeau a été volé avec succès !</p>
-                            <button onClick={closeGiftSavedModal}>Fermer</button>
-                        </div>
-                    )}
-
-                    {/*...Affichage des divs stockées dans la variable personsSections */}
-                    {personsSections}
-
-
-                    {/* )} */}
                 </div>
+
+                {userDataChange === "email" &&
+                    <UserEmailNameOrMDPChange
+                        closeSection={() => setUserDataChange("")}
+                        type={"email"} />}
+
+                {userDataChange === "name" &&
+                    <UserEmailNameOrMDPChange
+                        closeSection={() => setUserDataChange("")}
+                        type={"name"}
+                        updateChatName={(oldName, newName) => updateChatName(oldName, newName)} />}
+
+                {userDataChange === "password" &&
+                    <UserEmailNameOrMDPChange
+                        closeSection={() => setUserDataChange("")}
+                        type={"password"} />
+                }
+
+                {userDataChange === "request" &&
+                    <UserPasswordRequest
+                        closeRequestSection={() => setUserDataChange("")} />
+                }
+
+                {userDataChange === "letter" &&
+                    <UserSantaClausLetter
+                        closeLetterSection={() => setUserDataChange("")} />
+                }
+
+                {userDataChange === "target" &&
+                    <UserGiftTarget
+                        closeTargetSection={() => setUserDataChange("")} />
+                }
+
                 {tchatData &&
-                    <div id="chat" className={styles.chatContainer}>
-                        <h1>Le chat de noël</h1>
+                    <div className={styles.chatSection}>
+                        {sizeOfWindow.width < 480
+                            ? <p className={styles.firstChatTitle}>DERNIER MESSAGE</p> :
+                            <p className={styles.firstChatTitle}>### DERNIER MESSAGE ###</p>
+                        }
+
+
+                        <p className={styles.firstChatContent}>De <span className={styles.firstChatName}>{tchatData[0].login}</span>  :
+                            <span className={styles.firstChatText}> {tchatData[0].contenu} </span>
+                        </p>
+                        <p className={styles.firstChatDate}>({moment(tchatData[0].date * 1000).format("ddd DD/MM/YYYY à HH[h]mm")})</p>
+
                         <ChatMessage
                             tchatInput={tchatInput}
-                            tchatOpen={bottomTchatOpen}
+                            tchatOpen={topTchatOpen}
                             changeTchatInput={setTchatInput}
-                            thisIsTop={false}
-                            setTchatOpen={setBottomTchatOpen}
+                            thisIsTop={true}
+                            setTchatOpen={setTopTchatOpen}
                             saveMessage={saveMessage}
                         />
 
-                        <ChatContainer
-                            messages={tchatData} />
-
                     </div>
+
                 }
 
+                {/*...Affichage du jsx stocké dans la variable connectedUserSection */}
+                {connectedUserSection}
 
-            </>) : (
+                {/* Afficher la modale si elle est en statut ouverte */}
+                {modalOpen && (
+                    <div className={styles.modal}>
+                        <div className={styles.modalDialog}>
+                            {/* <button className={styles.modalCloseButton} onClick={closeModal}></button> */}
+                            <button onClick={() => handleSaveChanges(modifiedData)}>Sûr.e de vouloir enregistrer !!!</button>
+                            <button onClick={resetData}>Bof, on remet comme avant</button>
+                        </div>
+                    </div>
+                )}
+
+                {giftSavedModalVisible && (
+                    <div className={styles.giftSavedModal}>
+                        <p style={{ color: "red" }}>Votre cadeau a été volé avec succès !</p>
+                        <button onClick={closeGiftSavedModal}>Fermer</button>
+                    </div>
+                )}
+
+                {/*...Affichage des divs stockées dans la variable personsSections */}
+                {personsSections}
+
+
+                {/* )} */}
+            </div>
+            {tchatData &&
+                <div id="chat" className={styles.chatContainer}>
+                    <h1>Le chat de noël</h1>
+                    <ChatMessage
+                        tchatInput={tchatInput}
+                        tchatOpen={bottomTchatOpen}
+                        changeTchatInput={setTchatInput}
+                        thisIsTop={false}
+                        setTchatOpen={setBottomTchatOpen}
+                        saveMessage={saveMessage}
+                    />
+
+                    <ChatContainer
+                        messages={tchatData} />
+
+                </div>
+            }
+
+
+            {/* </>) : (
                 <ConnectionUser
                     onValidation={handleUserLogin}
                     errorLoginPass={errorLoginPass} />
-            )}
+            ) */}
+            {/* } */}
         </main >
 
     );

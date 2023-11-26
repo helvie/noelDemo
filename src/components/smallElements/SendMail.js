@@ -3,10 +3,12 @@ import { faFloppyDisk, faRotateLeft, faPaperPlane } from '@fortawesome/free-soli
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { BACKEND_URL } from '@/utils/urls';
 
 const SendMail = (props) => {
     const [mailMessageInput, setMailMessageInput] = useState("");
     const [sendMailOk, setSendMailOk] = useState(false);
+    const [messageError, setMessageError] = useState("");
 
     const user = useSelector((state) => state.user);
 
@@ -37,6 +39,12 @@ const SendMail = (props) => {
 
     const handleSaveData = async () => {
 
+        if (mailMessageInput.trim() === "") {
+            // Affiche un message d'erreur ou gère le cas où l'input est vide
+            setMessageError("L'input ne peut pas être vide !");
+            return;
+        }
+
         const htmlMessage = convertTextToHTML(mailMessageInput);
         
         const dataToSave = {
@@ -47,31 +55,31 @@ const SendMail = (props) => {
             corps: messageContent,
         };
 
-        try {
-            const response = await fetch(`https://noel.helvie.fr/api/${mailRoute}`, {
-                method: 'POST',
-                headers: {
-                    "Noel-Token": user.token,
-                    "User-Name": encodeURIComponent(user.name),
-                    "App-Name": "NoelTan",
-                    "content-type": 'application/json',
-                },
-                body: JSON.stringify(dataToSave),
-            });
+        // try {
+        //     const response = await fetch(`${BACKEND_URL}/api/${mailRoute}`, {
+        //         method: 'POST',
+        //         headers: {
+        //             "Noel-Token": user.token,
+        //             "User-Name": encodeURIComponent(user.name),
+        //             "App-Name": "NoelTan",
+        //             "content-type": 'application/json',
+        //         },
+        //         body: JSON.stringify(dataToSave),
+        //     });
 
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP! Statut: ${response.status}`);
-            }
+        //     if (!response.ok) {
+        //         throw new Error(`Erreur HTTP! Statut: ${response.status}`);
+        //     }
 
-            const data = await response.text();
+        //     const data = await response.text();
             setSendMailOk(true);
             setMailMessageInput("");
-            console.log("Réussi", data);
-            return data;
-        } catch (error) {
-            console.error("Erreur maj user", error);
-            throw error;
-        }
+        //     console.log("Réussi", data);
+        //     return data;
+        // } catch (error) {
+        //     console.error("Erreur maj user", error);
+        //     throw error;
+        // }
     };
 
     return (
@@ -88,6 +96,7 @@ const SendMail = (props) => {
                 name="mailMessage"
                 onChange={(e) => {
                     setMailMessageInput(e.target.value);
+                    setMessageError("");
                     setSendMailOk(false);
                 }}
                 value={mailMessageInput || ''}
@@ -106,7 +115,7 @@ const SendMail = (props) => {
                     onClick={handleSaveData}
                 />
             </div>
-
+            {messageError && <p className={styles.sendMailOk}>{messageError}</p>}
             {sendMailOk && <p className={styles.sendMailOk}>Ton message a bien été envoyé !</p>}
         </div>
     );

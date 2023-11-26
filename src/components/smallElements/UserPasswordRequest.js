@@ -3,6 +3,7 @@ import { faFloppyDisk, faRotateLeft, faKey, faSave } from '@fortawesome/free-sol
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { BACKEND_URL } from '@/utils/urls';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -18,7 +19,7 @@ const UserPasswordRequest = (props) => {
 
         try {
 
-            const response = await fetch("https://noel.helvie.fr/api/resetMDP", {
+            const response = await fetch(`${BACKEND_URL}/api/resetMDP`, {
                 method: 'POST',
                 headers: {
                     "User-Name": encodeURIComponent(signinName),

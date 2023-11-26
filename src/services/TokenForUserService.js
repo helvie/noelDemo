@@ -1,9 +1,12 @@
+import { BACKEND_URL } from '@/utils/urls';
+
+
 const TokenForUserService = () => {
 
 
     const getTokenForUser = async (logs, setErrorLoginPass) => {
         try {
-            const response = await fetch("https://noel.helvie.fr/api/gettokenforuser.php", {
+            const response = await fetch(`${BACKEND_URL}/api/gettokenforuser.php`, {
                 method: 'POST',
                 headers: {
                     "App-Name": "NoelTan",

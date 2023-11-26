@@ -46,13 +46,18 @@ function UserConnectedGiftsContainer(props) {
         lowestOrderGift,
         userDataChange,
         setEditingGift,
-        editingMoveGift
+        editingMoveGift,
+        greaterIdGift,
+        deleteGift
+
     } = props;
+
+    const idForNewGift = Number(greaterIdGift)+1;
 
     const noOfferedGifts = props.noOfferedGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
     const offeredGifts = props.offeredGifts.sort((a, b) => Number(a.Ordre) - Number(b.Ordre));
 
-
+    console.log(noOfferedGifts)
 
     //______________________________________________________________________________
 
@@ -64,18 +69,17 @@ function UserConnectedGiftsContainer(props) {
             title: "",
             detail: "",
             url: "",
-            id: 999999,
-            Ordre: lowestOrderGift - 1,
+            id: idForNewGift,
+            Ordre: Number(lowestOrderGift) - 1,
             date: formattedDate,
             offered: false
         };
-
-
         // Appel de la fonction pour ajouter le nouveau cadeau chez le parent
         addNewGift(newEmptyGift, idListe);
     };
 
-    
+            
+
     //______________________________________________________________________________
     //....Création de la variable contenant les div d'affichage des différents cadeaux
     
@@ -109,9 +113,9 @@ function UserConnectedGiftsContainer(props) {
 
         <UserConnectedGiftDetail
             //....clé unique obligatoire
-            key="999999"
+            key={idForNewGift}
             //....
-            index="999999"
+            index={idForNewGift}
             //....fonction de détection de changement de cadeau à éditer
             onClickInput={(giftId) => onClickInput(giftId)}
             //....données
@@ -180,6 +184,8 @@ function UserConnectedGiftsContainer(props) {
 
                     editingMoveGift={editingMoveGift}
 
+                    deleteGift = {(id)=>deleteGift(id)}
+
                 />
 
             ))
@@ -192,7 +198,7 @@ function UserConnectedGiftsContainer(props) {
     // Fonction qui retourne le contenu JSX conditionnel
     const renderAddGiftIcon = () => {
 
-        if (!noOfferedGifts.find(item => item.id === 999999)) {
+        if (!noOfferedGifts.find(item => !item.title && !item.detail && !item.url)) {
             return (
                 <div className={styles.addGiftIconContainer}>
 

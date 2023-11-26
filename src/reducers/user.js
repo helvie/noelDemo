@@ -10,7 +10,7 @@ const initialState = {
 	enfant: null,
 	id: null,
 	intro: null,
-	idCible: null
+	idListe: null
 
 };
 
@@ -26,6 +26,7 @@ export const userSlice = createSlice({
 			state.idListe = action.payload.idListe;
 		},
 		updateUserData: (state, action) => {
+			console.log(action)
 			state.name = action.payload.name !== undefined ? action.payload.name : state.name;
 			state.email = action.payload.email !== undefined ? action.payload.email : state.email;
 			state.cible = action.payload.cible !== undefined ? action.payload.cible : state.cible;

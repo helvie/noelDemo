@@ -1,9 +1,10 @@
+import { BACKEND_URL } from '@/utils/urls';
 
 const UserInfosService = () => {
 
     const getUserInfos = async (userName, token) => {
         try {
-            const response = await fetch("https://noel.helvie.fr/api/getuserinfos.php", {
+            const response = await fetch(`${BACKEND_URL}/api/getuserinfos.php`, {
                 headers: {
                     "user-name": encodeURIComponent(userName),
                     "app-name": "NoelTan",

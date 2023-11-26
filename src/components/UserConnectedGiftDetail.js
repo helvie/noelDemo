@@ -20,11 +20,12 @@ function UserConnectedGiftDetail(props) {
         giftDown,
         position,
         setEditingGift,
-        editingMoveGift
+        editingMoveGift,
+        deleteGift
     } = props;
 
-    // console.log(data.id===editingMoveGift)
-    // console.log("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
+    
+    console.log(inputDisabled)
 
 
     const [titleInput, setTitleInput] = useState(data.title);
@@ -39,9 +40,6 @@ function UserConnectedGiftDetail(props) {
 
     }
 
-    // if(data.id===3745){
-    //     console.log("essai")
-    // }
 
     const rewinGift = () => {
         giftUp(data.id)
@@ -50,7 +48,6 @@ function UserConnectedGiftDetail(props) {
 
     const comeDownGift = () => {
         giftDown(data.id)
-        // console.log(data.id===editingMoveGift)
 
     }
 
@@ -65,7 +62,7 @@ function UserConnectedGiftDetail(props) {
     const validateInputs = () => {
         // Effectuez toutes les vérifications nécessaires et mettez à jour les erreurs
         const newTitleError = titleInput.trim() === "" ? "Le titre ne peut pas être vide." : "";
-        const newUrlError = urlInput.trim() === "" || /^https?:\/\/\S*$/.test(urlInput) ? "" : "L'URL doit être valide.";
+        const newUrlError = urlInput.trim() === "" || /^(https?:\/\/\S+|\s*https?:\/\/\S+\s*)$/.test(urlInput) ? "" : "L'URL doit être valide.";
 
         // Mettez à jour les états d'erreur
         setTitleError(newTitleError);
@@ -85,6 +82,9 @@ function UserConnectedGiftDetail(props) {
             setTitleInput(data.title);
             setDetailInput(data.detail);
             setUrlInput(data.url);
+        }
+        if(!data.title && !data.detail && !data.url){
+            deleteGift(data.id)
         }
         editingGiftToFalse();
     }

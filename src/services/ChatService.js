@@ -1,10 +1,11 @@
+import { BACKEND_URL } from '@/utils/urls';
 
 const ChatService = () => {
 
   const getChatData = async (username, token) => {
 
     try {
-      const response = await fetch("https://noel.helvie.fr/api/getChat.php", {
+      const response = await fetch(`${BACKEND_URL}/api/getChat.php`, {
         headers: {
           "user-name": encodeURIComponent(username),
           "app-name": "NoelTan",
@@ -29,7 +30,7 @@ const ChatService = () => {
 
     try {
 
-      const response = await fetch("https://noel.helvie.fr/api/insertChat", {
+      const response = await fetch(`${BACKEND_URL}/api/insertChat`, {
         method: 'POST',
         headers: {
           "Noel-Token": user.token,

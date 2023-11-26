@@ -42,7 +42,9 @@ function GiftsContainer(props) {
         onUrlClick,
         openedSecretMessage,
         setOpenedSecretMessage,
-        lowestOrderGift
+        lowestOrderGift,
+        greaterIdGift
+
     } = props;
 
     const idListe = user.idListe;
@@ -114,6 +116,8 @@ function GiftsContainer(props) {
                     onUrlClick={(url) => onUrlClick(url)}
 
                     lowestOrderGift={lowestOrderGift}
+
+                    greaterIdGift={greaterIdGift}
 
                 />
             </div>

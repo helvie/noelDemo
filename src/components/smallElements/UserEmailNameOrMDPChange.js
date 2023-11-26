@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import Switch from '@mui/material/Switch';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserData } from '@/reducers/user';
+import { BACKEND_URL } from '@/utils/urls';
 
 const UserEmailNameOrMDPChange = (props) => {
     const [userEmailInput, setUserEmailInput] = useState("");
@@ -109,23 +110,23 @@ const UserEmailNameOrMDPChange = (props) => {
             };
 
     
-            try {
-                const response = await fetch("https://noel.helvie.fr/api/updateUtilisateur", {
-                    method: 'POST',
-                    headers: {
-                        "Noel-Token": user.token,
-                        "User-Name": encodeURIComponent(user.name),
-                        "App-Name": "NoelTan",
-                        "content-type": 'application/json'
-                    },
-                    body: JSON.stringify(dataToSave)
-                });
+            // try {
+            //     const response = await fetch(`${BACKEND_URL}/api/updateUtilisateur`, {
+            //         method: 'POST',
+            //         headers: {
+            //             "Noel-Token": user.token,
+            //             "User-Name": encodeURIComponent(user.name),
+            //             "App-Name": "NoelTan",
+            //             "content-type": 'application/json'
+            //         },
+            //         body: JSON.stringify(dataToSave)
+            //     });
     
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP! Statut: ${response.status}`);
-                }
+            //     if (!response.ok) {
+            //         throw new Error(`Erreur HTTP! Statut: ${response.status}`);
+            //     }
     
-                const data = await response.text();
+                // const data = await response.text();
                 {props.updateChatName && props.updateChatName(user.name, userPseudoInput);}
     
                 dispatch(updateUserData({
@@ -135,9 +136,9 @@ const UserEmailNameOrMDPChange = (props) => {
                 }));                 
                 setSuccessModalVisible(true);
                
-            } catch (error) {
-                console.error("Erreur maj statut cadeau", error);
-            }
+        //     } catch (error) {
+        //         console.error("Erreur maj statut cadeau", error);
+        //     }
         }
     };
 

@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { updateUserData } from '@/reducers/user';
 import { useSelector, useDispatch } from 'react-redux';
+import { BACKEND_URL } from '@/utils/urls';
 
 
 
@@ -24,6 +25,8 @@ const UserSantaClausLetter = (props) => {
         closeLetterSection
     } = props;
 
+    console.log(user)
+
 
     useEffect(() => {
         setUserLetterInput(user.intro)
@@ -37,36 +40,36 @@ const UserSantaClausLetter = (props) => {
         }
 
 
-        try {
+        // try {
 
-            const response = await fetch("https://noel.helvie.fr/api/updateLettrePereNoel", {
-                method: 'POST',
-                headers: {
-                    "Noel-Token": user.token,
-                    "User-Name": encodeURIComponent(user.name),
-                    "App-Name": "NoelTan",
-                    "content-type": 'application/json'
-                },
-                body: JSON.stringify(dataToSave)
-            });
+        //     const response = await fetch(`${BACKEND_URL}/api/updateLettrePereNoel`, {
+        //         method: 'POST',
+        //         headers: {
+        //             "Noel-Token": user.token,
+        //             "User-Name": encodeURIComponent(user.name),
+        //             "App-Name": "NoelTan",
+        //             "content-type": 'application/json'
+        //         },
+        //         body: JSON.stringify(dataToSave)
+        //     });
 
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP! Statut: ${response.status}`);
-            }
+        //     if (!response.ok) {
+        //         throw new Error(`Erreur HTTP! Statut: ${response.status}`);
+        //     }
 
-            const data = await response.text();
-            console.log("Réussi", data);
+        //     const data = await response.text();
+        //     console.log("Réussi", data);
             dispatch(updateUserData({
                 intro: userLetterInput
             }));                 
             setSuccessModalVisible(true);
 
-            return data;
-        } catch (error) {
-            console.error("Erreur maj statut cadeau", error);
-            throw error;
+        //     return data;
+        // } catch (error) {
+        //     console.error("Erreur maj statut cadeau", error);
+        //     throw error;
 
-        };
+        // };
 
     }
 

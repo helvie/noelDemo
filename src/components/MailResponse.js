@@ -4,12 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faHome } from '@fortawesome/free-solid-svg-icons';
-import TokenForUserService from './services/TokenForUserService';
-import UserInfosService from './services/UserInfosService';
+import TokenForUserService from '../services/TokenForUserService';
+import UserInfosService from '../services/UserInfosService';
 import { login } from '@/reducers/user';
 import { updateUserData } from '@/reducers/user';
 import ConnectionUser from './ConnectionUser';
 import { useRouter } from 'next/router';
+import { BACKEND_URL } from '@/utils/urls';
 
 const MailResponse = (props) => {
 
@@ -91,7 +92,7 @@ const MailResponse = (props) => {
         try {
 
 
-            const response = await fetch("https://noel.helvie.fr/api/envoiReponseMessage", {
+            const response = await fetch(`${BACKEND_URL}/api/envoiReponseMessage`, {
                 method: 'POST',
 
                 headers: {
@@ -123,25 +124,25 @@ const MailResponse = (props) => {
     };
 
     const fetchData = async (idmessage, token, name) => {
-        try {
-            const response = await fetch(`https://noel.helvie.fr/api/getmessage.php?idmessage=${idmessage}`, {
-                headers: {
-                    "user-name": encodeURIComponent(name),
-                    "app-name": "NoelTan",
-                    "noel-token": token
-                }
-            });
+        // try {
+        //     const response = await fetch(`${BACKEND_URL}/api/getmessage.php?idmessage=${idmessage}`, {
+        //         headers: {
+        //             "user-name": encodeURIComponent(name),
+        //             "app-name": "NoelTan",
+        //             "noel-token": token
+        //         }
+        //     });
 
-            if (response.status === 200) {
-                const receveidMessage = await response.json();
+        //     if (response.status === 200) {
+        //         const receveidMessage = await response.json();
                 const htmlMessage = convertHTMLToText(receveidMessage.message)
                 setMessage(htmlMessage)
-            } else {
-                throw new Error("Failed to get user data. Status: " + response.status);
-            }
-        } catch (error) {
-            console.error("Une erreur s'est produite lors de la récupération des informations utilisateur : ", error);
-        }
+        //     } else {
+        //         throw new Error("Failed to get user data. Status: " + response.status);
+        //     }
+        // } catch (error) {
+        //     console.error("Une erreur s'est produite lors de la récupération des informations utilisateur : ", error);
+        // }
     };
 
 

@@ -16,8 +16,13 @@ function GiftDetail(props) {
         idListe,
         onUrlClick,
         lowestOrderGift,
+        greaterIdGift
     } = props;
 
+    // console.log(lowestOrderGift)
+    // console.log(greaterIdGift)
+
+    const idForNewGift = Number(greaterIdGift)+1;
 
     const handleCartPlusClick = () => {
         setIsModalVisible(true);
@@ -26,10 +31,10 @@ function GiftDetail(props) {
     const handleValidation = () => {
         const modifiedData = {
             ...data,
-            id: 999998,
-            Ordre: lowestOrderGift.Ordre-1,
-            idListe: idListe,
-            giftKey: 999998
+            id: idForNewGift,
+            Ordre: lowestOrderGift-1,
+            // idListe: idListe,
+            // giftKey: 9999
         };
 
         onClickCartPlus(modifiedData);
