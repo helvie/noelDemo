@@ -7,7 +7,7 @@ const usersArray =
         idListe: "255",
         idUser: "23",
         intro: "Père Noël, un oreiller magique qui m'assure des rêves doux et réconfortants serait le cadeau idéal pour mes nuits.",
-        isAdult: false,
+        isAdult: true,
         pseudo: "Sophie",
         cible: "Emma",
         email:"sophie@mail.fr",
@@ -58,7 +58,7 @@ const usersArray =
 
         idUser: "24",
         intro: "Cher Père Noël, si tu pouvais m'apporter un livre qui me transporte dans un monde fantastique, ce serait le cadeau parfait pour échapper à la réalité.",
-        isAdult: false,
+        isAdult: true,
         pseudo: "Emma",
         cible: "Thomas",
         email:"emma@mail.fr",
@@ -180,7 +180,7 @@ const usersArray =
         idListe: "259",
         idUser: "27",
         intro: "Père Noël, une enceinte Bluetooth puissante pour animer mes fêtes serait le cadeau idéal pour ambiancer la maison.",
-        isAdult: false,
+        isAdult: true,
         pseudo: "Julien",
         cible: "Testeur",
         email:"julien@mail.fr",
@@ -272,7 +272,7 @@ const usersArray =
 
         idUser: "29",
         intro: "Père Noël, un carnet de croquis inspirant serait le cadeau idéal pour nourrir ma passion pour le dessin.",
-        isAdult: false,
+        isAdult: true,
         pseudo: "Camille",
         cible: "Lucie",
         email:"camille@mail.fr",
@@ -337,7 +337,7 @@ const usersArray =
 
         idUser: "31",
         intro: "Père Noël, une lampe de lecture rechargeable pour éclairer mes soirées littéraires serait le cadeau idéal pour profiter de mes livres préférés.",
-        isAdult: false,
+        isAdult: true,
         pseudo: "Maxime",
         cible: "Léa",
         email:"maxime@mail.fr",
@@ -388,7 +388,7 @@ const usersArray =
 
         idUser: "32",
         intro: "Cher Père Noël, un puzzle complexe et stimulant serait le cadeau parfait pour occuper mes journées pluvieuses.",
-        isAdult: false,
+        isAdult: true,
         pseudo: "Léa",
         cible: "Sophie",
         email:"lea@mail.fr",
