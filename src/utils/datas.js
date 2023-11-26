@@ -223,7 +223,7 @@ const usersArray =
         idUser: "28",
         intro: "Cher Père Noël, un kit de cuisine moléculaire pour expérimenter en cuisine serait le cadeau parfait pour stimuler ma créativité culinaire.",
         isAdult: true,
-        pseudo: "Testeur",
+        pseudo: "(Testeur)",
         cible: "Camille",
         email:"testeur@mail.fr",
         token:"XXX",
