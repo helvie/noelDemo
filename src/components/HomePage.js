@@ -125,6 +125,9 @@ function HomePage() {
 
     const [editingMoveGift, setEditingMoveGift] = useState("");
 
+    const [openChangeSectionModal, setOpenChangeSectionModal] = useState(false);
+
+
     const user = useSelector((state) => state.user);
     const sizeOfWindow = useSelector((state) => state.windowSize);
     const dispatch = useDispatch();
@@ -667,9 +670,6 @@ function HomePage() {
 
     const addNewGift = (newGift) => {
 
-        console.log(newGift)
-
-        console.log(newGift)
         setNoOfferedGifts((prevNoOfferedGifts) => {
 
             const updatedNoOfferedGifts = [newGift, ...prevNoOfferedGifts];
@@ -680,9 +680,6 @@ function HomePage() {
         });
 
 
-        if (newGift.id === 999999) {
-            setEditingGift(999999);
-        }
     };
 
 
@@ -867,9 +864,13 @@ function HomePage() {
     //....Gestion de l'enregistrement des modifications depuis la modale
     //---------------------------------------------------------------------------------
     const handleSaveChanges = async (giftDatas) => {
+        console.log(modifiedData)
 
         // try {
         if (giftDatas.id > greaterIdGift) {
+            if (giftDatas.title === "") {
+                setModalTitleError(true)
+            }
             setNoOfferedGifts((prevGifts) => [...prevGifts, giftDatas]);
             setEditingGift(-1);
             setLowestOrderGift(giftDatas.Ordre);
@@ -987,9 +988,6 @@ function HomePage() {
 
         setResetGift(editingGift)
 
-        removeGiftById(999999)
-
-
         //....Indication dans l'état qu'aucun cadeau n'est en cours de modification
         setEditingGift(-1)
 
@@ -1031,7 +1029,7 @@ function HomePage() {
         //....ailleurs que dans un cadeau qui est déjà en cours de modification
         if (editingGift !== -1 && editingGift !== clickedIndex) {
             //....on ouvre la modale de validation d'enregistrement
-            openSaveModal()
+            setOpenChangeSectionModal(true)
         }
     }
 
@@ -1168,6 +1166,15 @@ function HomePage() {
                             {/* <button className={styles.modalCloseButton} onClick={closeModal}></button> */}
                             <button onClick={() => handleSaveChanges(modifiedData)}>Sûr.e de vouloir enregistrer !!!</button>
                             <button onClick={resetData}>Bof, on remet comme avant</button>
+                        </div>
+                    </div>
+                )}
+
+                {openChangeSectionModal && (
+                    <div className={styles.modal}>
+                        <div className={styles.modalDialog2}>
+                            <p>Tu dois enregistrer ou annuler avant de changer de section</p>
+                            <button onClick={() => setOpenChangeSectionModal(false)}>Compris !</button>
                         </div>
                     </div>
                 )}
