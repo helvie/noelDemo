@@ -14,7 +14,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import user from '../reducers/user';
 import windowSize from '../reducers/windowSize';
 import { useRouter } from 'next/router';
-
+import { Analytics } from '@vercel/analytics/react';
 
 // const rootReducer = combineReducers({
 //   // Ajoutez vos reducers ici
@@ -48,6 +48,8 @@ function App({ Component, pageProps }) {
           <title>C&apos;est Noël !</title>
         </Head>
         <Component {...pageProps} />
+        <Analytics />
+
       {/* </PersistGate> */}
     </Provider>
   );
