@@ -50,7 +50,7 @@ function App({ Component, pageProps }) {
         <Component {...pageProps} />
         <Analytics />
 
-      {/* </PersistGate> */}
+      {/* </PersistGate> */} 
     </Provider>
   );
 }
